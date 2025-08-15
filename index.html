@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Benchmarks</title>
+  <!-- DataTables + jQuery -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  
+  <meta charset="UTF-8">
+  <style>
+    .hanoi-section {
+      font-family: sans-serif;
+      background: #fefefe;
+      padding: 1rem;
+      text-align: center;
+    }
+    .peg-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-end;
+      height: 120px;
+      margin-top: 0.5rem;
+    }
+    .peg {
+      width: 8px;
+      height: 100px;
+      background: #333;
+      position: relative;
+    }
+    .disk {
+      position: absolute;
+      height: 20px;
+      border-radius: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .disk1 { width: 100px; background: #FF6B6B; }
+    .disk2 { width: 70px; background: #4ECDC4; }
+    .disk3 { width: 40px; background: #1A535C; }
+
+    .peg-label {
+      margin-top: 0.5rem;
+      font-weight: bold;
+    }
+  </style>
+
+</head>
+<body>
+  <h1>How Good Are Models at Reasoning?</h1>
+  <h2>Benchmarks</h2>
+  <p>
+    Benchmarks are widely used to evaluate the capabilities of large language models (LLMs).
+    They consist of curated problem sets focused on specific skills - such as mathematics, programming, scientific understanding, or medical diagnostics.
+    By testing models on these tasks, we get a snapshot of their reasoning power and generalization abilities.
+  </p>
+  <h3>Benchmark Reasoning Categories</h3>
+  <p>
+    Please see the description of possible problem sets in the table below. Each category represents a distinct type of reasoning  challenge used in 
+    benchmark evaluations. You can search through the table by typing keywords (e.g. <em>"math"</em>, <em>"medical"</em>, <em>"code"</em>) into the
+    search bar in the top-right corner of the table.
+  </p>
+    <table id="benchmark-table" class="display">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Description</th>
+          <th>Benchmarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Math Problems</td>
+          <td>Solves mathematical problems showcasing capabilities of reasoning LLMs.</td>
+          <td>AIME, MATH-500, OlympiadBench</td>
+        </tr>
+        <tr>
+          <td>Code Problems</td>
+          <td>Uses logical thinking and structured problem-solving in programming tasks.</td>
+          <td>Codeforces, LiveCodeBench</td>
+        </tr>
+        <tr>
+          <td>Scientific Problems</td>
+          <td>Involves multi-domain reasoning across physics, chemistry, and biology.</td>
+          <td>GPQA Diamond, MMLU-Pro</td>
+        </tr>
+        <tr>
+          <td>Agent Reasoning</td>
+          <td>Tests planning and decision-making in interactive and tool-using environments.</td>
+          <td>WebShop, WebArena, SciWorld</td>
+        </tr>
+        <tr>
+          <td>Medical Reasoning</td>
+          <td>Mimics diagnostic reasoning and treatment planning in clinical contexts.</td>
+          <td>MedQA, Medbullets</td>
+        </tr>
+        <tr>
+          <td>Multimodal Reasoning</td>
+          <td>Combines text and visual input to test cross-modal reasoning skills.</td>
+          <td>MMMU, MathVista, MM-IQ</td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+      A strong model is expected to perform well across multiple diverse benchmarks, demonstrating not just memorization or task-specific tricks, but real, 
+      transferable reasoning. In this way, benchmarks help define what it means for a model to be universal rather than narrowly overfitted.
+    <br>
+    <script>
+      $(document).ready(function () {
+        $('#benchmark-table').DataTable({
+          paging: false,
+          info: false,
+          language: {
+            search: "🔍 Search benchmarks:"
+          }
+        });
+      });
+    </script>
+
+<body>
+  <h3>State-of-the-Art Model Performance on Benchmarks</h3>
+  <p>
+    The following table shows Pass@1 or Percentile scores across several benchmark tasks.
+  </p>
+  <table id="benchmarkTable" class="display">
+    <thead>
+      <tr>
+        <th>Benchmark</th>
+        <th>Metric</th>
+        <th>DeepSeek-R1</th>
+        <th>OpenAI-o1-1217</th>
+        <th>DeepSeek-R1-32B</th>
+        <th>OpenAI-o1-mini</th>
+        <th>DeepSeek-V3</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>AIME 2024</td>
+        <td>Pass@1</td>
+        <td>79.8%</td>
+        <td>79.2%</td>
+        <td>72.6%</td>
+        <td>63.6%</td>
+        <td>39.2%</td>
+      </tr>
+      <tr>
+        <td>Codeforces</td>
+        <td>Percentile</td>
+        <td>96.3%</td>
+        <td>96.6%</td>
+        <td>90.6%</td>
+        <td>93.4%</td>
+        <td>58.7%</td>
+      </tr>
+      <tr>
+        <td>GPQA Diamond</td>
+        <td>Pass@1</td>
+        <td>71.5%</td>
+        <td>75.7%</td>
+        <td>62.1%</td>
+        <td>60.0%</td>
+        <td>59.1%</td>
+      </tr>
+      <tr>
+        <td>MATH-500</td>
+        <td>Pass@1</td>
+        <td>97.3%</td>
+        <td>96.4%</td>
+        <td>94.3%</td>
+        <td>90.0%</td>
+        <td>90.2%</td>
+      </tr>
+      <tr>
+        <td>MMLU</td>
+        <td>Pass@1</td>
+        <td>90.8%</td>
+        <td>91.8%</td>
+        <td>87.4%</td>
+        <td>85.2%</td>
+        <td>88.5%</td>
+      </tr>
+      <tr>
+        <td>SWE-bench Verified</td>
+        <td>Resolved</td>
+        <td>49.2%</td>
+        <td>48.9%</td>
+        <td>41.6%</td>
+        <td>36.8%</td>
+        <td>42.0%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="citation">(DeepSeek-AI et al., 2025)</p>
+
+  <script>
+    $(document).ready(function () {
+      $('#benchmarkTable').DataTable({
+        paging: false,
+        info: false,
+        responsive: true,
+        language: {
+          search: "🔍 Search benchmarks:"
+        }
+      });
+    });
+  </script>
+
+<hr>
+
+<h3>The Problem With Benchmarks</h3>
+<p>Despite their usefulness, traditional benchmarks are facing growing criticism.</p>
+
+<p>
+  Task difficulty is often hard to define. What makes a problem "difficult" is often subjective. This makes it tricky to scale problem sets meaningfully 
+  or test a model's performance on progressively harder tasks.
+</p>
+<p>
+  Another concern is data leakage from training corpora. Many benchmark problems have ended up in the training data of large models, whether intentionally or not. 
+  This makes it unclear whether the model is reasoning through a solution — or simply memorizing and regurgitating it.
+</p>
+
+<h2>Puzzle-Based Benchmarks</h2>
+<p><em>Shojaee et al., 2025</em></p>
+<p>
+  To address these limitations, researchers are exploring alternative benchmarks. One compelling direction is using puzzle-like problems, such as the 
+  Tower of Hanoi, where complexity can be precisely controlled — by simply increasing the number of disks. In this setup, models are evaluated not just 
+  on their accuracy, but on how well they scale with increasing task difficulty.
+</p>
+
+<div class="hanoi-section">
+<h4>Tower of Hanoi (3 Disks)</h4>
+<p>Auto-solving animation (A → C)</p>
+
+<div class="peg-container">
+  <div class="peg" id="pegA"></div>
+  <div class="peg" id="pegB"></div>
+  <div class="peg" id="pegC"></div>
+</div>
+
+<div class="peg-container">
+  <div class="peg-label">A</div>
+  <div class="peg-label">B</div>
+  <div class="peg-label">C</div>
+</div>
+
+<script>
+  const pegs = {
+    A: document.getElementById('pegA'),
+    B: document.getElementById('pegB'),
+    C: document.getElementById('pegC'),
+  };
+
+  const disks = [
+    { class: 'disk1', size: 3 },
+    { class: 'disk2', size: 2 },
+    { class: 'disk3', size: 1 },
+  ];
+
+  // Stack to track disk DOMs on each peg
+  const state = {
+    A: [], B: [], C: []
+  };
+
+  // Init: add disks to A
+  disks.forEach((d, i) => {
+    const el = document.createElement('div');
+    el.className = `disk ${d.class}`;
+    el.style.bottom = `${i * 18}px`;
+    pegs.A.appendChild(el);
+    state.A.push(el);
+  });
+
+  let delay = 0;
+  const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
+  async function move(n, from, to, aux) {
+    if (n === 0) return;
+    await move(n - 1, from, aux, to);
+
+    delay += 500;
+    await sleep(delay);
+    const disk = state[from].pop();
+    state[to].push(disk);
+    pegs[to].appendChild(disk);
+    disk.style.bottom = `${(state[to].length - 1) * 18}px`;
+
+    await move(n - 1, aux, to, from);
+  }
+
+  // Start animation
+  move(3, 'A', 'C', 'B');
+</script>
+</div>
+
+<h3>When Reasoning Models Collapse</h3>
+<p>
+  A surprising trend emerges as task complexity increases: reasoning-tuned models initially outperform their baseline counterparts, 
+  but beyond a certain threshold, both collapse in performance. This sharp decline challenges assumptions about the robustness of current 
+  reasoning models and exposes their fragility under higher cognitive demands.
+</p>
+
+<h4 style="text-align: center;">Tower of Hanoi</h4>
+<div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
+  <div>
+    <img src="image/screenshot1.png" alt="Claude Sonnet Accuracy" style="max-width: 100%; height: auto;" width="300">
+    <p style="text-align: center; font-size: 0.9em;">Claude 3.7 Sonnet (±thinking)</p>
+  </div>
+  <div>
+    <img src="image/screenshot2.png" alt="DeepSeek Accuracy" style="max-width: 100%; height: auto;" width="300">
+    <p style="text-align: center; font-size: 0.9em;">DeepSeek-R1 vs DeepSeek-V3</p>
+  </div>
+</div>
+
+<h3>Even With Help, They Struggle</h3>
+<p>
+  Interestingly, even when the model is given the solution in the prompt, performance doesn’t improve significantly.
+  This suggests that the model doesn't simply fail to find a solution — it struggles to use or interpret one when given.
+</p>
+
+<h4 style="text-align: center;">Tower of Hanoi</h4>
+<div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
+  <div>
+    <img src="image/screenshot3.png" alt="Claude Sonnet Accuracy" style="max-width: 100%; height: auto;" width="300">
+    <p style="text-align: center; font-size: 0.9em;">Claude 3.7 Sonnet (±thinking)</p>
+  </div>
+  <div>
+    <img src="image/screenshot4.png" alt="DeepSeek Accuracy" style="max-width: 100%; height: auto;" width="300">
+    <p style="text-align: center; font-size: 0.9em;">DeepSeek-R1 vs DeepSeek-V3</p>
+  </div>
+</div>
+
+<h3>A Curious Token Length Effect</h3>
+<p>
+  Another surprising effect: as task complexity grows, models tend to produce shorter outputs - even though longer answers 
+  would likely lead to better performance. This indicates a possible failure in internal planning or token budgeting, challenging the assumption that more capable models
+  will naturally expand their answers as needed.</p>
+
+<h4 style="text-align: center;">Tower of Hanoi</h4>
+<div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
+  <div>
+    <img src="image/screenshot5.png" alt="Claude Sonnet Accuracy" style="max-width: 100%; height: auto;" width="300">
+    <p style="text-align: center; font-size: 0.9em;">Claude 3.7 Sonnet (±thinking)</p>
+  </div>
+  <div>
+    <img src="image/screenshot6.png" alt="DeepSeek Accuracy" style="max-width: 100%; height: auto;" width="300">
+    <p style="text-align: center; font-size: 0.9em;">DeepSeek-R1 vs DeepSeek-V3</p>
+  </div>
+</div>
+
+<h2>Open Questions Remain</h2>
+<p>
+  To what extent can current models really reason? While benchmarks remain a useful tool, these findings highlight the fragility of current 
+  approaches and the limitations of today's so-called “reasoning models.” There is still a long road ahead to build systems that reason 
+  reliably under increasing task difficulty — and to prove that their reasoning is more than just a memorized pattern.
+</p>
+
+</body>
+</html>
