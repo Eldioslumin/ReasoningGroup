@@ -13,19 +13,19 @@
     .hanoi-section {
       font-family: sans-serif;
       background: #fefefe;
-      padding: 1rem;
+      padding: 2rem;
       text-align: center;
     }
     .peg-container {
       display: flex;
       justify-content: space-around;
       align-items: flex-end;
-      height: 120px;
-      margin-top: 0.5rem;
+      height: 200px;
+      margin-top: 3rem;
     }
     .peg {
-      width: 8px;
-      height: 100px;
+      width: 10px;
+      height: 150px;
       background: #333;
       position: relative;
     }
@@ -41,12 +41,18 @@
     .disk3 { width: 40px; background: #1A535C; }
 
     .peg-label {
-      margin-top: 0.5rem;
+      margin-top: 1rem;
       font-weight: bold;
     }
   </style>
 
+  <meta charset="UTF-8">
+  <title>Claude Chart Test</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 </head>
+
 <body>
   <h1>How Good Are Models at Reasoning?</h1>
   <h2>Benchmarks</h2>
@@ -268,7 +274,7 @@
   disks.forEach((d, i) => {
     const el = document.createElement('div');
     el.className = `disk ${d.class}`;
-    el.style.bottom = `${i * 18}px`;
+    el.style.bottom = `${i * 22}px`;
     pegs.A.appendChild(el);
     state.A.push(el);
   });
@@ -285,7 +291,7 @@
     const disk = state[from].pop();
     state[to].push(disk);
     pegs[to].appendChild(disk);
-    disk.style.bottom = `${(state[to].length - 1) * 18}px`;
+    disk.style.bottom = `${(state[to].length - 1) * 22}px`;
 
     await move(n - 1, aux, to, from);
   }
@@ -302,7 +308,7 @@
   reasoning models and exposes their fragility under higher cognitive demands.
 </p>
 
-<h4 style="text-align: center;">Tower of Hanoi</h4>
+<!-- <h4 style="text-align: center;">Tower of Hanoi</h4>
 <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
   <div>
     <img src="image/screenshot1.png" alt="Claude Sonnet Accuracy" style="max-width: 100%; height: auto;" width="300">
@@ -312,7 +318,71 @@
     <img src="image/screenshot2.png" alt="DeepSeek Accuracy" style="max-width: 100%; height: auto;" width="300">
     <p style="text-align: center; font-size: 0.9em;">DeepSeek-R1 vs DeepSeek-V3</p>
   </div>
-</div>
+</div> -->
+
+<h4 style="text-align: center;">Model Accuracy vs. Task Complexity</h4>
+<canvas id="accuracyChart" width="700" height="400"></canvas>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx = document.getElementById('accuracyChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20],
+      datasets: [
+        {
+          label: 'DeepSeek-R1',
+          data: [100, 98, 95, 90, 85, 70, 60, 10, 2, 1, 0, 0],
+          borderColor: '#4ECDC4',
+          backgroundColor: 'transparent',
+          tension: 0.3
+        },
+        {
+          label: 'DeepSeek-V3',
+          data: [98, 97, 96, 85, 30, 20, 10, 5, 1, 0, 0, 0],
+          borderColor: '#FF6B6B',
+          backgroundColor: 'transparent',
+          tension: 0.3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      animation: {
+        duration: 2500,
+        easing: 'easeOutQuart'
+      },
+      plugins: {
+        legend: {
+          position: 'bottom'
+        },
+        title: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: false,
+          max: 100,
+          title: {
+            display: true,
+            text: 'Accuracy (%)'
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Task Complexity'
+          }
+        }
+      }
+    }
+  });
+</script>
 
 <h3>Even With Help, They Struggle</h3>
 <p>
@@ -320,7 +390,7 @@
   This suggests that the model doesn't simply fail to find a solution — it struggles to use or interpret one when given.
 </p>
 
-<h4 style="text-align: center;">Tower of Hanoi</h4>
+<!-- <h4 style="text-align: center;">Tower of Hanoi</h4>
 <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
   <div>
     <img src="image/screenshot3.png" alt="Claude Sonnet Accuracy" style="max-width: 100%; height: auto;" width="300">
@@ -330,7 +400,78 @@
     <img src="image/screenshot4.png" alt="DeepSeek Accuracy" style="max-width: 100%; height: auto;" width="300">
     <p style="text-align: center; font-size: 0.9em;">DeepSeek-R1 vs DeepSeek-V3</p>
   </div>
-</div>
+</div> -->
+
+<h4 style="text-align: center;">Claude-3.7-Sonnet Performance</h4>
+<canvas id="claudeChart" width="700" height="400"></canvas>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const ctx = document.getElementById('claudeChart').getContext('2d');
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20],
+        datasets: [
+          {
+            label: 'Default',
+            data: [99.5, 99.5, 99.5, 99.5, 90, 55, 70, 15, 5, 2, 1, 1],
+            borderColor: '#DE6E4B',
+            backgroundColor: 'transparent',
+            borderWidth: 3,
+            pointStyle: 'rect',
+            pointRadius: 6,
+            tension: 0.3
+          },
+          {
+            label: 'Algorithm Given',
+            data: [99.5, 99.5, 99.5, 99.5, 90, 70, 65, 10, 2, 1, 1, 1],
+            borderColor: '#B0422F',
+            backgroundColor: 'transparent',
+            borderDash: [6, 4],
+            borderWidth: 3,
+            pointStyle: 'circle',
+            pointRadius: 6,
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        animation: {
+          duration: 1200,
+          easing: 'easeOutQuart'
+        },
+        plugins: {
+          legend: {
+            position: 'bottom'
+          },
+          title: {
+            display: true,
+            text: 'Accuracy vs Complexity (Number of Disks)'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            title: {
+              display: true,
+              text: 'Accuracy (%)'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Complexity (Number of Disks)'
+            }
+          }
+        }
+      }
+    });
+  });
+</script>
 
 <h3>A Curious Token Length Effect</h3>
 <p>
@@ -338,7 +479,7 @@
   would likely lead to better performance. This indicates a possible failure in internal planning or token budgeting, challenging the assumption that more capable models
   will naturally expand their answers as needed.</p>
 
-<h4 style="text-align: center;">Tower of Hanoi</h4>
+<!-- <h4 style="text-align: center;">Tower of Hanoi</h4>
 <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
   <div>
     <img src="image/screenshot5.png" alt="Claude Sonnet Accuracy" style="max-width: 100%; height: auto;" width="300">
@@ -348,7 +489,85 @@
     <img src="image/screenshot6.png" alt="DeepSeek Accuracy" style="max-width: 100%; height: auto;" width="300">
     <p style="text-align: center; font-size: 0.9em;">DeepSeek-R1 vs DeepSeek-V3</p>
   </div>
-</div>
+</div> -->
+
+<h4 style="text-align: center;">o3-mini (high): Output Token Count vs Complexity</h4>
+<canvas id="tokenChart" width="700" height="400"></canvas>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  window.onload = function () {
+    const ctx = document.getElementById('tokenChart').getContext('2d');
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20],
+        datasets: [
+          {
+            label: 'Average Token Count',
+            data: [500, 900, 2000, 4500, 8500, 20000, 18000, 12000, 7000, 5000, 3000, 2000],
+            borderColor: '#0077BB',
+            borderDash: [6, 4],
+            borderWidth: 3,
+            fill: false,
+            tension: 0.3,
+            pointRadius: 6,
+            pointStyle: 'circle',
+            backgroundColor: 'transparent'
+          },
+          {
+            label: 'Individual Runs',
+            type: 'scatter',
+            data: [
+              { x: 4, y: 4300 }, { x: 4, y: 4700 }, { x: 5, y: 8800 },
+              { x: 5, y: 8000 }, { x: 6, y: 19500 }, { x: 6, y: 20500 },
+              { x: 7, y: 18000 }, { x: 7, y: 17500 }, { x: 8, y: 11000 },
+              { x: 9, y: 7500 }, { x: 9, y: 6900 }, { x: 10, y: 4500 },
+              { x: 15, y: 3100 }, { x: 15, y: 2900 }, { x: 20, y: 2100 }
+            ],
+            backgroundColor: '#E63946',
+            pointRadius: 4,
+            showLine: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        animation: {
+          duration: 1500,
+          easing: 'easeOutQuart'
+        },
+        plugins: {
+          legend: {
+            position: 'bottom'
+          },
+          title: {
+            display: true,
+            text: 'Output Length vs. Complexity (Number of Disks)'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Output Tokens'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Complexity (Number of Disks)'
+            }
+          }
+        }
+      }
+    });
+  };
+</script>
 
 <h2>Open Questions Remain</h2>
 <p>
