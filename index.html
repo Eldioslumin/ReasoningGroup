@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dynamic PRM-Search-LLM Flow (5 Balls)</title>
+  <style>
+    :root { --bg:#f8fafc; --ink:#111827; --arrow:#94a3b8; --accent:#fb923c; }
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;background:var(--bg);color:var(--ink)}
+    .wrap{width:100%;margin:24px auto;padding:0}
+    .panel{background:transparent;border:none;border-radius:0;box-shadow:none;padding:0}
+    .hint{color:#475569;font-size:14px;margin-top:8px;text-align:center}
+    .token{filter:drop-shadow(0 1px 2px rgba(0,0,0,.35));offset-rotate:0deg}
+    @keyframes move{from{offset-distance:0%}to{offset-distance:100%}}
+  </style>
+
   <meta charset="UTF-8">
   <title>Benchmarks</title>
   <!-- DataTables + jQuery -->
@@ -54,6 +68,239 @@
 </head>
 
 <body>
+
+  <h1>Reasoning Architectures</h2>
+  <h2>Pipeline</h2>
+
+  <p>
+    While DeepSeek R1 is a dedicated reasoning model trained with Chain-of-Thought (CoT) data and methods such as
+    supervised fine-tuning (SFT) and reinforcement learning (RL), it's also possible to build a reasoning architecture around a
+    standard language model.
+  </p>
+
+  <p>
+    In this setup, an LLM (e.g., a Llama 1B model) produces multiple candidate answers. A reward model then
+    scores these candidates, and a search strategy selects the best answer based on the rewards. This kind of architecture is described in the Hugging Face cookbook:
+    <a href="https://huggingface.co/learn/cookbook/search_and_learn" target="_blank" rel="noopener">“Search &amp; Learn”</a>.
+  </p>
+
+  <p>
+    The dynamic chart below visualizes the architecture: the LLM proposes candidates, the PRM scores them, and the search strategy
+    steers the loop toward the final answer.
+  </p>
+
+<div class="wrap">
+  <h3 style="text-align:center">Dynamic PRM-Guided Search Flow</h3>
+  <div class="panel">
+    <svg id="scene" viewBox="0 0 1200 280" width="100%" height="350">
+      <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="userSpaceOnUse">
+          <path d="M0,0 L9,3 L0,6 Z" fill="var(--arrow)" />
+        </marker>
+        <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
+        </filter>
+      </defs>
+
+      <script type="application/json" id="points">{
+        "math": {"x":70,  "y":210},
+        "llm":  {"x":310, "y":210},
+        "prm":  {"x":620, "y":210},
+        "search":{"x":620, "y":90 },
+        "final": {"x":1070,"y":210}
+      }</script>
+
+      <g id="edges" stroke="var(--arrow)" stroke-width="3" marker-end="url(#arrow)" opacity=".65" fill="none"></g>
+      <g id="nodes"></g>
+      <circle cx="620" cy="90" r="62" fill="var(--accent)" opacity=".15" filter="url(#soft)" />
+      <g id="tokenLayer"></g>
+    </svg>
+  </div>
+</div>
+
+<script>
+(function(){
+  const P = JSON.parse(document.getElementById('points').textContent);
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const rightOf = (p)=>[p.x+90,p.y];
+  const leftOf  = (p)=>[p.x-90,p.y];
+  const topOf   = (p)=>[p.x,p.y-40];
+  const C = (x1,y1,x2,y2,x,y)=>`C ${x1} ${y1}, ${x2} ${y2}, ${x} ${y}`;
+  const seg=(from,to,bendY)=>{const midX=(from[0]+to[0])/2,by=bendY??from[1];return `M ${from[0]} ${from[1]} ${C(midX,by,midX,by,to[0],to[1])}`};
+
+  const paths={
+    mathToLLM: seg(rightOf(P.math), leftOf(P.llm)),
+    llmToPRM: seg(rightOf(P.llm), leftOf(P.prm)),
+    prmToSearch: seg(rightOf(P.prm), [P.search.x, P.search.y], P.prm.y - 80),
+    searchToLLM: seg([P.search.x-90,P.search.y],[P.llm.x,P.llm.y-40], P.search.y-30),
+    prmToFinal: seg(rightOf(P.prm), leftOf(P.final))
+  };
+
+  function addNode(group,x,y,label,fill){
+    const g=document.createElementNS(svgNS,'g');
+    g.setAttribute('transform',`translate(${x-90},${y-40})`);
+    const rect=document.createElementNS(svgNS,'rect');
+    rect.setAttribute('rx','18');rect.setAttribute('width','180');rect.setAttribute('height','80');
+    rect.setAttribute('fill',fill);rect.setAttribute('style','filter:drop-shadow(0 1px 2px rgba(0,0,0,.15))');
+    const text=document.createElementNS(svgNS,'text');
+    text.setAttribute('x','90');text.setAttribute('y','44');text.setAttribute('text-anchor','middle');
+    text.setAttribute('fill','#111827');text.setAttribute('style','font-weight:600');
+    text.textContent=label;
+    g.appendChild(rect);g.appendChild(text);group.appendChild(g);
+  }
+
+  const nodesG=document.getElementById('nodes');
+  addNode(nodesG,P.math.x,P.math.y,'Math problem','#bae6fd');
+  addNode(nodesG,P.llm.x,P.llm.y,'LLM','#d8b4fe');
+  addNode(nodesG,P.prm.x,P.prm.y,'PRM','#fef08a');
+  addNode(nodesG,P.search.x,P.search.y,'Search strategy','#fdba74');
+  addNode(nodesG,P.final.x,P.final.y,'Final answer','#bae6fd');
+
+  const edgesG=document.getElementById('edges');
+  Object.values(paths).forEach(d=>{const path=document.createElementNS(svgNS,'path');path.setAttribute('d',d);edgesG.appendChild(path);});
+
+  const tokens=[
+    {d:paths.mathToLLM, delay:0.0, color:'#3b82f6'},
+    {d:paths.llmToPRM, delay:0.8, color:'#7c3aed'},
+    {d:paths.prmToSearch, delay:1.6, color:'#f59e0b'},
+    {d:paths.searchToLLM, delay:2.4, color:'#10b981'},
+    {d:paths.prmToFinal, delay:3.2, color:'#22c55e'}
+  ];
+
+  const tokenLayer=document.getElementById('tokenLayer');
+  tokens.forEach(t=>{
+    const c=document.createElementNS(svgNS,'circle');
+    c.setAttribute('r','10');
+    c.setAttribute('fill',t.color);
+    c.classList.add('token');
+    c.style.offsetPath=`path('${t.d}')`;
+    c.style.animation=`move 4s linear ${t.delay}s infinite`;
+    c.style.animationPlayState='running';
+    tokenLayer.appendChild(c);
+  });
+})();
+</script>
+
+<!-- Edges -->
+<g id="edges" stroke="var(--arrow)" stroke-width="3" marker-end="url(#arrow)" opacity=".65" fill="none"></g>
+
+
+<!-- Nodes -->
+<g id="nodes"></g>
+
+
+<!-- Glow under Search -->
+<circle cx="620" cy="90" r="62" fill="var(--accent)" opacity=".15" filter="url(#soft)" />
+
+
+<!-- Tokens -->
+<g id="tokenLayer"></g>
+</svg>
+</div>
+</div>
+
+<script>
+function addNode(group,x,y,label,fill){
+const g=document.createElementNS(svgNS,'g');
+g.setAttribute('transform',`translate(${x-90},${y-40})`);
+const rect=document.createElementNS(svgNS,'rect');
+rect.setAttribute('rx','18');rect.setAttribute('width','180');rect.setAttribute('height','80');
+rect.setAttribute('fill',fill);rect.setAttribute('style','filter:drop-shadow(0 1px 2px rgba(0,0,0,.15))');
+const text=document.createElementNS(svgNS,'text');
+text.setAttribute('x','90');text.setAttribute('y','44');text.setAttribute('text-anchor','middle');
+text.setAttribute('fill','#111827');text.setAttribute('style','font-weight:600');
+text.textContent=label;
+g.appendChild(rect);g.appendChild(text);group.appendChild(g);
+}
+
+
+const nodesG=document.getElementById('nodes');
+addNode(nodesG,P.math.x,P.math.y,'Math problem','#bae6fd');
+addNode(nodesG,P.llm.x,P.llm.y,'LLM','#d8b4fe');
+addNode(nodesG,P.prm.x,P.prm.y,'PRM','#fef08a');
+addNode(nodesG,P.search.x,P.search.y,'Search strategy','#fdba74');
+addNode(nodesG,P.final.x,P.final.y,'Final answer','#bae6fd');
+
+
+// Draw edges
+const edgesG=document.getElementById('edges');
+Object.values(paths).forEach(d=>{
+const path=document.createElementNS(svgNS,'path');
+path.setAttribute('d',d);
+edgesG.appendChild(path);
+});
+
+
+// Tokens definitions
+const tokens=[
+{d:paths.mathToLLM, delay:0.0, color:'#3b82f6'},
+{d:paths.llmToPRM, delay:0.8, color:'#7c3aed'},
+{d:paths.prmToSearch, delay:1.6, color:'#f59e0b'},
+{d:paths.searchToLLM, delay:2.4, color:'#10b981'},
+{d:paths.prmToFinal, delay:3.2, color:'#22c55e'}
+];
+
+
+const tokenLayer=document.getElementById('tokenLayer');
+tokens.forEach(t=>{
+const c=document.createElementNS(svgNS,'circle');
+c.setAttribute('r','10');
+c.setAttribute('fill',t.color);
+c.classList.add('token');
+c.dataset.base='6';
+c.dataset.delay=t.delay;
+c.style.offsetPath=`path('${t.d}')`;
+tokenLayer.appendChild(c);
+});
+
+
+const playBtn=document.getElementById('playBtn');
+const stepBtn=document.getElementById('stepBtn');
+const speed=document.getElementById('speed');
+const speedVal=document.getElementById('speedVal');
+let playing=true;
+
+
+function apply(){
+const s=parseFloat(speed.value);
+speedVal.textContent=s.toFixed(2)+'×';
+document.querySelectorAll('.token').forEach(el=>{
+const base=parseFloat(el.dataset.base||'6');
+const dur=(base/s).toFixed(2)+'s';
+const delay=parseFloat(el.dataset.delay||'0');
+el.style.animation=`move ${dur} linear ${delay}s infinite`;
+el.style.animationPlayState=playing?'running':'paused';
+});
+}
+function restart(){
+document.querySelectorAll('.token').forEach(el=>{
+const anim=el.style.animation;el.style.animation='none';void el.offsetWidth;el.style.animation=anim;
+el.style.animationPlayState=playing?'running':'paused';
+});
+}
+
+
+playBtn.addEventListener('click',()=>{
+playing=!playing;playBtn.textContent=playing?'Pause':'Play';
+document.querySelectorAll('.token').forEach(el=>el.style.animationPlayState=playing?'running':'paused');
+});
+stepBtn.addEventListener('click',()=>{playing=false;playBtn.textContent='Play';document.querySelectorAll('.token').forEach(el=>el.style.animationPlayState='paused');restart();});
+speed.addEventListener('input',apply);
+
+apply();
+})();
+</script>
+
+<h2 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Search-and-Learn Repository</h3>
+<p>
+    To reproduce the pipeline one can use the Search-and-Learn repository: <a href="https://github.com/huggingface/search-and-learn" 
+    target="_blank" rel="noopener">huggingface/search-and-learn</a>. </p>
+   <p> 
+    Clone the repository, install dependencies as described in the repo, follow the 
+    pipeline guide in the cookbook: <a href="https://huggingface.co/learn/cookbook/search_and_learn" target="_blank" rel="noopener">
+      Search &amp; Learn tutorial</a>. </p>
+
+
   <h1>How Good Are Models at Reasoning?</h1>
   <h2>Benchmarks</h2>
   <p>
@@ -265,29 +512,34 @@
     { class: 'disk3', size: 1 },
   ];
 
-  // Stack to track disk DOMs on each peg
-  const state = {
-    A: [], B: [], C: []
-  };
+  let state;
 
-  // Init: add disks to A
-  disks.forEach((d, i) => {
-    const el = document.createElement('div');
-    el.className = `disk ${d.class}`;
-    el.style.bottom = `${i * 22}px`;
-    pegs.A.appendChild(el);
-    state.A.push(el);
-  });
-
-  let delay = 0;
   const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
+  function resetPegs() {
+    // Clear pegs
+    pegs.A.innerHTML = '';
+    pegs.B.innerHTML = '';
+    pegs.C.innerHTML = '';
+
+    // Reset state
+    state = { A: [], B: [], C: [] };
+
+    // Add disks back to peg A
+    disks.forEach((d, i) => {
+      const el = document.createElement('div');
+      el.className = `disk ${d.class}`;
+      el.style.bottom = `${i * 22}px`;
+      pegs.A.appendChild(el);
+      state.A.push(el);
+    });
+  }
 
   async function move(n, from, to, aux) {
     if (n === 0) return;
     await move(n - 1, from, aux, to);
 
-    delay += 500;
-    await sleep(delay);
+    await sleep(800);
     const disk = state[from].pop();
     state[to].push(disk);
     pegs[to].appendChild(disk);
@@ -296,9 +548,18 @@
     await move(n - 1, aux, to, from);
   }
 
-  // Start animation
-  move(3, 'A', 'C', 'B');
+  async function loopHanoi() {
+    while (true) {
+      resetPegs();
+      await move(3, 'A', 'C', 'B');
+      await sleep(1000); // pause before restarting
+    }
+  }
+
+  // Start looping animation
+  loopHanoi();
 </script>
+
 </div>
 
 <h3>When Reasoning Models Collapse</h3>
@@ -308,25 +569,14 @@
   reasoning models and exposes their fragility under higher cognitive demands.
 </p>
 
-<!-- <h4 style="text-align: center;">Tower of Hanoi</h4>
-<div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
-  <div>
-    <img src="image/screenshot1.png" alt="Claude Sonnet Accuracy" style="max-width: 100%; height: auto;" width="300">
-    <p style="text-align: center; font-size: 0.9em;">Claude 3.7 Sonnet (±thinking)</p>
-  </div>
-  <div>
-    <img src="image/screenshot2.png" alt="DeepSeek Accuracy" style="max-width: 100%; height: auto;" width="300">
-    <p style="text-align: center; font-size: 0.9em;">DeepSeek-R1 vs DeepSeek-V3</p>
-  </div>
-</div> -->
-
 <h4 style="text-align: center;">Model Accuracy vs. Task Complexity</h4>
-<canvas id="accuracyChart" width="700" height="400"></canvas>
+<canvas id="accuracyChart" class="chart-on-scroll" width="700" height="400"></canvas>
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+  function renderAccuracyChart() {
   const ctx = document.getElementById('accuracyChart').getContext('2d');
 
   new Chart(ctx, {
@@ -382,7 +632,28 @@
       }
     }
   });
+  }
 </script>
+
+<script>
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        if (entry.target.id === 'accuracyChart') {
+          renderAccuracyChart();
+        }
+        observer.unobserve(entry.target); // only run once
+      }
+    });
+  }, {
+    threshold: 0.4 // Trigger when 40% visible
+  });
+
+  document.querySelectorAll('.chart-on-scroll').forEach(chart => {
+    observer.observe(chart);
+  });
+</script>
+
 
 <h3>Even With Help, They Struggle</h3>
 <p>
@@ -390,86 +661,90 @@
   This suggests that the model doesn't simply fail to find a solution — it struggles to use or interpret one when given.
 </p>
 
-<!-- <h4 style="text-align: center;">Tower of Hanoi</h4>
-<div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
-  <div>
-    <img src="image/screenshot3.png" alt="Claude Sonnet Accuracy" style="max-width: 100%; height: auto;" width="300">
-    <p style="text-align: center; font-size: 0.9em;">Claude 3.7 Sonnet (±thinking)</p>
-  </div>
-  <div>
-    <img src="image/screenshot4.png" alt="DeepSeek Accuracy" style="max-width: 100%; height: auto;" width="300">
-    <p style="text-align: center; font-size: 0.9em;">DeepSeek-R1 vs DeepSeek-V3</p>
-  </div>
-</div> -->
-
 <h4 style="text-align: center;">Claude-3.7-Sonnet Performance</h4>
-<canvas id="claudeChart" width="700" height="400"></canvas>
+<canvas id="claudeChart" class="chart-on-scroll" width="700" height="400"></canvas>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Chart render function -->
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    const ctx = document.getElementById('claudeChart').getContext('2d');
 
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20],
-        datasets: [
-          {
-            label: 'Default',
-            data: [99.5, 99.5, 99.5, 99.5, 90, 55, 70, 15, 5, 2, 1, 1],
-            borderColor: '#DE6E4B',
-            backgroundColor: 'transparent',
-            borderWidth: 3,
-            pointStyle: 'rect',
-            pointRadius: 6,
-            tension: 0.3
-          },
-          {
-            label: 'Algorithm Given',
-            data: [99.5, 99.5, 99.5, 99.5, 90, 70, 65, 10, 2, 1, 1, 1],
-            borderColor: '#B0422F',
-            backgroundColor: 'transparent',
-            borderDash: [6, 4],
-            borderWidth: 3,
-            pointStyle: 'circle',
-            pointRadius: 6,
-            tension: 0.3
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        animation: {
-          duration: 1200,
-          easing: 'easeOutQuart'
+    function renderClaudeChart() {
+      const ctx = document.getElementById('claudeChart').getContext('2d');
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20],
+          datasets: [
+            {
+              label: 'Default',
+              data: [99.5, 99.5, 99.5, 99.5, 90, 55, 70, 15, 5, 2, 1, 1],
+              borderColor: '#DE6E4B',
+              borderWidth: 3,
+              pointStyle: 'rect',
+              pointRadius: 6,
+              tension: 0.3
+            },
+            {
+              label: 'Algorithm Given',
+              data: [99.5, 99.5, 99.5, 99.5, 90, 70, 65, 10, 2, 1, 1, 1],
+              borderColor: '#B0422F',
+              borderDash: [6, 4],
+              borderWidth: 3,
+              pointStyle: 'circle',
+              pointRadius: 6,
+              tension: 0.3
+            }
+          ]
         },
-        plugins: {
-          legend: {
-            position: 'bottom'
+        options: {
+          responsive: true,
+          animation: {
+            duration: 1200,
+            easing: 'easeOutQuart'
           },
-          title: {
-            display: true,
-            text: 'Accuracy vs Complexity (Number of Disks)'
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 100,
+          plugins: {
+            legend: { position: 'bottom' },
             title: {
               display: true,
-              text: 'Accuracy (%)'
+              text: 'Accuracy vs Complexity (Number of Disks)'
             }
           },
-          x: {
-            title: {
-              display: true,
-              text: 'Complexity (Number of Disks)'
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              title: { display: true, text: 'Accuracy (%)' }
+            },
+            x: {
+              title: { display: true, text: 'Complexity (Number of Disks)' }
             }
           }
         }
-      }
+      });
+    }
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.target.id === 'claudeChart') {
+          renderClaudeChart();
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.4
     });
+
+    document.querySelectorAll('.chart-on-scroll').forEach(chart => {
+      observer.observe(chart);
+    });
+
   });
 </script>
 
@@ -479,95 +754,101 @@
   would likely lead to better performance. This indicates a possible failure in internal planning or token budgeting, challenging the assumption that more capable models
   will naturally expand their answers as needed.</p>
 
-<!-- <h4 style="text-align: center;">Tower of Hanoi</h4>
-<div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
-  <div>
-    <img src="image/screenshot5.png" alt="Claude Sonnet Accuracy" style="max-width: 100%; height: auto;" width="300">
-    <p style="text-align: center; font-size: 0.9em;">Claude 3.7 Sonnet (±thinking)</p>
-  </div>
-  <div>
-    <img src="image/screenshot6.png" alt="DeepSeek Accuracy" style="max-width: 100%; height: auto;" width="300">
-    <p style="text-align: center; font-size: 0.9em;">DeepSeek-R1 vs DeepSeek-V3</p>
-  </div>
-</div> -->
-
 <h4 style="text-align: center;">o3-mini (high): Output Token Count vs Complexity</h4>
-<canvas id="tokenChart" width="700" height="400"></canvas>
+<canvas id="tokenChart" class="chart-on-scroll" width="700" height="400"></canvas>
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-  window.onload = function () {
-    const ctx = document.getElementById('tokenChart').getContext('2d');
+  document.addEventListener("DOMContentLoaded", function () {
 
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20],
-        datasets: [
-          {
-            label: 'Average Token Count',
-            data: [500, 900, 2000, 4500, 8500, 20000, 18000, 12000, 7000, 5000, 3000, 2000],
-            borderColor: '#0077BB',
-            borderDash: [6, 4],
-            borderWidth: 3,
-            fill: false,
-            tension: 0.3,
-            pointRadius: 6,
-            pointStyle: 'circle',
-            backgroundColor: 'transparent'
-          },
-          {
-            label: 'Individual Runs',
-            type: 'scatter',
-            data: [
-              { x: 4, y: 4300 }, { x: 4, y: 4700 }, { x: 5, y: 8800 },
-              { x: 5, y: 8000 }, { x: 6, y: 19500 }, { x: 6, y: 20500 },
-              { x: 7, y: 18000 }, { x: 7, y: 17500 }, { x: 8, y: 11000 },
-              { x: 9, y: 7500 }, { x: 9, y: 6900 }, { x: 10, y: 4500 },
-              { x: 15, y: 3100 }, { x: 15, y: 2900 }, { x: 20, y: 2100 }
-            ],
-            backgroundColor: '#E63946',
-            pointRadius: 4,
-            showLine: false
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        animation: {
-          duration: 1500,
-          easing: 'easeOutQuart'
+    function renderTokenChart() {
+      const ctx = document.getElementById('tokenChart').getContext('2d');
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20],
+          datasets: [
+            {
+              label: 'Average Token Count',
+              data: [500, 900, 2000, 4500, 8500, 20000, 18000, 12000, 7000, 5000, 3000, 2000],
+              borderColor: '#0077BB',
+              borderDash: [6, 4],
+              borderWidth: 3,
+              fill: false,
+              tension: 0.3,
+              pointRadius: 6,
+              pointStyle: 'circle',
+              backgroundColor: 'transparent'
+            },
+            {
+              label: 'Individual Runs',
+              type: 'scatter',
+              data: [
+                { x: 4, y: 4300 }, { x: 4, y: 4700 }, { x: 5, y: 8800 },
+                { x: 5, y: 8000 }, { x: 6, y: 19500 }, { x: 6, y: 20500 },
+                { x: 7, y: 18000 }, { x: 7, y: 17500 }, { x: 8, y: 11000 },
+                { x: 9, y: 7500 }, { x: 9, y: 6900 }, { x: 10, y: 4500 },
+                { x: 15, y: 3100 }, { x: 15, y: 2900 }, { x: 20, y: 2100 }
+              ],
+              backgroundColor: '#E63946',
+              pointRadius: 4,
+              showLine: false
+            }
+          ]
         },
-        plugins: {
-          legend: {
-            position: 'bottom'
+        options: {
+          responsive: true,
+          animation: {
+            duration: 1500,
+            easing: 'easeOutQuart'
           },
-          title: {
-            display: true,
-            text: 'Output Length vs. Complexity (Number of Disks)'
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            },
             title: {
               display: true,
-              text: 'Output Tokens'
+              text: 'Output Length vs. Complexity (Number of Disks)'
             }
           },
-          x: {
-            title: {
-              display: true,
-              text: 'Complexity (Number of Disks)'
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Output Tokens'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Complexity (Number of Disks)'
+              }
             }
           }
         }
-      }
+      });
+    }
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.target.id === 'tokenChart') {
+          renderTokenChart();
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    document.querySelectorAll('.chart-on-scroll').forEach(chart => {
+      observer.observe(chart);
     });
-  };
+
+  });
 </script>
+
 
 <h2>Open Questions Remain</h2>
 <p>
