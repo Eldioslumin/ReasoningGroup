@@ -15,6 +15,88 @@
     @keyframes move{from{offset-distance:0%}to{offset-distance:100%}}
   </style>
 
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Best-of-N Search</title>
+  <style>
+    :root{--bg:#f8fafc;--ink:#0f172a;--arrow:#cbd5e1;--good:#22c55e;--bad:#f43f5e;--node:#bae6fd;--token:#3b82f6}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}
+    h1{margin:18px 0 6px;text-align:center;font-size:22px}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 12px 16px}
+    svg{display:block;width:100%;height:380px}
+    .node{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+    .token{r:10;fill:var(--token);filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+    @keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}
+    .pulse{animation:pulse 1.2s ease-in-out infinite}
+    @keyframes pulse{0%{opacity:.6}50%{opacity:1}100%{opacity:.6}}
+    button.run-btn{display:block;margin:0 auto 12px;padding:8px 16px;font-size:14px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer}
+    button.run-btn:hover{background:#f3f4f6}
+    /* Unfold animation for arrows */
+    .edge{stroke:var(--arrow);stroke-width:3;fill:none}
+    .edge.draw{transition:stroke-dashoffset 800ms ease}
+    .fin{opacity:0;transform-box:fill-box;transform-origin:center;}
+    .fin.show{opacity:1;transition:opacity .4s ease, transform .4s ease;transform:scale(1.05)}
+  </style>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beam Search</title>
+  <style>
+    :root{
+      --bg:#f8fafc; --ink:#0f172a; --muted:#64748b;
+      --arrow:#cbd5e1; --node:#bae6fd; --token:#3b82f6;
+      --good:#22c55e; --bad:#f43f5e;
+    }
+    body{margin:0;background:var(--bg);color:var(--ink);
+        font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}
+    h1{margin:18px 0 6px;text-align:center;font-size:22px}
+    .sub{margin:0 0 8px;text-align:center;color:var(--muted);font-size:14px}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 12px 16px}
+    svg{display:block;width:100%;height:420px}
+    .node{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+    .edge{stroke:var(--arrow);stroke-width:3;fill:none}
+    .edge.draw{transition:stroke-dashoffset 700ms ease}
+    .mid{fill:#e5e7eb}
+    .mid.good{fill:var(--good)}
+    .mid.bad{fill:var(--bad);opacity:.9}
+    .leaf{fill:#e5e7eb}
+    .leaf.good{fill:var(--good)}
+    .leaf.bad{fill:var(--bad);opacity:.95}
+    .pulse{animation:pulse 1.2s ease-in-out infinite}
+    @keyframes pulse{0%{opacity:.65}50%{opacity:1}100%{opacity:.65}}
+    @keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}
+  </style>
+
+  <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Diverse Verifier Tree Search — Dynamic Visualization</title>
+    <style>
+      :root{
+        --bg:#f8fafc; --ink:#0f172a; --muted:#64748b;
+        --arrow:#cbd5e1; --node:#bae6fd; --token:#3b82f6;
+        --good:#22c55e; --bad:#f43f5e;
+      }
+      body{margin:0;background:var(--bg);color:var(--ink);
+          font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}
+      h1{margin:18px 0 6px;text-align:center;font-size:22px}
+      .sub{margin:0 0 8px;text-align:center;color:var(--muted);font-size:14px}
+      .wrap{max-width:1200px;margin:0 auto;padding:0 12px 16px}
+      svg{display:block;width:100%;height:420px}
+      .node{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+      .edge{stroke:var(--arrow);stroke-width:3;fill:none}
+      .edge.draw{transition:stroke-dashoffset 700ms ease}
+      .token{fill:var(--token);r:8;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+      .mid{r:10}
+      .mid.good{fill:var(--good)}
+      .mid.bad{fill:var(--bad);opacity:.9}
+      .leaf{r:12}
+      .leaf.good{fill:var(--good)}
+      .leaf.bad{fill:var(--bad);opacity:.95}
+      .pulse{animation:pulse 1.2s ease-in-out infinite}
+      @keyframes pulse{0%{opacity:.65}50%{opacity:1}100%{opacity:.65}}
+      @keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}
+  </style>
+
   <meta charset="UTF-8">
   <title>Benchmarks</title>
   <!-- DataTables + jQuery -->
@@ -59,17 +141,11 @@
       font-weight: bold;
     }
   </style>
-
-  <meta charset="UTF-8">
-  <title>Claude Chart Test</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
 </head>
 
 <body>
 
-  <h1>Reasoning Architectures</h2>
+  <h1 style="text-align:left">Reasoning Architectures</h2>
   <h2>Pipeline</h2>
 
   <p>
@@ -181,127 +257,429 @@
 })();
 </script>
 
-<!-- Edges -->
-<g id="edges" stroke="var(--arrow)" stroke-width="3" marker-end="url(#arrow)" opacity=".65" fill="none"></g>
-
-
-<!-- Nodes -->
-<g id="nodes"></g>
-
-
-<!-- Glow under Search -->
-<circle cx="620" cy="90" r="62" fill="var(--accent)" opacity=".15" filter="url(#soft)" />
-
-
-<!-- Tokens -->
-<g id="tokenLayer"></g>
-</svg>
-</div>
-</div>
-
-<script>
-function addNode(group,x,y,label,fill){
-const g=document.createElementNS(svgNS,'g');
-g.setAttribute('transform',`translate(${x-90},${y-40})`);
-const rect=document.createElementNS(svgNS,'rect');
-rect.setAttribute('rx','18');rect.setAttribute('width','180');rect.setAttribute('height','80');
-rect.setAttribute('fill',fill);rect.setAttribute('style','filter:drop-shadow(0 1px 2px rgba(0,0,0,.15))');
-const text=document.createElementNS(svgNS,'text');
-text.setAttribute('x','90');text.setAttribute('y','44');text.setAttribute('text-anchor','middle');
-text.setAttribute('fill','#111827');text.setAttribute('style','font-weight:600');
-text.textContent=label;
-g.appendChild(rect);g.appendChild(text);group.appendChild(g);
-}
-
-
-const nodesG=document.getElementById('nodes');
-addNode(nodesG,P.math.x,P.math.y,'Math problem','#bae6fd');
-addNode(nodesG,P.llm.x,P.llm.y,'LLM','#d8b4fe');
-addNode(nodesG,P.prm.x,P.prm.y,'PRM','#fef08a');
-addNode(nodesG,P.search.x,P.search.y,'Search strategy','#fdba74');
-addNode(nodesG,P.final.x,P.final.y,'Final answer','#bae6fd');
-
-
-// Draw edges
-const edgesG=document.getElementById('edges');
-Object.values(paths).forEach(d=>{
-const path=document.createElementNS(svgNS,'path');
-path.setAttribute('d',d);
-edgesG.appendChild(path);
-});
-
-
-// Tokens definitions
-const tokens=[
-{d:paths.mathToLLM, delay:0.0, color:'#3b82f6'},
-{d:paths.llmToPRM, delay:0.8, color:'#7c3aed'},
-{d:paths.prmToSearch, delay:1.6, color:'#f59e0b'},
-{d:paths.searchToLLM, delay:2.4, color:'#10b981'},
-{d:paths.prmToFinal, delay:3.2, color:'#22c55e'}
-];
-
-
-const tokenLayer=document.getElementById('tokenLayer');
-tokens.forEach(t=>{
-const c=document.createElementNS(svgNS,'circle');
-c.setAttribute('r','10');
-c.setAttribute('fill',t.color);
-c.classList.add('token');
-c.dataset.base='6';
-c.dataset.delay=t.delay;
-c.style.offsetPath=`path('${t.d}')`;
-tokenLayer.appendChild(c);
-});
-
-
-const playBtn=document.getElementById('playBtn');
-const stepBtn=document.getElementById('stepBtn');
-const speed=document.getElementById('speed');
-const speedVal=document.getElementById('speedVal');
-let playing=true;
-
-
-function apply(){
-const s=parseFloat(speed.value);
-speedVal.textContent=s.toFixed(2)+'×';
-document.querySelectorAll('.token').forEach(el=>{
-const base=parseFloat(el.dataset.base||'6');
-const dur=(base/s).toFixed(2)+'s';
-const delay=parseFloat(el.dataset.delay||'0');
-el.style.animation=`move ${dur} linear ${delay}s infinite`;
-el.style.animationPlayState=playing?'running':'paused';
-});
-}
-function restart(){
-document.querySelectorAll('.token').forEach(el=>{
-const anim=el.style.animation;el.style.animation='none';void el.offsetWidth;el.style.animation=anim;
-el.style.animationPlayState=playing?'running':'paused';
-});
-}
-
-
-playBtn.addEventListener('click',()=>{
-playing=!playing;playBtn.textContent=playing?'Pause':'Play';
-document.querySelectorAll('.token').forEach(el=>el.style.animationPlayState=playing?'running':'paused');
-});
-stepBtn.addEventListener('click',()=>{playing=false;playBtn.textContent='Play';document.querySelectorAll('.token').forEach(el=>el.style.animationPlayState='paused');restart();});
-speed.addEventListener('input',apply);
-
-apply();
-})();
-</script>
-
-<h2 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Search-and-Learn Repository</h3>
 <p>
     To reproduce the pipeline one can use the Search-and-Learn repository: <a href="https://github.com/huggingface/search-and-learn" 
-    target="_blank" rel="noopener">huggingface/search-and-learn</a>. </p>
-   <p> 
+    target="_blank" rel="noopener">huggingface/search-and-learn</a>.</p> 
+    <p>
     Clone the repository, install dependencies as described in the repo, follow the 
     pipeline guide in the cookbook: <a href="https://huggingface.co/learn/cookbook/search_and_learn" target="_blank" rel="noopener">
       Search &amp; Learn tutorial</a>. </p>
 
+<h2 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Search Strategies</h2>
 
-  <h1>How Good Are Models at Reasoning?</h1>
+  <p>There are several search strategies to select the best answer including Best-of-N, Beam Search and Diverse Verifier Tree. Let's have a closer look at them</p>
+
+<h3 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Best-of-N</h3>
+
+  <p>The Best-of-N strategy is a simple but powerful way to improve the quality of responses from a language model. </p>
+    
+    <p>Instead of relying on a single output, the model generates N different candidate answers to the same problem. </p>
+    <p>Each candidate is then evaluated to measure how good or useful it is. Finally, the system selects the candidate with 
+    the highest score.</p>
+
+<div class="wrap">
+  <h3 style="text-align:center">Best-of-N Search</h3>
+  <p class="sub">Generate N candidate answers → score each → select the one with the highest reward.</p>
+  <svg id="bon" viewBox="0 0 1200 400"></svg>
+</div>
+
+<script>
+function startViz(){
+  const N = 5;                 // number of candidates
+  const CYCLE_S = 4;           // seconds per winner refresh
+  const DRAW_MS = 800;         // ms it takes to draw one arrow
+  const STAGGER_MS = 180;      // ms between arrow starts
+
+  const svg = document.getElementById('bon');
+  svg.innerHTML = '';
+  const NS = 'http://www.w3.org/2000/svg';
+
+  // Layout
+  const cx = 600, cy = 80;            // math problem center
+  const leafY = 300;                   // y for final answers
+  const span = 700;                    // horizontal spread for leaves
+  const leftX = cx - span/2, step = span/(N-1);
+
+  // Problem node
+  const gProb = document.createElementNS(NS,'g');
+  gProb.setAttribute('transform',`translate(${cx-80},${cy-28})`);
+  const rProb = document.createElementNS(NS,'rect');
+  rProb.setAttribute('width',160); rProb.setAttribute('height',56); rProb.setAttribute('rx',18); rProb.setAttribute('fill','var(--node)'); rProb.setAttribute('class','node');
+  const tProb = document.createElementNS(NS,'text'); tProb.setAttribute('x',80); tProb.setAttribute('y',34); tProb.setAttribute('text-anchor','middle'); tProb.textContent='Math problem';
+  gProb.appendChild(rProb); gProb.appendChild(tProb); svg.appendChild(gProb);
+
+  const finals = [], balls = [], edges = [];
+
+  for(let i=0;i<N;i++){
+    const x = leftX + i*step;
+    const start = [cx, cy+28];
+    const end = [x, leafY];
+    const midX = (start[0]+end[0])/2;
+    const bendY = cy + 40;
+    const d = `M ${start[0]} ${start[1]} C ${midX} ${bendY}, ${midX} ${bendY}, ${end[0]} ${end[1]}`;
+
+    // Edge path (to be drawn later)
+    const p = document.createElementNS(NS,'path');
+    p.setAttribute('d', d); p.setAttribute('class','edge draw');
+    svg.appendChild(p); edges.push(p);
+
+    // Final nodes (show after edge draws)
+    const fin = document.createElementNS(NS,'circle');
+    fin.setAttribute('cx', end[0]); fin.setAttribute('cy', end[1]); fin.setAttribute('r', 14); fin.setAttribute('fill', '#e5e7eb');
+    fin.setAttribute('class','fin');
+    svg.appendChild(fin); finals.push(fin);
+
+    // Moving token (start after its edge finishes drawing)
+    const ball = document.createElementNS(NS,'circle');
+    ball.setAttribute('class','token');
+    ball.style.offsetPath = `path('${d}')`;
+    svg.appendChild(ball); balls.push(ball);
+  }
+
+  // Animate drawing of each edge with stroke-dasharray
+  edges.forEach((path, idx)=>{
+    const len = path.getTotalLength();
+    path.style.strokeDasharray = `${len}`;
+    path.style.strokeDashoffset = `${len}`; // hidden
+    const startAt = idx*STAGGER_MS;
+    setTimeout(()=>{
+      path.style.strokeDashoffset = '0'; // draw
+      // show final node
+      finals[idx].classList.add('show');
+      // start the token along this path slightly after drawing begins
+      const delayForBall = 0.65*DRAW_MS; // ms
+      setTimeout(()=>{
+        balls[idx].style.animation = `travel ${Math.max(1200, DRAW_MS*2)/1000}s linear 0s infinite`;
+      }, delayForBall);
+    }, startAt);
+  });
+
+  function pickWinner(){
+    const winner = Math.floor(Math.random()*N);
+    finals.forEach((f,i)=>{
+      if(i===winner){ f.setAttribute('fill','var(--good)'); f.classList.add('pulse'); }
+      else { f.setAttribute('fill','var(--bad)'); f.classList.remove('pulse'); }
+    });
+  }
+
+  // first pick after all edges have drawn once
+  const totalDrawTime = (N-1)*STAGGER_MS + DRAW_MS + 200;
+  setTimeout(()=>{ pickWinner()}, totalDrawTime);
+}
+
+// ---- Auto-start when the chart scrolls into view ----
+document.addEventListener('DOMContentLoaded', () => {
+  const target = document.getElementById('bon');
+  if (!('IntersectionObserver' in window)) {
+    // Fallback: start immediately
+    startViz();
+    return;
+  }
+  const obs = new IntersectionObserver(
+    entries => {
+      if (entries[0].isIntersecting) {
+        startViz();
+        obs.disconnect(); // run only once
+      }
+    },
+    { threshold: 0.25 }
+  );
+  obs.observe(target);
+});
+</script>
+
+<h3 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Beam Search</h3>
+
+  <p>Beam Search is a structured search strategy designed to explore multiple solution paths in parallel. </p>
+    
+    <p>The model generates several possibilities, known as beams.</p>
+    <p>At each level, these beams are evaluated and only the top-scoring ones are retained for further expansion.</p>
+   <p>This pruning ensures the search stays tractable while still covering a diverse set of promising candidates.</p>
+
+
+<div class="wrap">
+  <h1>Beam Search</h1>
+  <p class="sub">N beams → keep top-M mid-steps → expand only those → pick best final answer.</p>
+  <svg id="beam" viewBox="0 0 1200 400"></svg>
+</div>
+
+<script>
+function startBeam(){
+  const NS  = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('beam');
+  if (!svg || svg.dataset.started === '1') return; // guard: run once
+  svg.dataset.started = '1';
+  svg.innerHTML = '';
+
+  // ---- Tunables ----
+  const N = 5;            // first-layer beams
+  const M = 2;            // beam width (survivors at intermediate)
+  const CHILDREN = 2;     // children per surviving mid-step
+  const DRAW_MS = 700;    // time to draw one edge
+  const STAGGER_MS = 150; // delay between sibling edges
+  const BALL_MS = 1400;   // token travel time per edge
+
+  // ---- Layout ----
+  const root  = {x:600, y:70};
+  const y1    = 180;      // intermediate layer
+  const y2    = 320;      // leaves
+  const span1 = 560;      // spread for first layer
+  const span2 = 360;      // spread per subtree
+
+  // Root node
+  const gRoot = document.createElementNS(NS,'g');
+  gRoot.setAttribute('transform',`translate(${root.x-80},${root.y-28})`);
+  const r = document.createElementNS(NS,'rect');
+  r.setAttribute('width',160); r.setAttribute('height',56); r.setAttribute('rx',18);
+  r.setAttribute('fill','var(--node)'); r.setAttribute('class','node');
+  const t = document.createElementNS(NS,'text');
+  t.setAttribute('x',80); t.setAttribute('y',34); t.setAttribute('text-anchor','middle');
+  t.textContent = 'Math problem';
+  gRoot.appendChild(r); gRoot.appendChild(t); svg.appendChild(gRoot);
+
+  // Helpers
+  const pathD = (x1,y1,x2,y2) => {
+    const midX = (x1+x2)/2, bendY = (y1+y2)/2;
+    return `M ${x1} ${y1} C ${midX} ${bendY}, ${midX} ${bendY}, ${x2} ${y2}`;
+  };
+  const drawEdge = (d) => {
+    const p = document.createElementNS(NS,'path');
+    p.setAttribute('d', d); p.setAttribute('class','edge draw'); svg.appendChild(p);
+    const len = p.getTotalLength();
+    p.style.strokeDasharray = `${len}`;
+    p.style.strokeDashoffset = `${len}`;
+    return {path:p, len};
+  };
+  const animateDraw = (edge, delay=0) => {
+    setTimeout(()=>{ edge.path.style.strokeDashoffset='0'; }, delay);
+  };
+  const token = (d, delay=0) => {
+    const c = document.createElementNS(NS,'circle');
+    c.setAttribute('class','token');
+    c.setAttribute('r','8');                           // radius set as attribute
+    c.style.offsetPath = `path('${d}')`;
+    setTimeout(()=>{ c.style.animation = `travel ${BALL_MS/1000}s linear 0s 1 forwards`; }, delay);
+    svg.appendChild(c);
+    return c;
+  };
+  const midBall = (x,y,good) => {
+    const c = document.createElementNS(NS,'circle');
+    c.setAttribute('cx',x); c.setAttribute('cy',y);
+    c.setAttribute('r','10');
+    c.setAttribute('class', `mid ${good?'good pulse':'bad'}`);
+    svg.appendChild(c); return c;
+  };
+  const leaf = (x,y) => {
+    const c = document.createElementNS(NS,'circle');
+    c.setAttribute('cx',x); c.setAttribute('cy',y);
+    c.setAttribute('r','12');
+    c.setAttribute('class','leaf');
+    svg.appendChild(c); return c;
+  };
+
+  // First layer edges + tokens
+  const first = [];
+  const firstXStart = root.x - span1/2;
+  for (let i=0;i<N;i++){
+    const x = firstXStart + (span1/(N-1))*i;
+    const d = pathD(root.x, root.y+28, x, y1);
+    const e = drawEdge(d);
+    const startDelay = i*STAGGER_MS;
+    animateDraw(e, startDelay);
+    token(d, startDelay + DRAW_MS*0.4);
+    first.push({x, d, edge:e});
+  }
+
+  // After first layer drawn — pick top-M and show mid balls (green/red)
+  const firstLayerDone = (N-1)*STAGGER_MS + DRAW_MS + 100;
+  setTimeout(()=>{
+    // deterministic center-out winners (replace with random if you prefer)
+    const order = [...Array(N).keys()].sort((a,b)=>Math.abs(a-(N-1)/2)-Math.abs(b-(N-1)/2));
+    const winnersIdx = order.slice(0, M).sort((a,b)=>a-b);
+
+    const winners = [];
+    first.forEach((node, idx)=>{
+      const isWinner = winnersIdx.includes(idx);
+      midBall(node.x, y1, isWinner);
+      if (isWinner) winners.push(node);
+    });
+
+    // Expand only winners
+    const leaves = [];
+    winners.forEach((w, wi)=>{
+      const baseX = w.x - span2/2;
+      for (let c=0;c<CHILDREN;c++){
+        const x2 = baseX + (span2/(CHILDREN-1))*c;
+        const d2 = pathD(w.x, y1+10, x2, y2);
+        const e2 = drawEdge(d2);
+        const delay = wi*CHILDREN*STAGGER_MS + c*STAGGER_MS;
+        animateDraw(e2, delay);
+        token(d2, delay + DRAW_MS*0.4);
+        leaves.push(leaf(x2, y2));
+      }
+    });
+
+    // Final: choose one green winner among leaves (others red) — once
+    const finalPickAt = winners.length*CHILDREN*STAGGER_MS + DRAW_MS + 200;
+    setTimeout(()=>{
+      const winIdx = 0; // deterministic left-most; swap to Math.random() for randomness
+      leaves.forEach((l, i)=>{
+        if (i===winIdx){ l.classList.add('good','pulse'); }
+        else { l.classList.add('bad'); }
+      });
+    }, finalPickAt);
+
+  }, firstLayerDone);
+}
+
+// Auto-start once when the SVG scrolls into view
+document.addEventListener('DOMContentLoaded', () => {
+  const target = document.getElementById('beam');
+  if (!target) return;
+  if (!('IntersectionObserver' in window)) { startBeam(); return; }
+  const obs = new IntersectionObserver(
+    entries => { if (entries[0]?.isIntersecting) { startBeam(); obs.disconnect(); } },
+    { threshold: 0.25 }
+  );
+  obs.observe(target);
+});
+</script>
+
+<h3 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Diverse Verifier Tree Search</h3>
+
+  <p>Unlike standard beam search, where all candidates share a single prefix and compete within the same pool, Diverse Verifier Tree Search 
+    ensures that different subtrees evolve on their own. </p>
+    
+    <p>This separation encourages the search to explore a wider variety of reasoning paths instead of collapsing too quickly on similar solutions.</p>
+    <p>Starting from an initial set of beams, the algorithm splits them into separate subtrees that are expanded independently.</p>
+   <p>At each step, a reward model evaluates the partial solutions and guides which branches to keep growing.</p>
+
+
+<div class="wrap">
+  <h1>Diverse Verifier Tree Search</h1>
+  <p class="sub">Split beams into independent subtrees → verifier selects the best step in each → expand and choose final answers.</p>
+  <svg id="diverse" viewBox="0 0 1200 400"></svg>
+</div>
+
+<script>
+function startDiverse(){
+  const NS  = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('diverse');
+  if (!svg || svg.dataset.started === '1') return;
+  svg.dataset.started = '1';
+  svg.innerHTML = '';
+
+  // ---- Tunables ----
+  const TREES = 2;          // how many subtrees
+  const CHILDREN = 2;       // leaves per subtree
+  const DRAW_MS = 700;
+  const STAGGER_MS = 150;
+  const BALL_MS = 1400;
+
+  // Layout
+  const root = {x:600,y:70};
+  const y1=180, y2=320;
+  const span=400; // spacing between subtrees
+
+  // Root node
+  const gRoot = document.createElementNS(NS,'g');
+  gRoot.setAttribute('transform',`translate(${root.x-80},${root.y-28})`);
+  const r = document.createElementNS(NS,'rect');
+  r.setAttribute('width',160); r.setAttribute('height',56); r.setAttribute('rx',18);
+  r.setAttribute('fill','var(--node)'); r.setAttribute('class','node');
+  const t = document.createElementNS(NS,'text');
+  t.setAttribute('x',80); t.setAttribute('y',34); t.setAttribute('text-anchor','middle');
+  t.textContent='Math problem';
+  gRoot.appendChild(r); gRoot.appendChild(t); svg.appendChild(gRoot);
+
+  // Helpers
+  const pathD=(x1,y1,x2,y2)=>{
+    const midX=(x1+x2)/2,bendY=(y1+y2)/2;
+    return `M ${x1} ${y1} C ${midX} ${bendY}, ${midX} ${bendY}, ${x2} ${y2}`;
+  };
+  const drawEdge=(d)=>{
+    const p=document.createElementNS(NS,'path');
+    p.setAttribute('d',d);p.setAttribute('class','edge draw');svg.appendChild(p);
+    const len=p.getTotalLength();p.style.strokeDasharray=`${len}`;p.style.strokeDashoffset=`${len}`;
+    return {path:p,len};
+  };
+  const animateDraw=(edge,delay=0)=>{setTimeout(()=>{edge.path.style.strokeDashoffset='0';},delay)};
+  const token=(d,delay=0)=>{
+    const c=document.createElementNS(NS,'circle');
+    c.setAttribute('r','8');c.setAttribute('class','token');
+    c.style.offsetPath=`path('${d}')`;
+    setTimeout(()=>{c.style.animation=`travel ${BALL_MS/1000}s linear 0s 1 forwards`;},delay);
+    svg.appendChild(c);return c;
+  };
+  const midBall=(x,y,good)=>{
+    const c=document.createElementNS(NS,'circle');
+    c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r','10');
+    c.setAttribute('class',`mid ${good?'good pulse':'bad'}`);svg.appendChild(c);return c;
+  };
+  const leaf=(x,y)=>{
+    const c=document.createElementNS(NS,'circle');
+    c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r','12');
+    c.setAttribute('class','leaf');svg.appendChild(c);return c;
+  };
+
+  // Create subtrees
+  const subtreeCenters=[root.x-span/2, root.x+span/2];
+  const allLeaves=[];
+
+  subtreeCenters.forEach((cx,i)=>{
+    const d=pathD(root.x,root.y+28,cx,y1);
+    const e=drawEdge(d);
+    animateDraw(e,i*STAGGER_MS);
+    token(d,i*STAGGER_MS+DRAW_MS*0.4);
+
+    // Pick a winner at intermediate level (deterministic: left subtree good, right subtree bad)
+    const isWinner=true;
+    midBall(cx,y1,isWinner);
+
+    // Expand children
+    const baseX=cx-120;
+    for(let j=0;j<CHILDREN;j++){
+      const x2=baseX+(240/(CHILDREN-1))*j;
+      const d2=pathD(cx,y1+10,x2,y2);
+      const e2=drawEdge(d2);
+      animateDraw(e2,j*STAGGER_MS+200);
+      token(d2,j*STAGGER_MS+DRAW_MS*0.4+200);
+      allLeaves.push(leaf(x2,y2));
+    }
+  });
+
+  // Final pick: one green leaf per subtree
+  const finalPickAt=DRAW_MS*2+500;
+  setTimeout(()=>{
+    // deterministically choose left-most of each subtree
+    const leavesPerTree=CHILDREN;
+    allLeaves.forEach((l,i)=>{
+      if(i%leavesPerTree===0){l.classList.add('good','pulse');}
+      else{l.classList.add('bad');}
+    });
+  },finalPickAt);
+}
+
+// Auto-start once on scroll into view
+document.addEventListener('DOMContentLoaded',()=>{
+  const target=document.getElementById('diverse');
+  if(!target)return;
+  if(!('IntersectionObserver'in window)){startDiverse();return;}
+  const obs=new IntersectionObserver(
+    entries=>{if(entries[0]?.isIntersecting){startDiverse();obs.disconnect();}},
+    {threshold:0.25}
+  );
+  obs.observe(target);
+});
+</script>
+
+
+
+<p><strong>to be continued</strong></p>
+<br></br>
+<br></br>
+
+  <h1 style="text-align:left">How Good Are Models at Reasoning?</h1>
   <h2>Benchmarks</h2>
   <p>
     Benchmarks are widely used to evaluate the capabilities of large language models (LLMs).
