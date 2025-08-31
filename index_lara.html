@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<div class="wrap">
+  <h2 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Reinforcement Learning</h2>
+<p>
+  <strong>Reinforcement learning</strong> is a way to train a system by trial and reward.
+  An agent tries actions, receives a numeric reward, and gradually learns a rule for choosing actions that
+  lead to higher reward. That rule is called the <em>policy</em>.
+</p>
+
+<p>
+  In fine tuning for language models, we apply this idea to align outputs with human preferences.
+  A separate <strong>reward model</strong> turns human judgments into scores, so we train the reward model first.
+</p>
+
+<p>
+  In the classic setup known as <strong>Reinforcement Learning from Human Feedback</strong>,
+  people compare two answers to the same prompt, the reward model learns to score those answers,
+  and the policy learns to pick the ones that score higher.
+  The diagram below shows how feedback trains the reward model and how that model guides the policy during fine tuning.
+</p>
+</div>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RLHF Flow Diagram</title>
+  <style>
+    :root{
+      --bg:#f8fafc; --ink:#0f172a; --muted:#64748b;
+      --arrow:#cbd5e1; --node:#bae6fd; --token:#3b82f6;
+      --model:#7dd3fc; --rm:#fde68a; --human:#fecaca; --rect:#e2e8f0;
+    }
+    body{margin:0;background:var(--bg);color:var(--ink);
+      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}
+    h1{margin:18px 0 6px;text-align:center;font-size:22px}
+    .sub{margin:0 0 8px;text-align:center;color:var(--muted);font-size:14px}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 12px 16px}
+    svg{display:block;width:100%;height:460px}
+    .node{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+    .edge{stroke:var(--arrow);stroke-width:3;fill:none;marker-end:url(#arrowhead)}
+    .rect-node{fill:var(--rect);stroke:var(--ink);stroke-width:2}
+    .model-node{fill:var(--model)}
+    .rm-node{fill:var(--rm)}
+    .human-node{fill:var(--human)}
+    .token{fill:var(--token);r:6;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+  </style>
+</head>
+<body>
+  <div class="wrap" id="rlhf-flow">
+    <h1>Reward Model Training Flow</h1>
+    <p class="sub">Reinforcement Learning from Human Feedback Pipeline</p>
+
+    <svg id="flowSvg" viewBox="0 100 1000 210">
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="var(--arrow)" />
+        </marker>
+      </defs>
+
+      <rect x="20" y="120" width="60" height="40" class="node rect-node" rx="5"/>
+      <text x="50" y="145" text-anchor="middle" font-size="16" font-weight="bold">X</text>
+
+      <ellipse cx="180" cy="140" rx="60" ry="30" class="node model-node"/>
+      <text x="180" y="145" text-anchor="middle" font-size="16" font-weight="bold">Model</text>
+
+      <rect x="300" y="120" width="120" height="40" class="node rect-node" rx="5"/>
+      <text x="360" y="145" text-anchor="middle" font-size="14" font-weight="bold">continuations</text>
+
+      <ellipse cx="520" cy="140" rx="50" ry="30" class="node rm-node"/>
+      <text x="520" y="145" text-anchor="middle" font-size="16" font-weight="bold">RM</text>
+
+      <rect x="630" y="120" width="80" height="40" class="node rect-node" rx="5"/>
+      <text x="670" y="145" text-anchor="middle" font-size="14" font-weight="bold">reward</text>
+
+      <rect x="780" y="120" width="60" height="40" class="node rect-node" rx="5"/>
+      <text x="810" y="145" text-anchor="middle" font-size="14" font-weight="bold">loss</text>
+
+      <ellipse cx="360" cy="260" rx="70" ry="35" class="node human-node"/>
+      <text x="360" y="255" text-anchor="middle" font-size="14" font-weight="bold">Human</text>
+      <text x="360" y="270" text-anchor="middle" font-size="14" font-weight="bold">Labeler</text>
+
+      <path id="edge_x_model" class="edge" d="M 80 140 H 120" />
+
+      <path id="edge_x_cont" class="edge" d="M 80 140 V 80 H 360 V 120" />
+
+      <path id="edge_x_human" class="edge" d="M 80 140 V 260 H 290" />
+
+      <path id="edge_model_cont" class="edge" d="M 240 140 H 300" />
+
+      <path id="edge_cont_rm" class="edge" d="M 420 140 H 470" />
+
+      <path id="edge_rm_reward" class="edge" d="M 570 140 H 630" />
+
+      <path id="edge_reward_loss" class="edge" d="M 710 140 H 780" />
+
+      <path id="edge_cont_human" class="edge" d="M 360 160 V 225" />
+
+      <path id="edge_human_loss" class="edge" d="M 430 260 H 780 V 140" />
+
+      <path id="edge_loss_rm" class="edge" d="M 840 140 H 900 V 80 H 520 V 110" />
+
+      <circle class="token" id="tok1"/>
+      <circle class="token" id="tok2"/>
+      <circle class="token" id="tok3"/>
+      <circle class="token" id="tok_loss_rm" opacity="0"/>
+
+      <animateMotion id="a1_1" href="#tok1" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#edge_x_model"/></animateMotion>
+      <animateMotion id="a1_2" href="#tok1" dur="0.8s" begin="a1_1.end+0.05s" fill="freeze"><mpath href="#edge_model_cont"/></animateMotion>
+      <animateMotion id="a1_3" href="#tok1" dur="0.8s" begin="a1_2.end+0.05s" fill="freeze"><mpath href="#edge_cont_rm"/></animateMotion>
+      <animateMotion id="a1_4" href="#tok1" dur="0.9s" begin="a1_3.end+0.05s" fill="freeze"><mpath href="#edge_rm_reward"/></animateMotion>
+      <animateMotion id="a1_5" href="#tok1" dur="0.9s" begin="a1_4.end+0.05s" fill="freeze"><mpath href="#edge_reward_loss"/></animateMotion>
+
+      <animateMotion id="a2_1" href="#tok2" dur="1.0s" begin="indefinite" fill="freeze"><mpath href="#edge_x_cont"/></animateMotion>
+      <animateMotion id="a2_2" href="#tok2" dur="0.8s" begin="a2_1.end+0.05s" fill="freeze"><mpath href="#edge_cont_human"/></animateMotion>
+      <animateMotion id="a2_3" href="#tok2" dur="1.0s" begin="indefinite" fill="freeze"><mpath href="#edge_human_loss"/></animateMotion>
+
+      <animateMotion id="a3_1" href="#tok3" dur="1.2s" begin="indefinite" fill="freeze"><mpath href="#edge_x_human"/></animateMotion>
+      <animateMotion id="a3_2" href="#tok3" dur="1.0s" begin="indefinite" fill="freeze"><mpath href="#edge_human_loss"/></animateMotion>
+
+      <animateMotion id="a_lr_1" href="#tok_loss_rm" dur="1.2s" begin="indefinite" fill="freeze"><mpath href="#edge_loss_rm"/></animateMotion>
+      <animateMotion id="a_lr_2" href="#tok_loss_rm" dur="0.9s" begin="a_lr_1.end+0.05s" fill="freeze"><mpath href="#edge_rm_reward"/></animateMotion>
+      <animateMotion id="a_lr_3" href="#tok_loss_rm" dur="0.9s" begin="a_lr_2.end+0.05s" fill="freeze"><mpath href="#edge_reward_loss"/></animateMotion>
+    </svg>
+  </div>
+
+  <script>
+    const svg = document.getElementById('flowSvg');
+    const wrapper = document.getElementById('rlhf-flow');
+
+    const a1_first = document.getElementById('a1_1');
+    const a2_first = document.getElementById('a2_1');
+    const a3_first = document.getElementById('a3_1');
+
+    const a1_last = document.getElementById('a1_5');
+    const a2_last = document.getElementById('a2_3');
+    const a3_last = document.getElementById('a3_2');
+
+    const a_lr_1 = document.getElementById('a_lr_1');
+    const a_lr_2 = document.getElementById('a_lr_2');
+    const a_lr_3 = document.getElementById('a_lr_3');
+
+    const a2_toHuman = document.getElementById('a2_2'); 
+    const a3_toHuman = document.getElementById('a3_1'); 
+    const a2_fromHuman = document.getElementById('a2_3'); 
+    const a3_fromHuman = document.getElementById('a3_2'); 
+
+    const tok1 = document.getElementById('tok1');
+    const tok2 = document.getElementById('tok2');
+    const tok3 = document.getElementById('tok3');
+    const tokLRM = document.getElementById('tok_loss_rm');
+
+    let arrivedCount = 0;  
+    let humanArrivals = 0;  
+    let running = false;
+    let visible = false;
+
+    function resetTokens(){
+      [tok1,tok2,tok3,tokLRM].forEach(t=>{
+        t.setAttribute('r','0');
+        t.setAttribute('opacity', t === tokLRM ? '0' : '1');
+      });
+      requestAnimationFrame(()=>[tok1,tok2,tok3].forEach(t=>t.setAttribute('r','6')));
+    }
+
+    function startCycle(){
+      if (running) return;
+      running = true;
+      arrivedCount = 0;
+      humanArrivals = 0;
+      resetTokens();
+      a1_first.beginElement();
+      a2_first.beginElement();
+      a3_first.beginElement();
+    }
+
+    function beginLossChain(){
+      [tok1,tok2,tok3].forEach(t=>t.setAttribute('opacity','0'));
+      tokLRM.setAttribute('opacity','1');
+      tokLRM.setAttribute('r','6');
+      a_lr_1.beginElement();
+    }
+
+    function maybeFire(){
+      if (arrivedCount === 3){
+        beginLossChain();
+      }
+    }
+
+    function tryLeaveHuman(){
+      if (humanArrivals === 2){
+        a2_fromHuman.beginElement();
+        a3_fromHuman.beginElement();
+      }
+    }
+
+    a2_toHuman.addEventListener('endEvent', ()=>{ humanArrivals++; tryLeaveHuman(); });
+    a3_toHuman.addEventListener('endEvent', ()=>{ humanArrivals++; tryLeaveHuman(); });
+
+    a1_last.addEventListener('endEvent', ()=>{ arrivedCount++; maybeFire(); });
+    a2_last.addEventListener('endEvent', ()=>{ arrivedCount++; maybeFire(); });
+    a3_last.addEventListener('endEvent', ()=>{ arrivedCount++; maybeFire(); });
+
+    a_lr_3.addEventListener('endEvent', ()=>{
+      setTimeout(()=>{
+        running = false;
+        tokLRM.setAttribute('opacity','0');
+        if (visible) startCycle();
+      }, 350);
+    });
+
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          visible = true;
+          try { svg.unpauseAnimations(); } catch(e){}
+          startCycle();
+        }else{
+          visible = false;
+          try { svg.pauseAnimations(); } catch(e){}
+        }
+      });
+    }, {threshold: 0.25});
+    io.observe(wrapper);
+
+    window.addEventListener('load', ()=>{
+      const r = wrapper.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0){
+        visible = true;
+        try { svg.unpauseAnimations(); } catch(e){}
+        startCycle();
+      }
+    });
+  </script>
+
+
+<div class="wrap">
+  <h2 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Reward Model Training Data</h2>
+
+  <p>
+    Training a reward model requires pairs of answers that can be compared. Given the same prompt, annotators decide which answer
+    is better. The chosen answer becomes the <strong>preferred output</strong>, while the less helpful one is marked as not preferred.
+  </p>
+
+  <svg viewBox="0 0 1400 1100" width="100%" height="820" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="exArrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+        <path d="M0,0 L10,5 L0,10 Z" fill="#94a3b8"/>
+      </marker>
+      <filter id="exShadow" x="-50%" y="-50%" width="200%" height="200%">
+        <feDropShadow dx="0" dy="1.5" stdDeviation="1.8" flood-opacity="0.25"/>
+      </filter>
+      <style>
+        .ex-body{
+          font: 28px/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;
+          color:#111827; overflow-wrap:break-word; word-break:normal;
+        }
+        .ex-card{ fill:#eaf2ff; stroke:#94a3b8; rx:12; }
+        .ex-badge{ fill:#93c5fd; stroke:#334155; }
+        .ex-badge text{ fill:#0f172a; font-weight:800; font-size:26px; }
+        .ex-edge{ stroke:#94a3b8; stroke-width:3; fill:none; marker-end:url(#exArrow); }
+
+        /* Clean, non-disruptive colored underlines that preserve layout */
+        .ex-y1 strong{
+          text-decoration: underline;
+          text-decoration-thickness: 4px;
+          text-underline-offset: 3px;
+          text-decoration-color: #22c55e; /* green */
+          font-weight: 800;
+        }
+        .ex-y2 strong{
+          text-decoration: underline;
+          text-decoration-thickness: 4px;
+          text-underline-offset: 3px;
+          text-decoration-color: #ef4444; /* red */
+          font-weight: 800;
+        }
+      </style>
+    </defs>
+
+    <!-- Prompt -->
+    <rect x="460" y="70" width="480" height="90" class="ex-card" filter="url(#exShadow)"/>
+    <text x="700" y="122" text-anchor="middle" font-size="28" font-weight="700" fill="#0f172a">
+      How do I reset my phone password?
+    </text>
+
+    <!-- X bubble -->
+    <g transform="translate(700,230)">
+      <circle r="44" fill="#93c5fd" stroke="#334155" filter="url(#exShadow)"/>
+      <text y="8" text-anchor="middle" font-size="42" font-weight="800" fill="#0f172a">X</text>
+    </g>
+
+    <!-- y1 (GREEN underline on all <strong>) -->
+    <rect id="ex-y1Card" x="140" y="360" width="560" height="520" class="ex-card" filter="url(#exShadow)"/>
+    <foreignObject x="155" y="375" width="530" height="490">
+      <div class="ex-body ex-y1">
+        To reset your phone password, the <strong>first step</strong> is to go to the settings menu of your phone.
+        <strong>Once in settings</strong>, locate the security or “lock screen” settings.
+        <strong>Here, you will be able to reset your password</strong> and create a new one.
+      </div>
+    </foreignObject>
+
+    <!-- y2 (RED underline on all <strong>) -->
+    <rect id="ex-y2Card" x="760" y="360" width="560" height="520" class="ex-card" filter="url(#exShadow)"/>
+    <foreignObject x="775" y="375" width="530" height="490">
+      <div class="ex-body ex-y2">
+        You use the password manager to reset your phone password. To reset your phone password, you need:
+        <ul style="margin:.6rem 0 0 1.4rem; padding:0;">
+          <li><strong>your phone password</strong></li>
+          <li><strong>a password manager app</strong></li>
+          <li>
+            <strong>a password manager app in your phone</strong>, either on your phone or in a trusted mobile app store
+            like iCloud, Facebook Messenger, or Phone Passcode
+          </li>
+        </ul>
+      </div>
+    </foreignObject>
+
+    <!-- arrows from X to y1/y2 -->
+    <path class="ex-edge" d="M 700 274 V 300 H 420 V 360" />
+    <path class="ex-edge" d="M 700 274 V 300 H 1040 V 360" />
+
+    <!-- y1/y2 badges -->
+    <g transform="translate(180,905)">
+      <rect x="-40" y="-26" width="180" height="96" rx="28" class="ex-badge" filter="url(#exShadow)"/>
+      <text x="45" y="32" font-size="42" text-anchor="middle" font-weight="800" fill="#0f172a">y1</text>
+    </g>
+    <g transform="translate(1280,905)">
+      <rect x="-40" y="-26" width="180" height="96" rx="28" class="ex-badge" filter="url(#exShadow)"/>
+      <text x="45" y="32" font-size="42" text-anchor="middle" font-weight="800" fill="#0f172a">y2</text>
+    </g>
+
+    <!-- preference symbol -->
+    <g transform="translate(700,1000)">
+      <g transform="translate(-120,0)">
+        <circle r="22" fill="#22c55e"/>
+        <path d="M -7 0 L -2 6 L 11 -8" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="36" y="9" font-size="32" font-weight="800" fill="#0f172a">y1</text>
+      </g>
+      <text x="0" y="10" text-anchor="middle" font-size="42" font-weight="800" fill="#0f172a">≻</text>
+      <g transform="translate(120,0)">
+        <circle r="22" fill="#f43f5e" opacity=".95"/>
+        <path d="M -8 -8 L 8 8 M -8 8 L 8 -8" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+        <text x="36" y="9" font-size="42" font-weight="800" fill="#0f172a">y2</text>
+      </g>
+    </g>
+  </svg>
+
+  <p style="margin-top:.75rem; font-size:18px;">
+    In this example database in
+    <a href="https://huggingface.co/datasets/Dahoas/synthetic-instruct-gptj-pairwise/viewer/default/train?f%5Bchosen%5D%5Bmin%5D=1&f%5Bchosen%5D%5Bmax%5D=311&f%5Bchosen%5D%5Btransform%5D=length&row=15&views%5B%5D=train" target="_blank" rel="noopener">HuggingFace</a>
+    the annotators preferred answer <strong>y1</strong>.
+  </p>
+</div>
+
+<p style="margin-top:1rem;">
+  In this example, the prompt <em>"How do I reset my phone password?"</em> produces two candidate answers. Annotators judged that
+  <strong>y1</strong> was a better response. When analysing both answers we can see that in answer <strong>y1</strong>, underlined in green, there are a series of steps on how to reset a phone password. 
+  The generated answer <strong>y2</strong> lists items that might be required but does not explain how to do the task, as we can see underlined in red.
+</p>
+
+<style>
+  .loss2-sec{--ink:#0f172a;--muted:#64748b;--line:#e5e7eb}
+  .loss2-sec h2{margin:1.25rem 0 .6rem 0; font-size:1.35rem; font-weight:700}
+  .loss2-sec .sub{color:var(--muted); font-size:15px; margin:.25rem 0 .9rem}
+  .loss2-sec .eq{margin:.6rem 0 .35rem}
+  .loss2-sec .katex{font-size:95%}          /* math slightly smaller than body */
+  .loss2-sec .katex.display{margin:.35rem 0}
+  .loss2-sec p{font-size:15px; line-height:1.6; color:var(--ink); margin:.4rem 0}
+  .loss2-sec .two-col{display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:.6rem 0}
+  .loss2-sec .ans{font-size:15px; line-height:1.55}
+  .loss2-sec .ans .tag{font-weight:700; margin-right:.25rem}
+  .loss2-sec .ctrl{display:grid; grid-template-columns:1fr 1fr; gap:.75rem 1rem; align-items:center; margin:.6rem 0}
+  .loss2-sec label{color:var(--muted); font-size:15px}
+  .loss2-sec input[type="range"]{width:100%}
+  .loss2-sec .stat{margin:.35rem 0; font-size:15px}
+  .loss2-sec code.inline{background:#f8fafc; border:1px solid var(--line); padding:.1rem .4rem; border-radius:6px}
+  @media (max-width: 820px){
+    .loss2-sec .two-col{grid-template-columns:1fr}
+    .loss2-sec .ctrl{grid-template-columns:1fr}
+  }
+</style>
+
+<div class="wrap loss2-sec" id="pairwise-loss-v2">
+  <h2>Pairwise loss for the reward model</h2>
+
+  <div class="eq"><span id="loss2-eq"></span></div>
+
+  <p>
+    This is the pairwise loss we use to train the reward model. Start by taking the reward score for the
+    currently preferred answer \(r(x,y_b)\) and exponentiating it. Using the exponential turns arbitrary
+    scores into positive quantities and lets the model express “how much better” one answer is than another.
+  </p>
+  <p>
+    Next, normalize by the sum of exponentials for both candidates \(y_1\) and \(y_2\). That normalization
+    forms a two-way softmax and yields a probability that the preferred answer is indeed the better one under
+    the current reward model.
+  </p>
+  <p>
+    We then take the negative log of that probability. This is the standard maximum-likelihood objective:
+    it is numerically stable, converts products into sums over a dataset, and penalizes confident mistakes
+    more than small ones. During training we minimize the average of this loss across many labeled comparisons,
+    which is why the expectation is implied.
+  </p>
+
+<h3 style="margin:1rem 0 .5rem; font-size:1.1rem; font-weight:700;">
+  Let’s look at a numeric example.
+</h3>
+<p>
+  Considering the same prompt <em>“How do I reset my phone password?”</em> and answers <strong>y1</strong>
+  and <strong>y2</strong> as in the example above, you can play with the values that would have been assigned
+  to each answer by the model and choose your preferred answer in order to better understand the effects
+  these values have on the learning process of the reward model.
+</p>
+
+  <div class="ctrl">
+    <label for="r1b">Reward \(r(x,y_1)\): <strong id="r1bv">3.2</strong></label>
+    <input id="r1b" type="range" min="-2" max="6" step="0.1" value="3.2"/>
+    <label for="r2b">Reward \(r(x,y_2)\): <strong id="r2bv">1.1</strong></label>
+    <input id="r2b" type="range" min="-2" max="6" step="0.1" value="1.1"/>
+    <label>Preferred \(b\):</label>
+    <div>
+      <label style="margin-right:.9rem"><input type="radio" name="pref2" value="y1" checked/> \(y_1\)</label>
+      <label><input type="radio" name="pref2" value="y2"/> \(y_2\)</label>
+    </div>
+  </div>
+
+  <p class="stat">
+    With these settings, the model assigns a probability of <code class="inline" id="pout2">0.8910</code> to the preferred answer,
+    which gives a loss of \( -\log p \) equal to <code class="inline" id="lout2">0.0501</code>.
+  </p>
+
+  <div class="eq"><span id="loss2-work"></span></div>
+
+  <p>
+    When the two rewards are close, the softmax sits near one half and the loss stays comparatively large, indicating that the model is not very sure.
+    As the preferred reward grows much larger than the alternative, the probability approaches one, the loss drops toward zero, and the
+    reward model is saying “I am confident this answer is better.” If the non-preferred answer receives the higher reward, the probability
+    for the preferred answer becomes small and the loss grows, pushing the model to revise the scores on future updates.
+  </p>
+</div>
+
+<script>
+  (function ensureKatexAuto(cb){
+    const haveMain = !!window.katex;
+    const haveAuto = !!window.renderMathInElement;
+    if (haveMain && haveAuto) return cb();
+
+    function load(src, onload){
+      const s=document.createElement('script'); s.defer=true; s.src=src; s.onload=onload; document.head.appendChild(s);
+    }
+    function loadCSS(href){
+      const l=document.createElement('link'); l.rel='stylesheet'; l.href=href; document.head.appendChild(l);
+    }
+
+    if (!haveMain) loadCSS('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css');
+    const afterMain = ()=> load('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js', cb);
+    if (!haveMain) load('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js', afterMain);
+    else if (!haveAuto) afterMain(); else cb();
+  })(initLossV2);
+
+  function initLossV2(){
+    const $=(id)=>document.getElementById(id);
+    const container = document.getElementById('pairwise-loss-v2');
+    const r1=$('r1b'), r2=$('r2b'), r1v=$('r1bv'), r2v=$('r2bv');
+    const pout=$('pout2'), lout=$('lout2');
+    const eqMain=$('loss2-eq'), eqWork=$('loss2-work');
+
+    katex.render(String.raw`\mathcal{L}(r)=-\log\!\left(\frac{e^{\,r(x,y_b)}}{e^{\,r(x,y_1)}+e^{\,r(x,y_2)}}\right)`,
+                 eqMain, {displayMode:true, throwOnError:false});
+
+    try{
+      renderMathInElement(container,{
+        delimiters:[
+          {left:"$$", right:"$$", display:true},
+          {left:"\\[", right:"\\]", display:true},
+          {left:"\\(", right:"\\)", display:false}
+        ],
+        throwOnError:false
+      });
+    }catch(e){}
+
+    function fmt(x,d=4){ return Number(x).toFixed(d); }
+
+    function compute(){
+      const v1=parseFloat(r1.value), v2=parseFloat(r2.value);
+      r1v.textContent=v1.toFixed(1);
+      r2v.textContent=v2.toFixed(1);
+
+      const e1=Math.exp(v1), e2=Math.exp(v2), Z=e1+e2;
+      const p1=e1/Z, p2=e2/Z;
+      const pref=document.querySelector('input[name="pref2"]:checked').value;
+      const pb=(pref==='y1')?p1:p2;
+      const L=-Math.log(pb);
+
+      pout.textContent=fmt(pb);
+      lout.textContent=fmt(L);
+
+      const rb=(pref==='y1')?v1:v2;
+      const erb=(pref==='y1')?e1:e2;
+
+      const work = String.raw`
+        -\log\!\left(\frac{e^{${rb.toFixed(1)}}}{e^{${v1.toFixed(1)}}+e^{${v2.toFixed(1)}}}\right)
+        = -\log\!\left(\frac{${fmt(erb)}}{${fmt(e1)}+${fmt(e2)}}\right)
+        = -\log(${fmt(pb,3)}) \approx ${fmt(L)}
+      `;
+      katex.render(work, eqWork, {displayMode:true, throwOnError:false});
+    }
+
+    ['input','change'].forEach(ev=>{
+      r1.addEventListener(ev, compute);
+      r2.addEventListener(ev, compute);
+      document.querySelectorAll('input[name="pref2"]').forEach(el=>el.addEventListener(ev, compute));
+    });
+
+    compute();
+  }
+</script>
+
+
+</body>
+</html>
