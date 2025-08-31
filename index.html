@@ -4,14 +4,16 @@
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dynamic PRM-Search-LLM Flow (5 Balls)</title>
+  <title>Reasoning Search Flow</title>
   <style>
     :root { --bg:#f8fafc; --ink:#111827; --arrow:#94a3b8; --accent:#fb923c; }
     body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;background:var(--bg);color:var(--ink)}
     .wrap{width:100%;margin:24px auto;padding:0}
-    .panel{background:transparent;border:none;border-radius:0;box-shadow:none;padding:0}
+    .panel{ display:flow-root; margin-bottom:0; }
     .hint{color:#475569;font-size:14px;margin-top:8px;text-align:center}
     .token{filter:drop-shadow(0 1px 2px rgba(0,0,0,.35));offset-rotate:0deg}
+    .sub{ margin: 6px 0 8px; }
+    #scene{ display:block; margin:0; }
     @keyframes move{from{offset-distance:0%}to{offset-distance:100%}}
   </style>
 
@@ -97,6 +99,19 @@
       @keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}
   </style>
 
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Strategies Performance Comparison</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;background:#f8fafc;color:#0f172a}
+    h1{text-align:center;margin:18px 0 6px;font-size:22px}
+    #chart{display:block;margin:0 auto;max-width:900px}
+    .axis path,.axis line{stroke:#94a3b8}
+    .baseline{stroke:#475569;stroke-dasharray:6 6;opacity:.8}
+    .legend text{font-size:12px;dominant-baseline:middle;fill:#0f172a}
+  </style>
+
   <meta charset="UTF-8">
   <title>Benchmarks</title>
   <!-- DataTables + jQuery -->
@@ -145,30 +160,36 @@
 
 <body>
 
-  <h1 style="text-align:left">Reasoning Architectures</h2>
+  <h1 style="text-align:left">Reasoning Architecture</h2>
   <h2>Pipeline</h2>
 
   <p>
-    While DeepSeek R1 is a dedicated reasoning model trained with Chain-of-Thought (CoT) data and methods such as
-    supervised fine-tuning (SFT) and reinforcement learning (RL), it's also possible to build a reasoning architecture around a
+    While DeepSeek R1 is a dedicated reasoning model trained with chain-of-thought data and methods such as
+    supervised fine-tuning and reinforcement learning, it's also possible to build a reasoning architecture around a
     standard language model.
   </p>
 
   <p>
-    In this setup, an LLM (e.g., a Llama 1B model) produces multiple candidate answers. A reward model then
-    scores these candidates, and a search strategy selects the best answer based on the rewards. This kind of architecture is described in the Hugging Face cookbook:
+    In this setup, an LLM (e.g., a Llama 1B or 8b model) produces multiple candidate answers. A reward model then
+    scores these candidates, and a search strategy selects the best answer based on the rewards. This kind of architecture is described 
+    in the Hugging Face cookbook:
     <a href="https://huggingface.co/learn/cookbook/search_and_learn" target="_blank" rel="noopener">“Search &amp; Learn”</a>.
   </p>
 
   <p>
-    The dynamic chart below visualizes the architecture: the LLM proposes candidates, the PRM scores them, and the search strategy
+    The dynamic chart below visualizes the architecture: the LLM proposes candidates, the reward model scores them, and the search strategy
     steers the loop toward the final answer.
   </p>
 
 <div class="wrap">
-  <h3 style="text-align:center">Dynamic PRM-Guided Search Flow</h3>
+  <h3 style="text-align:center">Reasoning Search Flow</h3>
   <div class="panel">
-    <svg id="scene" viewBox="0 0 1200 280" width="100%" height="350">
+    <p class="sub">Gets a problem → produce answers → score answers - choose the best with the strategy - give final answer.</p>
+    <svg id="scene"
+     viewBox="0 0 1200 350"
+     width="100%"
+     height="350"
+     preserveAspectRatio="xMidYMin meet">
       <defs>
         <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="userSpaceOnUse">
           <path d="M0,0 L9,3 L0,6 Z" fill="var(--arrow)" />
@@ -179,16 +200,16 @@
       </defs>
 
       <script type="application/json" id="points">{
-        "math": {"x":70,  "y":210},
-        "llm":  {"x":310, "y":210},
-        "prm":  {"x":620, "y":210},
-        "search":{"x":620, "y":90 },
-        "final": {"x":1070,"y":210}
+        "math": {"x":90,  "y":320},
+        "llm":  {"x":400, "y":260},
+        "prm":  {"x":700, "y":260},
+        "search":{"x":620, "y":100 },
+        "final": {"x":1070,"y":350}
       }</script>
 
       <g id="edges" stroke="var(--arrow)" stroke-width="3" marker-end="url(#arrow)" opacity=".65" fill="none"></g>
       <g id="nodes"></g>
-      <circle cx="620" cy="90" r="62" fill="var(--accent)" opacity=".15" filter="url(#soft)" />
+      <circle cx="620" cy="100" r="62" fill="var(--accent)" opacity=".15" filter="url(#soft)" />
       <g id="tokenLayer"></g>
     </svg>
   </div>
@@ -226,7 +247,7 @@
   }
 
   const nodesG=document.getElementById('nodes');
-  addNode(nodesG,P.math.x,P.math.y,'Math problem','#bae6fd');
+  addNode(nodesG,P.math.x,P.math.y,'Input problem','#bae6fd');
   addNode(nodesG,P.llm.x,P.llm.y,'LLM','#d8b4fe');
   addNode(nodesG,P.prm.x,P.prm.y,'PRM','#fef08a');
   addNode(nodesG,P.search.x,P.search.y,'Search strategy','#fdba74');
@@ -237,10 +258,10 @@
 
   const tokens=[
     {d:paths.mathToLLM, delay:0.0, color:'#3b82f6'},
-    {d:paths.llmToPRM, delay:0.8, color:'#7c3aed'},
-    {d:paths.prmToSearch, delay:1.6, color:'#f59e0b'},
-    {d:paths.searchToLLM, delay:2.4, color:'#10b981'},
-    {d:paths.prmToFinal, delay:3.2, color:'#22c55e'}
+    {d:paths.llmToPRM, delay:0.0, color:'#7c3aed'},
+    {d:paths.prmToSearch, delay:0.0, color:'#f59e0b'},
+    {d:paths.searchToLLM, delay:0.0, color:'#10b981'},
+    {d:paths.prmToFinal, delay:0.0, color:'#22c55e'}
   ];
 
   const tokenLayer=document.getElementById('tokenLayer');
@@ -673,6 +694,157 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 </script>
 
+<h3 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Strategies performance comparison</h3>
+
+  <p>When applying reasoning strategies to language models, it is important to understand how different approaches trade off between 
+    accuracy, diversity, and compute cost.</p>
+    
+    <p>Methods like Best-of-N, Beam Search, and Diverse Verifier Tree Search all leverage verifier feedback in different ways,
+       and comparing their performance highlights which strategies scale most effectively as we increase the number of generations.</p>
+
+<h1>Strategies Performance Comparison</h1>
+<svg id="chart" viewBox="0 0 900 540"></svg> <!-- a bit taller to fit bottom legend -->
+
+<script>
+(function(){
+  // ---- Data ---------------------------------------------------------------
+  const series = {
+    Majority:        [[2,27],[4,33],[8,38],[16,41],[32,44],[64,45],[128,46]],
+    "Best-of-N":     [[2,28],[4,36],[8,40],[16,43],[32,45],[64,48],[128,49]],
+    "Beam search":   [[2,29],[4,38],[8,44],[16,49],[32,51],[64,52],[128,53]],
+    DVTS:            [[2,28],[4,39],[8,42],[16,47],[32,51],[64,55],[128,56]],
+  };
+  const colors = {
+    Majority:"#3b82f6",
+    "Best-of-N":"#f59e0b",
+    "Beam search":"#22c55e",
+    DVTS:"#ef4444"
+  };
+
+  // ---- Layout -------------------------------------------------------------
+  const svg = d3.select("#chart");
+  const margin = {top:30, right:20, bottom:90, left:60}; // extra bottom for legend
+  const width  = 900 - margin.left - margin.right;
+  const height = 540 - margin.top - margin.bottom;
+
+  // Guard to run once
+  function started(){ return svg.attr("data-started")==="1"; }
+  function markStarted(){ svg.attr("data-started","1"); }
+
+  function startChart(){
+    if (started()) return;
+    markStarted();
+
+    const root = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scaleLog().domain([2,128]).range([0,width]);
+    const y = d3.scaleLinear().domain([25,60]).range([height,0]);
+
+    // Axes
+    root.append("g")
+      .attr("transform",`translate(0,${height})`)
+      .attr("class","axis")
+      .call(d3.axisBottom(x).ticks(7,",d"));
+    root.append("g")
+      .attr("class","axis")
+      .call(d3.axisLeft(y));
+
+    // Labels
+    root.append("text")
+      .attr("x",width/2).attr("y",height+40)
+      .attr("text-anchor","middle").text("Number of generations per problem");
+    root.append("text")
+      .attr("transform","rotate(-90)")
+      .attr("x",-height/2).attr("y",-45)
+      .attr("text-anchor","middle").text("MATH-500 accuracy (%)");
+
+    // Baselines
+    root.append("line")
+      .attr("class","baseline").attr("x1",0).attr("x2",width)
+      .attr("y1",y(29)).attr("y2",y(29));
+    root.append("text").attr("x",width-4).attr("y",y(29)-6)
+      .attr("text-anchor","end").text("Llama 3.2 1B");
+    root.append("line")
+      .attr("class","baseline").attr("x1",0).attr("x2",width)
+      .attr("y1",y(51)).attr("y2",y(51));
+    root.append("text").attr("x",width-4).attr("y",y(51)-6)
+      .attr("text-anchor","end").text("Llama 3.1 8B");
+
+    const line = d3.line()
+      .x(d=>x(d[0]))
+      .y(d=>y(d[1]))
+      .curve(d3.curveMonotoneX);
+
+    // Animate each series
+    const names = Object.keys(series);
+    names.forEach((name,i)=>{
+      const values = series[name];
+      const path = root.append("path")
+        .datum(values)
+        .attr("fill","none")
+        .attr("stroke",colors[name])
+        .attr("stroke-width",2)
+        .attr("d",line);
+
+      const L = path.node().getTotalLength();
+      path.attr("stroke-dasharray", `${L} ${L}`)
+          .attr("stroke-dashoffset", L)
+        .transition()
+          .duration(2500)
+          .delay(i*350)
+          .ease(d3.easeLinear)
+          .attr("stroke-dashoffset", 0);
+
+      // Dots that rise up from the bottom
+      root.selectAll(`.dot-${i}`)
+        .data(values).enter()
+        .append("circle")
+        .attr("class",`dot-${i}`)
+        .attr("cx",d=>x(d[0]))
+        .attr("cy",y(25)) // bottom start
+        .attr("r",4)
+        .attr("fill",colors[name])
+        .transition().duration(2500).delay(i*350)
+        .attr("cy",d=>y(d[1]));
+    });
+
+    // ---- Bottom legend (centered) ----------------------------------------
+    const legend = root.append("g")
+      .attr("class","legend")
+      .attr("transform", `translate(${width/2}, ${height+60})`);
+
+    const items = names.map((n,i)=>({name:n, color:colors[n]}));
+    const spacing = 130;  // horizontal spacing between legend items
+    const startX = -((items.length-1)*spacing)/2;
+
+    const lg = legend.selectAll("g.item")
+      .data(items).enter()
+      .append("g")
+      .attr("class","item")
+      .attr("transform",(d,i)=>`translate(${startX + i*spacing},0)`);
+
+    lg.append("circle").attr("r",5).attr("fill",d=>d.color).attr("cx",0).attr("cy",0);
+    lg.append("text").text(d=>d.name).attr("x",10).attr("y",0);
+  }
+
+  // ---- Auto-start when scrolled into view --------------------------------
+  document.addEventListener("DOMContentLoaded", ()=>{
+    const el = document.getElementById("chart");
+    if (!("IntersectionObserver" in window)) { startChart(); return; }
+    const obs = new IntersectionObserver(
+      entries => {
+        if (entries[0]?.isIntersecting) {
+          startChart();
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.25 }
+    );
+    obs.observe(el);
+  });
+})();
+</script>
 
 
 <p><strong>to be continued</strong></p>
