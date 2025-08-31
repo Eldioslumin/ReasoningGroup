@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+
+
+  <meta charset="UTF-8">
+  <title>Unlocking Machine Reasoning: The RLM Approach</title>
+  <style>
+    body {
+      background: #f8fafc;
+      color: #222;
+      font-family: 'Inter', Arial, sans-serif;
+      margin: 0;
+    }
+    header {
+      background: #2563eb;
+      color: #fff;
+      padding: 38px 0 24px 0;
+      text-align: center;
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+      box-shadow: 0 4px 24px #94a3b888;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    header p {
+      margin: 18px 0 0 0;
+      font-size: 1.18em;
+      opacity: 0.8;
+      font-weight: 400;
+    }
+    main {
+      max-width: 900px;
+      margin: 38px auto 0 auto;
+      padding: 0 24px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Unlocking Machine Reasoning: The RLM Approach</h1>
+    <p>How Language Models Move From Memorization to Deliberative Problem-Solving (Allegedly)</p>
+  </header>
+  <main>
+    <!-- Your main content goes here -->
+  </main>
+</body>
+
+
+<section style="margin-top:60px; margin-bottom:40px;">
+  <h2 style="
+    font-size:2em;
+    font-weight:700;
+    letter-spacing:0.01em;
+    margin-bottom:6px;
+    background:linear-gradient(90deg, #010610 70%, #eab308 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    text-align:center;
+    ">
+    Unlocking Reasoning: What Makes RLMs Different?
+  </h2>
+  <!-- Section content -->
+</section>
+
+
+
+  <meta charset="UTF-8">
+  <title>RLMs Image with Two Speech Bubbles (No False Pointer)</title>
+  <style>
+    body { background: #f8fafc; color: #222; font-family: sans-serif; }
+    .centered { text-align: center; margin-top: 44px; }
+    .robot-img { max-width: 380px; width: 100%; border-radius: 18px; box-shadow: 0 4px 24px #94a3b888; }
+    .flexrow {
+      display: flex; justify-content: center; align-items: flex-start; gap: 32px;
+      margin: 0 auto 24px auto; max-width: 900px;
+    }
+    .bubble {
+      background: #fffbe9;
+      color: #222;
+      max-width: 320px;
+      min-width: 180px;
+      padding: 18px 22px;
+      border-radius: 18px;
+      font-size: 1.13em;
+      line-height: 1.52;
+      box-shadow: 0 2px 18px #eab30855;
+      text-align: left;
+      position: relative;
+      margin-top: 40px;
+    }
+    /* Only the right bubble gets left pointer */
+    .bubble.right:before {
+      content: '';
+      position: absolute;
+      left: -22px;
+      top: 24px;
+      width: 0; height: 0;
+      border: 16px solid transparent;
+      border-right: 22px solid #fffbe9;
+      border-left: 0;
+    }
+    /* Only the left bubble gets right pointer */
+    .bubble.left:after {
+      content: '';
+      position: absolute;
+      right: -22px;
+      top: 24px;
+      width: 0; height: 0;
+      border: 16px solid transparent;
+      border-left: 22px solid #fffbe9;
+      border-right: 0;
+    }
+    /* Summary box */
+    .summary {
+      max-width: 540px;
+      font-size: 1.13em;
+      line-height: 1.52;
+      color: #333;
+      background: #fff;
+      padding: 18px 26px;
+      border-radius: 14px;
+      box-shadow: 0 2px 18px #e0e7ff55;
+      text-align: left;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .summary strong { color: #2563eb; }
+    /* Layout below image: left bubble + summary */
+    .flexrow-below {
+      display: flex; justify-content: center; align-items: flex-start; gap: 32px;
+      margin: 0 auto; max-width: 900px;
+    }
+    @media (max-width: 900px) {
+      .flexrow, .flexrow-below { flex-direction: column; gap: 0; align-items: center; }
+      .robot-img { max-width: 95vw;}
+      .bubble { max-width: 95vw; margin-top: 18px;}
+      .bubble.right:before { left: 22px; top: -16px; border-right: none; border-top: 22px solid #fffbe9; border-left: 16px solid transparent; border-bottom: 0;}
+      .bubble.left:after { right: 22px; top: -16px; border-left: none; border-top: 22px solid #fffbe9; border-right: 16px solid transparent; border-bottom: 0;}
+      .summary { max-width: 95vw; }
+    }
+  </style>
+</head>
+<body>
+  <div class="centered">
+    <!-- Top row: image + right bubble -->
+    <div class="flexrow">
+      <img src="Bild4.png" alt="Robot reasoning vs lookup" class="robot-img">
+      <div class="bubble right">
+        <strong>This is the key idea behind RLMs:</strong>
+        <br>
+        Moving beyond surface fluency to actual reasoning, where tasks are worked through step-by-step.
+      </div>
+    </div>
+    <!-- Below: left bubble + summary -->
+    <div class="flexrow-below" style="margin-top:18px;">
+      <div class="bubble left">
+        In this blog, we’ll explore how these strategies are implemented, and why some approaches seem to foster genuine reasoning more effectively than others.
+      </div>
+      <div class="summary">
+        <strong>Large Language Models (LLMs)</strong> are built to tackle general-purpose tasks—answering questions, solving problems, generating ideas, and following instructions. But many standard LLMs often fall short when it comes to true reasoning. Instead of logical analysis or planning, they tend to memorize and interpolate, skipping the deeper steps that lead to genuine understanding.
+        <br><br>
+        <strong>Reasoning Language Models (RLMs)</strong> represent a new direction: they introduce deliberate problem-solving strategies like step-by-step thinking, exploration, and self-verification. Unlike conventional LLMs, RLMs use search-based inference, generating multiple candidate solutions and choosing the best, rather than relying on a single one-pass answer.
+      </div>
+    </div>
+  </div>
+</body>
+
+
+
+
+<meta charset="UTF-8">
+<title>Scaling Laws & AIME Chart Side-by-Side</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body { font-family: sans-serif; background: #f8fafc; color: #111827;}
+  .main-row {
+    display: flex;
+    align-items: stretch;   /* stretch children equally */
+    justify-content: center;
+    gap: 56px;
+    max-width: 1400px;
+    margin: 48px auto 0 auto;
+    flex-wrap: wrap;
+  }
+  .visual-box {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 22px #94a3b822;
+    padding: 28px 34px;
+    flex: 1 1 0;           /* grow equally */
+    min-width: 320px;
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  /* --- Vertical flow row --- */
+  .flow-row {
+    display: flex;
+    flex-direction: column; /* vertical stack */
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;           /* fill height */
+    gap: 36px;  /* spacing between boxes and arrows */
+    margin: 38px 0;
+  }
+  .section-title {
+    position: relative;
+    display: inline-block;
+    font-size: 1.15em;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 12px 22px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    z-index:2;
+    white-space: nowrap;
+    margin-bottom: 12px;
+  }
+  .section-title.scaling { background: #e0f2fe; color: #2563eb; }
+  .section-title.wall { background: #fee2e2; color: #b91c1c; }
+  .section-title.solution { background: #dcfce7; color: #15803d; }
+  .arrow { font-size:2.3em; color: #94a3b8; }
+  .popup {
+    position: absolute;
+    left: 50%; transform: translateX(-50%);
+    top: 120%;
+    background: #fffbe9;
+    border: 1.5px solid #eab308;
+    border-radius: 12px;
+    padding: 18px 24px;
+    min-width: 240px;
+    font-size: 1em;
+    color: #222;
+    box-shadow: 0 6px 32px #eab30844;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s;
+    z-index:50;
+    text-align:left;
+  }
+  .section-title.active .popup,
+  .section-title:hover .popup {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .caption {margin:16px 0 0 0; color:#444;}
+  @media (max-width: 900px) {
+    .main-row {
+      flex-direction: column;
+      gap: 0;
+      align-items: center;
+    }
+    .visual-box { max-width: 98vw; padding: 18px 8vw;}
+    .flow-row {
+      gap: 44px; /* more vertical space on mobile */
+    }
+  }
+</style>
+</head>
+<body>
+<div class="main-row">
+<!-- Left: Scaling Laws Flow -->
+<div class="visual-box">
+  <h3 style="text-align:center; margin-top:0;">How Scaling Laws Led to Test-Time Compute</h3>
+  <div class="flow-row">
+    <div class="section-title scaling" tabindex="0" onclick="toggleActive(this)">
+      Era of Scaling Laws
+      <div class="popup">
+        Progress driven by scale:<br>Accuracy increases with model size, more data, and more training compute.
+      </div>
+    </div>
+    <span class="arrow">&#8595;</span>
+    <div class="section-title wall" tabindex="0" onclick="toggleActive(this)">
+      Hitting a Wall
+      <div class="popup">
+        Scaling hits practical limits:<br>Eventually computational resources and data become scarce, and accuracy gains plateau.
+      </div>
+    </div>
+    <span class="arrow">&#8595;</span>
+    <div class="section-title solution" tabindex="0" onclick="toggleActive(this)">
+      Test-Time Compute
+      <div class="popup">
+        Solution:<br>By increasing compute during inference, performance on new data can be boosted at test-time, so without retraining.
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Right: Chart.js plot -->
+<div class="visual-box">
+  <h3 style="text-align:center; margin-top:0;">Train-Time Compute vs Test-Time Compute</h3>
+  <div style="max-width:600px; margin: 24px auto;">
+    <canvas id="aimeChart" height="320"></canvas>
+  </div>
+</div>
+</div>
+<script>
+// For accessibility: toggle tooltip on click (not just hover)
+function toggleActive(el) {
+  document.querySelectorAll('.section-title').forEach(s => {
+    if (s !== el) s.classList.remove('active');
+  });
+  el.classList.toggle('active');
+}
+// Optional: close tooltip when clicking elsewhere
+document.body.addEventListener('click', function(e){
+  if (!e.target.classList.contains('section-title')) {
+    document.querySelectorAll('.section-title').forEach(s => s.classList.remove('active'));
+  }
+});
+
+// Chart.js setup
+const trainCompute = [32, 42, 51, 52, 55, 58, 59, 70];
+const testCompute = [20, 25, 38, 48, 59, 72, 75];
+const computeBudget = [1,2,3,4,5,6,7,8];
+
+new Chart(document.getElementById('aimeChart').getContext('2d'), {
+  type: 'line',
+  data: {
+    labels: computeBudget,
+    datasets: [
+      {
+        label: 'Train-Time Compute',
+        data: trainCompute,
+        borderColor: '#4e80c4',
+        backgroundColor: 'transparent',
+        borderWidth: 3,
+        tension: 0.35,
+        pointRadius: 5
+      },
+      {
+        label: 'Test-Time Compute',
+        data: testCompute,
+        borderColor: '#f59e42',
+        backgroundColor: 'transparent',
+        borderWidth: 3,
+        borderDash: [7,4],
+        tension: 0.35,
+        pointRadius: 5
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom'},
+      title: { display: false }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: { display:true, text:"AIME Accuracy (%)" }
+      },
+      x: {
+        title: { display:true, text:"Compute Budget" }
+      }
+    }
+  }
+});
+</script>
+</body>
+
+
+
+
+
+  <meta charset="UTF-8">
+  <title>Direct vs Reasoning Model Flow</title>
+  <style>
+    body { background: #f8fafc; font-family: sans-serif; color: #111827; }
+    .switcher { text-align: center; margin: 35px 0 14px 0; }
+    button { font-size: 1em; padding: 10px 20px; margin: 0 8px; border-radius:6px; border:none; background:#e0e7ef; cursor:pointer; }
+    .flow-wrap { display:flex; justify-content:center; align-items:center; gap:60px; }
+    .label { text-align:center; font-weight:600; font-size:1.1em; margin-top:10px }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center;">Direct vs Reasoning Model</h2>
+  <div class="switcher">
+    <button onclick="showFlow('direct')">Direct Model</button>
+    <button onclick="showFlow('reasoning')">Reasoning Model</button>
+  </div>
+  <div class="flow-wrap">
+    <svg id="flowSVG" viewBox="0 0 750 180" width="750" height="180">
+      <!-- Will be filled dynamically -->
+    </svg>
+  </div>
+  <div id="flowLabel" class="label"></div>
+<script>
+function showFlow(mode) {
+  const svg = document.getElementById('flowSVG');
+  svg.innerHTML = ""; // Clear SVG
+  if (mode === 'direct') {
+    // Draw direct path
+    svg.innerHTML = `
+      <rect x="40" y="60" width="120" height="60" rx="18" fill="#bae6fd" />
+      <rect x="590" y="60" width="120" height="60" rx="18" fill="#fde68a" />
+      <text x="100" y="95" text-anchor="middle" fill="#222" font-size="20" font-weight="600">Input</text>
+      <text x="650" y="95" text-anchor="middle" fill="#222" font-size="20" font-weight="600">Output</text>
+      <path d="M160,90 Q375,40 590,90" stroke="#60a5fa" stroke-width="5" fill="none" marker-end="url(#arrow)" />
+      <defs>
+        <marker id="arrow" markerWidth="12" markerHeight="12" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+          <path d="M0,0 L12,4 L0,8 Z" fill="#60a5fa"/>
+        </marker>
+      </defs>
+    `;
+    document.getElementById('flowLabel').textContent = "Direct mapping: Input leads to Output.";
+  } else {
+    // Reasoning model: input → reasoning tokens → output
+    svg.innerHTML = `
+      <rect x="40" y="60" width="120" height="60" rx="18" fill="#bae6fd" />
+      <rect x="590" y="60" width="120" height="60" rx="18" fill="#fde68a" />
+      <rect x="270" y="30" width="210" height="120" rx="30" fill="#fbbf24" opacity="0.18"/>
+      <text x="100" y="95" text-anchor="middle" fill="#222" font-size="20" font-weight="600">Input</text>
+      <text x="650" y="95" text-anchor="middle" fill="#222" font-size="20" font-weight="600">Output</text>
+      <text x="375" y="55" text-anchor="middle" fill="#fb923c" font-size="18" font-weight="700">Intermediate Steps</text>
+      <text x="375" y="95" text-anchor="middle" fill="#fb923c" font-size="18" font-weight="700">Tokens</text>
+      <text x="375" y="125" text-anchor="middle" fill="red" font-size="18" font-weight="700">Reasoning</text>
+      <path id="flowPath" d="M160,90 Q375,40 590,90" stroke="#fb923c" stroke-width="5" fill="none" marker-end="url(#arrow2)" />
+      <defs>
+        <marker id="arrow2" markerWidth="12" markerHeight="12" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+          <path d="M0,0 L12,4 L0,8 Z" fill="#fb923c"/>
+        </marker>
+      </defs>
+    `;
+    // Add moving tokens (circles) along the path
+    let tokens = [];
+    for (let i=0; i<5; ++i) {
+      let c = document.createElementNS("http://www.w3.org/2000/svg","circle");
+      c.setAttribute("r",12);
+      c.setAttribute("fill",["#60a5fa","#fbbf24","#f59e42","#fb923c","#fde68a"][i]);
+      c.setAttribute("id", `token${i}`);
+      svg.appendChild(c);
+      tokens.push(c);
+    }
+    function animateTokens() {
+      const path = svg.getElementById ? svg.getElementById('flowPath') : document.getElementById('flowPath');
+      if (!path) return;
+      const total = path.getTotalLength();
+      let start = performance.now();
+      function frame(now) {
+        let t = ((now-start)/1000)%1; // 0..1 loop
+        tokens.forEach((c, i) => {
+          let pct = (t + i*0.18)%1;
+          let pt = path.getPointAtLength(pct*total);
+          c.setAttribute("cx", pt.x);
+          c.setAttribute("cy", pt.y);
+        });
+        requestAnimationFrame(frame);
+      }
+      frame(start);
+    }
+    setTimeout(animateTokens,150); // wait for DOM
+    document.getElementById('flowLabel').textContent = "Reasoning model: Intermediate reasoning steps represented by reasoning tokens.";
+  }
+}
+// Show direct by default
+showFlow('direct');
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+<div style="max-width:720px; margin:60px auto; text-align:center;">
+  <details style="background:#f1f5f9; border-radius:12px; padding:20px; cursor:pointer; box-shadow:0 3px 12px rgba(0,0,0,0.05);">
+    <summary style="font-size:1.4em; font-weight:600; color:#2563eb;">
+      🤔 But what are these intermediate steps?
+    </summary>
+    <p style="margin-top:15px; font-size:1.1em; color:#374151;">
+      And how are reasoning language models (RLMs) actually achieved?
+      <br>
+      To answer that, we’ll look at reasoning architectures such as<br> 
+      <b>search-based methods,<br>reward models,<br></b> and <b>decision-tree style reasoning</b>.
+    </p>
+  </details>
+</div>
+
+
+
+
+
+
+
+
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dynamic PRM-Search-LLM Flow (5 Balls)</title>
+  <style>
+    :root { --bg:#f8fafc; --ink:#111827; --arrow:#94a3b8; --accent:#fb923c; }
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;background:var(--bg);color:var(--ink)}
+    .wrap{width:100%;margin:24px auto;padding:0}
+    .panel{background:transparent;border:none;border-radius:0;box-shadow:none;padding:0}
+    .hint{color:#475569;font-size:14px;margin-top:8px;text-align:center}
+    .token{filter:drop-shadow(0 1px 2px rgba(0,0,0,.35));offset-rotate:0deg}
+    @keyframes move{from{offset-distance:0%}to{offset-distance:100%}}
+  </style>
+
+  <meta charset="UTF-8">
+  <title>Benchmarks</title>
+  <!-- DataTables + jQuery -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  
+  <meta charset="UTF-8">
+  <style>
+    .hanoi-section {
+      font-family: sans-serif;
+      background: #fefefe;
+      padding: 2rem;
+      text-align: center;
+    }
+    .peg-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-end;
+      height: 200px;
+      margin-top: 3rem;
+    }
+    .peg {
+      width: 10px;
+      height: 150px;
+      background: #333;
+      position: relative;
+    }
+    .disk {
+      position: absolute;
+      height: 20px;
+      border-radius: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .disk1 { width: 100px; background: #FF6B6B; }
+    .disk2 { width: 70px; background: #4ECDC4; }
+    .disk3 { width: 40px; background: #1A535C; }
+
+    .peg-label {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+
+  <meta charset="UTF-8">
+  <title>Claude Chart Test</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+</head>
+
+<body>
+
+  <h1>Reasoning Architectures</h2>
+  <h2>Pipeline</h2>
+
+  <p>
+    While DeepSeek R1 is a dedicated reasoning model trained with Chain-of-Thought (CoT) data and methods such as
+    supervised fine-tuning (SFT) and reinforcement learning (RL), it's also possible to build a reasoning architecture around a
+    standard language model.
+  </p>
+
+  <p>
+    In this setup, an LLM (e.g., a Llama 1B model) produces multiple candidate answers. A reward model then
+    scores these candidates, and a search strategy selects the best answer based on the rewards. This kind of architecture is described in the Hugging Face cookbook:
+    <a href="https://huggingface.co/learn/cookbook/search_and_learn" target="_blank" rel="noopener">“Search &amp; Learn”</a>.
+  </p>
+
+  <p>
+    The dynamic chart below visualizes the architecture: the LLM proposes candidates, the PRM scores them, and the search strategy
+    steers the loop toward the final answer.
+  </p>
+
+<div class="wrap">
+  <h3 style="text-align:center">Dynamic PRM-Guided Search Flow</h3>
+  <div class="panel">
+    <svg id="scene" viewBox="0 0 1200 280" width="100%" height="350">
+      <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="userSpaceOnUse">
+          <path d="M0,0 L9,3 L0,6 Z" fill="var(--arrow)" />
+        </marker>
+        <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
+        </filter>
+      </defs>
+
+      <script type="application/json" id="points">{
+        "math": {"x":70,  "y":210},
+        "llm":  {"x":310, "y":210},
+        "prm":  {"x":620, "y":210},
+        "search":{"x":620, "y":90 },
+        "final": {"x":1070,"y":210}
+      }</script>
+
+      <g id="edges" stroke="var(--arrow)" stroke-width="3" marker-end="url(#arrow)" opacity=".65" fill="none"></g>
+      <g id="nodes"></g>
+      <circle cx="620" cy="90" r="62" fill="var(--accent)" opacity=".15" filter="url(#soft)" />
+      <g id="tokenLayer"></g>
+    </svg>
+  </div>
+</div>
+
+<script>
+(function(){
+  const P = JSON.parse(document.getElementById('points').textContent);
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const rightOf = (p)=>[p.x+90,p.y];
+  const leftOf  = (p)=>[p.x-90,p.y];
+  const topOf   = (p)=>[p.x,p.y-40];
+  const C = (x1,y1,x2,y2,x,y)=>`C ${x1} ${y1}, ${x2} ${y2}, ${x} ${y}`;
+  const seg=(from,to,bendY)=>{const midX=(from[0]+to[0])/2,by=bendY??from[1];return `M ${from[0]} ${from[1]} ${C(midX,by,midX,by,to[0],to[1])}`};
+
+  const paths={
+    mathToLLM: seg(rightOf(P.math), leftOf(P.llm)),
+    llmToPRM: seg(rightOf(P.llm), leftOf(P.prm)),
+    prmToSearch: seg(rightOf(P.prm), [P.search.x, P.search.y], P.prm.y - 80),
+    searchToLLM: seg([P.search.x-90,P.search.y],[P.llm.x,P.llm.y-40], P.search.y-30),
+    prmToFinal: seg(rightOf(P.prm), leftOf(P.final))
+  };
+
+  function addNode(group,x,y,label,fill){
+    const g=document.createElementNS(svgNS,'g');
+    g.setAttribute('transform',`translate(${x-90},${y-40})`);
+    const rect=document.createElementNS(svgNS,'rect');
+    rect.setAttribute('rx','18');rect.setAttribute('width','180');rect.setAttribute('height','80');
+    rect.setAttribute('fill',fill);rect.setAttribute('style','filter:drop-shadow(0 1px 2px rgba(0,0,0,.15))');
+    const text=document.createElementNS(svgNS,'text');
+    text.setAttribute('x','90');text.setAttribute('y','44');text.setAttribute('text-anchor','middle');
+    text.setAttribute('fill','#111827');text.setAttribute('style','font-weight:600');
+    text.textContent=label;
+    g.appendChild(rect);g.appendChild(text);group.appendChild(g);
+  }
+
+  const nodesG=document.getElementById('nodes');
+  addNode(nodesG,P.math.x,P.math.y,'Math problem','#bae6fd');
+  addNode(nodesG,P.llm.x,P.llm.y,'LLM','#d8b4fe');
+  addNode(nodesG,P.prm.x,P.prm.y,'PRM','#fef08a');
+  addNode(nodesG,P.search.x,P.search.y,'Search strategy','#fdba74');
+  addNode(nodesG,P.final.x,P.final.y,'Final answer','#bae6fd');
+
+  const edgesG=document.getElementById('edges');
+  Object.values(paths).forEach(d=>{const path=document.createElementNS(svgNS,'path');path.setAttribute('d',d);edgesG.appendChild(path);});
+
+  const tokens=[
+    {d:paths.mathToLLM, delay:0.0, color:'#3b82f6'},
+    {d:paths.llmToPRM, delay:0.8, color:'#7c3aed'},
+    {d:paths.prmToSearch, delay:1.6, color:'#f59e0b'},
+    {d:paths.searchToLLM, delay:2.4, color:'#10b981'},
+    {d:paths.prmToFinal, delay:3.2, color:'#22c55e'}
+  ];
+
+  const tokenLayer=document.getElementById('tokenLayer');
+  tokens.forEach(t=>{
+    const c=document.createElementNS(svgNS,'circle');
+    c.setAttribute('r','10');
+    c.setAttribute('fill',t.color);
+    c.classList.add('token');
+    c.style.offsetPath=`path('${t.d}')`;
+    c.style.animation=`move 4s linear ${t.delay}s infinite`;
+    c.style.animationPlayState='running';
+    tokenLayer.appendChild(c);
+  });
+})();
+</script>
+
+<!-- Edges -->
+<g id="edges" stroke="var(--arrow)" stroke-width="3" marker-end="url(#arrow)" opacity=".65" fill="none"></g>
+
+
+<!-- Nodes -->
+<g id="nodes"></g>
+
+
+<!-- Glow under Search -->
+<circle cx="620" cy="90" r="62" fill="var(--accent)" opacity=".15" filter="url(#soft)" />
+
+
+<!-- Tokens -->
+<g id="tokenLayer"></g>
+</svg>
+</div>
+</div>
+
+<script>
+function addNode(group,x,y,label,fill){
+const g=document.createElementNS(svgNS,'g');
+g.setAttribute('transform',`translate(${x-90},${y-40})`);
+const rect=document.createElementNS(svgNS,'rect');
+rect.setAttribute('rx','18');rect.setAttribute('width','180');rect.setAttribute('height','80');
+rect.setAttribute('fill',fill);rect.setAttribute('style','filter:drop-shadow(0 1px 2px rgba(0,0,0,.15))');
+const text=document.createElementNS(svgNS,'text');
+text.setAttribute('x','90');text.setAttribute('y','44');text.setAttribute('text-anchor','middle');
+text.setAttribute('fill','#111827');text.setAttribute('style','font-weight:600');
+text.textContent=label;
+g.appendChild(rect);g.appendChild(text);group.appendChild(g);
+}
+
+
+const nodesG=document.getElementById('nodes');
+addNode(nodesG,P.math.x,P.math.y,'Math problem','#bae6fd');
+addNode(nodesG,P.llm.x,P.llm.y,'LLM','#d8b4fe');
+addNode(nodesG,P.prm.x,P.prm.y,'PRM','#fef08a');
+addNode(nodesG,P.search.x,P.search.y,'Search strategy','#fdba74');
+addNode(nodesG,P.final.x,P.final.y,'Final answer','#bae6fd');
+
+
+// Draw edges
+const edgesG=document.getElementById('edges');
+Object.values(paths).forEach(d=>{
+const path=document.createElementNS(svgNS,'path');
+path.setAttribute('d',d);
+edgesG.appendChild(path);
+});
+
+
+// Tokens definitions
+const tokens=[
+{d:paths.mathToLLM, delay:0.0, color:'#3b82f6'},
+{d:paths.llmToPRM, delay:0.8, color:'#7c3aed'},
+{d:paths.prmToSearch, delay:1.6, color:'#f59e0b'},
+{d:paths.searchToLLM, delay:2.4, color:'#10b981'},
+{d:paths.prmToFinal, delay:3.2, color:'#22c55e'}
+];
+
+
+const tokenLayer=document.getElementById('tokenLayer');
+tokens.forEach(t=>{
+const c=document.createElementNS(svgNS,'circle');
+c.setAttribute('r','10');
+c.setAttribute('fill',t.color);
+c.classList.add('token');
+c.dataset.base='6';
+c.dataset.delay=t.delay;
+c.style.offsetPath=`path('${t.d}')`;
+tokenLayer.appendChild(c);
+});
+
+
+const playBtn=document.getElementById('playBtn');
+const stepBtn=document.getElementById('stepBtn');
+const speed=document.getElementById('speed');
+const speedVal=document.getElementById('speedVal');
+let playing=true;
+
+
+function apply(){
+const s=parseFloat(speed.value);
+speedVal.textContent=s.toFixed(2)+'×';
+document.querySelectorAll('.token').forEach(el=>{
+const base=parseFloat(el.dataset.base||'6');
+const dur=(base/s).toFixed(2)+'s';
+const delay=parseFloat(el.dataset.delay||'0');
+el.style.animation=`move ${dur} linear ${delay}s infinite`;
+el.style.animationPlayState=playing?'running':'paused';
+});
+}
+function restart(){
+document.querySelectorAll('.token').forEach(el=>{
+const anim=el.style.animation;el.style.animation='none';void el.offsetWidth;el.style.animation=anim;
+el.style.animationPlayState=playing?'running':'paused';
+});
+}
+
+
+playBtn.addEventListener('click',()=>{
+playing=!playing;playBtn.textContent=playing?'Pause':'Play';
+document.querySelectorAll('.token').forEach(el=>el.style.animationPlayState=playing?'running':'paused');
+});
+stepBtn.addEventListener('click',()=>{playing=false;playBtn.textContent='Play';document.querySelectorAll('.token').forEach(el=>el.style.animationPlayState='paused');restart();});
+speed.addEventListener('input',apply);
+
+apply();
+})();
+</script>
+
+<h2 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Search-and-Learn Repository</h3>
+<p>
+    To reproduce the pipeline one can use the Search-and-Learn repository: <a href="https://github.com/huggingface/search-and-learn" 
+    target="_blank" rel="noopener">huggingface/search-and-learn</a>. </p>
+   <p> 
+    Clone the repository, install dependencies as described in the repo, follow the 
+    pipeline guide in the cookbook: <a href="https://huggingface.co/learn/cookbook/search_and_learn" target="_blank" rel="noopener">
+      Search &amp; Learn tutorial</a>. </p>
+
+
+<p><strong>to be continued</strong></p>
+<br></br>
+<br></br>
+<br></br>
+
+  <h1>How Good Are Models at Reasoning?</h1>
+  <h2>Benchmarks</h2>
+  <p>
+    Benchmarks are widely used to evaluate the capabilities of large language models (LLMs).
+    They consist of curated problem sets focused on specific skills - such as mathematics, programming, scientific understanding, or medical diagnostics.
+    By testing models on these tasks, we get a snapshot of their reasoning power and generalization abilities.
+  </p>
+  <h3>Benchmark Reasoning Categories</h3>
+  <p>
+    Please see the description of possible problem sets in the table below. Each category represents a distinct type of reasoning  challenge used in 
+    benchmark evaluations. You can search through the table by typing keywords (e.g. <em>"math"</em>, <em>"medical"</em>, <em>"code"</em>) into the
+    search bar in the top-right corner of the table.
+  </p>
+    <table id="benchmark-table" class="display">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Description</th>
+          <th>Benchmarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Math Problems</td>
+          <td>Solves mathematical problems showcasing capabilities of reasoning LLMs.</td>
+          <td>AIME, MATH-500, OlympiadBench</td>
+        </tr>
+        <tr>
+          <td>Code Problems</td>
+          <td>Uses logical thinking and structured problem-solving in programming tasks.</td>
+          <td>Codeforces, LiveCodeBench</td>
+        </tr>
+        <tr>
+          <td>Scientific Problems</td>
+          <td>Involves multi-domain reasoning across physics, chemistry, and biology.</td>
+          <td>GPQA Diamond, MMLU-Pro</td>
+        </tr>
+        <tr>
+          <td>Agent Reasoning</td>
+          <td>Tests planning and decision-making in interactive and tool-using environments.</td>
+          <td>WebShop, WebArena, SciWorld</td>
+        </tr>
+        <tr>
+          <td>Medical Reasoning</td>
+          <td>Mimics diagnostic reasoning and treatment planning in clinical contexts.</td>
+          <td>MedQA, Medbullets</td>
+        </tr>
+        <tr>
+          <td>Multimodal Reasoning</td>
+          <td>Combines text and visual input to test cross-modal reasoning skills.</td>
+          <td>MMMU, MathVista, MM-IQ</td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+      A strong model is expected to perform well across multiple diverse benchmarks, demonstrating not just memorization or task-specific tricks, but real, 
+      transferable reasoning. In this way, benchmarks help define what it means for a model to be universal rather than narrowly overfitted.
+    <br>
+    <script>
+      $(document).ready(function () {
+        $('#benchmark-table').DataTable({
+          paging: false,
+          info: false,
+          language: {
+            search: "🔍 Search benchmarks:"
+          }
+        });
+      });
+    </script>
+
+<body>
+  <h3>State-of-the-Art Model Performance on Benchmarks</h3>
+  <p>
+    The following table shows Pass@1 or Percentile scores across several benchmark tasks.
+  </p>
+  <table id="benchmarkTable" class="display">
+    <thead>
+      <tr>
+        <th>Benchmark</th>
+        <th>Metric</th>
+        <th>DeepSeek-R1</th>
+        <th>OpenAI-o1-1217</th>
+        <th>DeepSeek-R1-32B</th>
+        <th>OpenAI-o1-mini</th>
+        <th>DeepSeek-V3</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>AIME 2024</td>
+        <td>Pass@1</td>
+        <td>79.8%</td>
+        <td>79.2%</td>
+        <td>72.6%</td>
+        <td>63.6%</td>
+        <td>39.2%</td>
+      </tr>
+      <tr>
+        <td>Codeforces</td>
+        <td>Percentile</td>
+        <td>96.3%</td>
+        <td>96.6%</td>
+        <td>90.6%</td>
+        <td>93.4%</td>
+        <td>58.7%</td>
+      </tr>
+      <tr>
+        <td>GPQA Diamond</td>
+        <td>Pass@1</td>
+        <td>71.5%</td>
+        <td>75.7%</td>
+        <td>62.1%</td>
+        <td>60.0%</td>
+        <td>59.1%</td>
+      </tr>
+      <tr>
+        <td>MATH-500</td>
+        <td>Pass@1</td>
+        <td>97.3%</td>
+        <td>96.4%</td>
+        <td>94.3%</td>
+        <td>90.0%</td>
+        <td>90.2%</td>
+      </tr>
+      <tr>
+        <td>MMLU</td>
+        <td>Pass@1</td>
+        <td>90.8%</td>
+        <td>91.8%</td>
+        <td>87.4%</td>
+        <td>85.2%</td>
+        <td>88.5%</td>
+      </tr>
+      <tr>
+        <td>SWE-bench Verified</td>
+        <td>Resolved</td>
+        <td>49.2%</td>
+        <td>48.9%</td>
+        <td>41.6%</td>
+        <td>36.8%</td>
+        <td>42.0%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="citation">(DeepSeek-AI et al., 2025)</p>
+
+  <script>
+    $(document).ready(function () {
+      $('#benchmarkTable').DataTable({
+        paging: false,
+        info: false,
+        responsive: true,
+        language: {
+          search: "🔍 Search benchmarks:"
+        }
+      });
+    });
+  </script>
+
+<hr>
+
+<h3>The Problem With Benchmarks</h3>
+<p>Despite their usefulness, traditional benchmarks are facing growing criticism.</p>
+
+<p>
+  Task difficulty is often hard to define. What makes a problem "difficult" is often subjective. This makes it tricky to scale problem sets meaningfully 
+  or test a model's performance on progressively harder tasks.
+</p>
+<p>
+  Another concern is data leakage from training corpora. Many benchmark problems have ended up in the training data of large models, whether intentionally or not. 
+  This makes it unclear whether the model is reasoning through a solution — or simply memorizing and regurgitating it.
+</p>
+
+<h2>Puzzle-Based Benchmarks</h2>
+<p><em>Shojaee et al., 2025</em></p>
+<p>
+  To address these limitations, researchers are exploring alternative benchmarks. One compelling direction is using puzzle-like problems, such as the 
+  Tower of Hanoi, where complexity can be precisely controlled — by simply increasing the number of disks. In this setup, models are evaluated not just 
+  on their accuracy, but on how well they scale with increasing task difficulty.
+</p>
+
+<div class="hanoi-section">
+<h4>Tower of Hanoi (3 Disks)</h4>
+<p>Auto-solving animation (A → C)</p>
+
+<div class="peg-container">
+  <div class="peg" id="pegA"></div>
+  <div class="peg" id="pegB"></div>
+  <div class="peg" id="pegC"></div>
+</div>
+
+<div class="peg-container">
+  <div class="peg-label">A</div>
+  <div class="peg-label">B</div>
+  <div class="peg-label">C</div>
+</div>
+
+<script>
+  const pegs = {
+    A: document.getElementById('pegA'),
+    B: document.getElementById('pegB'),
+    C: document.getElementById('pegC'),
+  };
+
+  const disks = [
+    { class: 'disk1', size: 3 },
+    { class: 'disk2', size: 2 },
+    { class: 'disk3', size: 1 },
+  ];
+
+  let state;
+
+  const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
+  function resetPegs() {
+    // Clear pegs
+    pegs.A.innerHTML = '';
+    pegs.B.innerHTML = '';
+    pegs.C.innerHTML = '';
+
+    // Reset state
+    state = { A: [], B: [], C: [] };
+
+    // Add disks back to peg A
+    disks.forEach((d, i) => {
+      const el = document.createElement('div');
+      el.className = `disk ${d.class}`;
+      el.style.bottom = `${i * 22}px`;
+      pegs.A.appendChild(el);
+      state.A.push(el);
+    });
+  }
+
+  async function move(n, from, to, aux) {
+    if (n === 0) return;
+    await move(n - 1, from, aux, to);
+
+    await sleep(800);
+    const disk = state[from].pop();
+    state[to].push(disk);
+    pegs[to].appendChild(disk);
+    disk.style.bottom = `${(state[to].length - 1) * 22}px`;
+
+    await move(n - 1, aux, to, from);
+  }
+
+  async function loopHanoi() {
+    while (true) {
+      resetPegs();
+      await move(3, 'A', 'C', 'B');
+      await sleep(1000); // pause before restarting
+    }
+  }
+
+  // Start looping animation
+  loopHanoi();
+</script>
+
+</div>
+
+<h3>When Reasoning Models Collapse</h3>
+<p>
+  A surprising trend emerges as task complexity increases: reasoning-tuned models initially outperform their baseline counterparts, 
+  but beyond a certain threshold, both collapse in performance. This sharp decline challenges assumptions about the robustness of current 
+  reasoning models and exposes their fragility under higher cognitive demands.
+</p>
+
+<h4 style="text-align: center;">Model Accuracy vs. Task Complexity</h4>
+<canvas id="accuracyChart" class="chart-on-scroll" width="700" height="400"></canvas>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  function renderAccuracyChart() {
+  const ctx = document.getElementById('accuracyChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20],
+      datasets: [
+        {
+          label: 'DeepSeek-R1',
+          data: [100, 98, 95, 90, 85, 70, 60, 10, 2, 1, 0, 0],
+          borderColor: '#4ECDC4',
+          backgroundColor: 'transparent',
+          tension: 0.3
+        },
+        {
+          label: 'DeepSeek-V3',
+          data: [98, 97, 96, 85, 30, 20, 10, 5, 1, 0, 0, 0],
+          borderColor: '#FF6B6B',
+          backgroundColor: 'transparent',
+          tension: 0.3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      animation: {
+        duration: 2500,
+        easing: 'easeOutQuart'
+      },
+      plugins: {
+        legend: {
+          position: 'bottom'
+        },
+        title: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: false,
+          max: 100,
+          title: {
+            display: true,
+            text: 'Accuracy (%)'
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Task Complexity'
+          }
+        }
+      }
+    }
+  });
+  }
+</script>
+
+<script>
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        if (entry.target.id === 'accuracyChart') {
+          renderAccuracyChart();
+        }
+        observer.unobserve(entry.target); // only run once
+      }
+    });
+  }, {
+    threshold: 0.4 // Trigger when 40% visible
+  });
+
+  document.querySelectorAll('.chart-on-scroll').forEach(chart => {
+    observer.observe(chart);
+  });
+</script>
+
+
+<h3>Even With Help, They Struggle</h3>
+<p>
+  Interestingly, even when the model is given the solution in the prompt, performance doesn’t improve significantly.
+  This suggests that the model doesn't simply fail to find a solution — it struggles to use or interpret one when given.
+</p>
+
+<h4 style="text-align: center;">Claude-3.7-Sonnet Performance</h4>
+<canvas id="claudeChart" class="chart-on-scroll" width="700" height="400"></canvas>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Chart render function -->
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    function renderClaudeChart() {
+      const ctx = document.getElementById('claudeChart').getContext('2d');
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20],
+          datasets: [
+            {
+              label: 'Default',
+              data: [99.5, 99.5, 99.5, 99.5, 90, 55, 70, 15, 5, 2, 1, 1],
+              borderColor: '#DE6E4B',
+              borderWidth: 3,
+              pointStyle: 'rect',
+              pointRadius: 6,
+              tension: 0.3
+            },
+            {
+              label: 'Algorithm Given',
+              data: [99.5, 99.5, 99.5, 99.5, 90, 70, 65, 10, 2, 1, 1, 1],
+              borderColor: '#B0422F',
+              borderDash: [6, 4],
+              borderWidth: 3,
+              pointStyle: 'circle',
+              pointRadius: 6,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          animation: {
+            duration: 1200,
+            easing: 'easeOutQuart'
+          },
+          plugins: {
+            legend: { position: 'bottom' },
+            title: {
+              display: true,
+              text: 'Accuracy vs Complexity (Number of Disks)'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              title: { display: true, text: 'Accuracy (%)' }
+            },
+            x: {
+              title: { display: true, text: 'Complexity (Number of Disks)' }
+            }
+          }
+        }
+      });
+    }
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.target.id === 'claudeChart') {
+          renderClaudeChart();
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.4
+    });
+
+    document.querySelectorAll('.chart-on-scroll').forEach(chart => {
+      observer.observe(chart);
+    });
+
+  });
+</script>
+
+<h3>A Curious Token Length Effect</h3>
+<p>
+  Another surprising effect: as task complexity grows, models tend to produce shorter outputs - even though longer answers 
+  would likely lead to better performance. This indicates a possible failure in internal planning or token budgeting, challenging the assumption that more capable models
+  will naturally expand their answers as needed.</p>
+
+<h4 style="text-align: center;">o3-mini (high): Output Token Count vs Complexity</h4>
+<canvas id="tokenChart" class="chart-on-scroll" width="700" height="400"></canvas>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    function renderTokenChart() {
+      const ctx = document.getElementById('tokenChart').getContext('2d');
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20],
+          datasets: [
+            {
+              label: 'Average Token Count',
+              data: [500, 900, 2000, 4500, 8500, 20000, 18000, 12000, 7000, 5000, 3000, 2000],
+              borderColor: '#0077BB',
+              borderDash: [6, 4],
+              borderWidth: 3,
+              fill: false,
+              tension: 0.3,
+              pointRadius: 6,
+              pointStyle: 'circle',
+              backgroundColor: 'transparent'
+            },
+            {
+              label: 'Individual Runs',
+              type: 'scatter',
+              data: [
+                { x: 4, y: 4300 }, { x: 4, y: 4700 }, { x: 5, y: 8800 },
+                { x: 5, y: 8000 }, { x: 6, y: 19500 }, { x: 6, y: 20500 },
+                { x: 7, y: 18000 }, { x: 7, y: 17500 }, { x: 8, y: 11000 },
+                { x: 9, y: 7500 }, { x: 9, y: 6900 }, { x: 10, y: 4500 },
+                { x: 15, y: 3100 }, { x: 15, y: 2900 }, { x: 20, y: 2100 }
+              ],
+              backgroundColor: '#E63946',
+              pointRadius: 4,
+              showLine: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          animation: {
+            duration: 1500,
+            easing: 'easeOutQuart'
+          },
+          plugins: {
+            legend: {
+              position: 'bottom'
+            },
+            title: {
+              display: true,
+              text: 'Output Length vs. Complexity (Number of Disks)'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Output Tokens'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Complexity (Number of Disks)'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.target.id === 'tokenChart') {
+          renderTokenChart();
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    document.querySelectorAll('.chart-on-scroll').forEach(chart => {
+      observer.observe(chart);
+    });
+
+  });
+</script>
+
+
+<h2>Open Questions Remain</h2>
+<p>
+  To what extent can current models really reason? While benchmarks remain a useful tool, these findings highlight the fragility of current 
+  approaches and the limitations of today's so-called “reasoning models.” There is still a long road ahead to build systems that reason 
+  reliably under increasing task difficulty — and to prove that their reasoning is more than just a memorized pattern.
+</p>
+
+</body>
+</html>
