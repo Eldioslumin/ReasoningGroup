@@ -462,13 +462,6 @@ showFlow('direct');
 </body>
 </html>
 
-
-
-
-
-
-
-
 <div style="max-width:720px; margin:60px auto; text-align:center;">
   <details style="background:#f1f5f9; border-radius:12px; padding:20px; cursor:pointer; box-shadow:0 3px 12px rgba(0,0,0,0.05);">
     <summary style="font-size:1.4em; font-weight:600; color:#2563eb;">
@@ -482,6 +475,116 @@ showFlow('direct');
     </p>
   </details>
 </div>
+
+
+
+
+
+
+
+
+
+    <p style="font-size:16px; line-height:1.6; text-align:justify;">
+      <strong>Supervised Fine-Tuning (SFT)</strong> is a post-training technique where we update 
+      our model so its answers resamble a specific dataset. 
+      This is useful for alignment, which means developing models that specialize 
+      in a specific topic or must follow certain guidelines.
+      
+      
+      In more mathematical terms, given a set of prompts <m>x</m>, 
+      and their corresponding preferred answers <m>y</m>, 
+      we want our model responses given its current distributions to resamble <m>y</m>.
+      This can be achieved by updating our parameters based on a loss formula. 
+        <div id="sft-eq" style="text-align:center; margin:24px 0;"></div>
+        <div id="sft-grad" style="text-align:center; margin:24px 0;"></div>
+
+      <script>
+      (function ensureKatex(cb){
+        if (window.katex) return cb();
+        const l=document.createElement("link");
+        l.rel="stylesheet"; 
+        l.href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css";
+        document.head.appendChild(l);
+        const s=document.createElement("script");
+        s.src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js";
+        s.onload=cb;
+        document.head.appendChild(s);
+      })(function(){
+        katex.render(String.raw`
+          \nabla_\theta \, \mathcal{L}_{\text{SFT}}(\theta) 
+          = - \mathbb{E}_{x,y} \Bigg[ \sum_{t=1}^{T} 
+          \nabla_\theta \log p_\theta \big(y_t \mid x, y_{<t}\big) \Bigg]
+        `, document.getElementById('sft-grad'), { displayMode:true });
+      });
+      </script>
+      
+      
+
+
+      We last update our parameters through gradient descent, minimazing the loss. And then our output will resamble more our preffered output.
+
+      Make sure to read the <a href="https://arxiv.org/abs/2501.19393" target="_blank" rel="noopener">S1 model paper</a>, which shows the whole process of creating a RLM from scratch, inlcuding data collection through CoT prompting, SFT as a post-training technique, and Budget Forcing during inference (or controlling the lenght of the model's answers).
+    </p>
+
+    
+
+  <div style="text-align:center; margin:30px auto;">
+    <svg id="sft-demo" width="100%" height="260" viewBox="0 0 900 260">
+
+
+      <!-- Prompt -->
+    <rect id="node-x" x="40" y="90" width="240" height="80" rx="14" fill="#bae6fd"/>
+    <text x="160" y="120" text-anchor="middle" font-weight="600">
+      Prompt: 
+      <tspan x="160" dy="1.2em">"How to reset my password?"</tspan>
+    </text>
+
+      <!-- Preferred Answer -->
+      <rect x="320" y="40" width="520" height="60" rx="14" fill="#bbf7d0"/>
+      <text x="580" y="75" text-anchor="middle" font-weight="600">Preferred: "Go to configurations → reset password"</text>
+
+      <!-- Model Output -->
+      <rect id="node-yhat" x="320" y="140" width="520" height="60" rx="14" fill="#fb923c"/>
+      <text id="output-text" x="580" y="175" text-anchor="middle" font-weight="600">Model: "Try turning off your computer"</text>
+
+    
+    </svg>
+
+    <!-- Loss Progress Bar -->
+    <div style="margin-top:30px;">
+      <input type="range" id="loss-slider" min="0" max="3" value="0" step="1" style="width:80%;">
+      <div style="display:flex; justify-content:space-between; width:80%; margin:5px auto; font-size:14px; color:#374151;">
+        <span>High Loss</span>
+        <span>Update Weights (lower loss)</span>
+        <span>Update Weights (lower loss)</span>
+        <span>Zero Loss</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const outputs = [
+  'Model: "Try turning off your computer"',   // high loss
+  'Model: "Click something in settings"',     // step 1
+  'Model: "Go to settings and find password"',// step 2
+  'Model: "Go to configurations → reset password"' // perfect match
+];
+const colors = ["#fb923c","#fcd34d","#fef08a","#bbf7d0"];
+
+document.getElementById("loss-slider").addEventListener("input", function(e){
+  const val = parseInt(e.target.value);
+  document.getElementById("output-text").textContent = outputs[val];
+  document.getElementById("node-yhat").setAttribute("fill", colors[val]);
+
+  // Show loss arrow when not fully trained
+  document.getElementById("loss-arrow").style.opacity = (val<3 ? 1 : 0);
+});
+</script>
+
+
+
+
 
 
 <!-- Lara's part - Reinforcement Learning -->
@@ -533,7 +636,10 @@ showFlow('direct');
     .human-node{fill:var(--human)}
     .token{fill:var(--token);r:6;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
   </style>
-</head>
+  </head>
+
+
+
 <body>
   <div class="wrap" id="rlhf-flow">
     <h1>Reward Model Training Flow</h1>
@@ -1334,7 +1440,8 @@ showFlow('direct');
   </blockquote>
 
   <p>
-    They can be divided based on different categories: <strong>the form</strong> of the verifier's result, the level of <strong>granularity</strong>, the <strong>source</strong> of the verifier, and if they require <strong>  additional training</strong>. <a href="https://arxiv.org/abs/2411.11504" target="_blank" rel="noopener">(Guan et al., 2022)</a>.
+    They can be divided based on different categories: <strong>the form</strong> of the verifier's result, the level of <strong>granularity</strong>, the <strong>source</strong> of the verifier, and if they require <strong>  additional training</strong>. 
+    <a href="https://arxiv.org/abs/2411.11504" target="_blank" rel="noopener">(Guan et al., 2022)</a>.
   </p>
 
   <p>
