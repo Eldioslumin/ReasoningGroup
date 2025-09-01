@@ -1320,7 +1320,7 @@ showFlow('direct');
   </h2>
 
   <p>
-    Verifiers are part of a larger category of tools we use for the reasoning structures called operators. 
+    Verifiers are part of a larger category of tools we use for the the models reasoning process called operators. 
     And operators do basically everything you can think of. There are operators for refining the reasoning 
     steps when they fall under certain threshold, or multiply a branch with a policy model. 
     They can also prune entire paths that we feel are going nowhere. And verifiers do exactly what their name tells us.
@@ -1334,36 +1334,36 @@ showFlow('direct');
   </blockquote>
 
   <p>
-    They can be divided based on different categories: binary feedback, score feedback, ranking feedback, and text feedback (Saunders et al., 2022).
+    They can be divided based on different categories: <strong>the form</strong> of the verifier's result, the level of <strong>granularity</strong>, the <strong>source</strong> of the verifier, and if they require <strong>  additional training</strong>. <a href="https://arxiv.org/abs/2411.11504" target="_blank" rel="noopener">(Guan et al., 2022)</a>.
   </p>
 
   <p>
-    Binary feedback provides a simple pass/fail judgment, while score-based feedback offers continuous values that 
-    indicate the degree of correctness. Ranking feedback compares multiple outputs and orders them, giving the optimization 
-    process relative preferences. Finally, textual feedback delivers the richest information, often including rationales, critiques, 
+    The feedback can be presented back to the reasoner in many forms. <strong>Binary feedback</strong> provides a simple pass/fail judgment, while <strong> score-based feedback</strong>  offers continuous values that 
+    indicate the degree of correctness. <strong>  Ranking feedback </strong>compares multiple outputs and orders them, giving the optimization 
+    process relative preferences. Finally, <strong> textual feedback </strong>delivers the richest information, often including rationales, critiques, 
     or detailed explanations of why an answer is considered strong or weak.
   </p>
 
   <p>
-    The granularity of verification can be considered at three different levels. Token-level verifiers evaluate predictions 
-    one token at a time, offering the most fine-grained form of feedback. Thought-level verifiers instead examine reasoning 
-    steps or sentences as whole units, providing judgments at an intermediate scale. Trajectory-level verifiers operate at the 
+    The granularity of verification can be considered at three different levels. <strong> Token-level verifiers</strong> evaluate predictions 
+    one token at a time, offering the most fine-grained form of feedback. <strong>Thought-level verifiers</strong> instead examine reasoning 
+    steps or sentences as whole units, providing judgments at an intermediate scale. <strong>Trajectory-level verifiers</strong> operate at the 
     entire sequence of reasoning from start to finish. Each level offers different advantages, with token-level being the most 
     detailed, and trajectory-level giving a rounded view of reasoning quality.
   </p>
 
   <p>
     From the perspective of their source, verifiers can be divided into program-based and model-based approaches. 
-    Program-based verifiers rely on deterministic rules, which makes them consistent, interpretable, and transparent. 
-    However, this is in exchange for no adaptability in more dynamic tasks. Model-based verifiers generate judgments through 
-    probabilistic models instead. This allows them to adapt to diverse contexts and tasks, but increases the uncertainty 
+    <strong>Program-based verifiers rely on deterministic rules</strong>, which makes them consistent, interpretable, and transparent. 
+    However, this is in exchange for no adaptability in more dynamic tasks. <strong>Model-based verifiers generate judgments through 
+    probabilistic models instead</strong>. This allows them to adapt to diverse contexts and tasks, but increases the uncertainty 
     and decreases reliability.
   </p>
 
   <p>
-    Finally, verifiers differ in whether they require additional training. Those that do are often fine-tuned on task-specific 
-    data improving their judgement in one domain. The drawback is that they are not generalizable outside of the task at hand. 
-    Verifiers that do not require additional training are based on pre-existing models. They will not be as precise as trained 
+    Finally, verifiers differ in whether they require additional training. <strong>Those that do are often fine-tuned on task-specific 
+    data improving their judgement in one domain</strong>. The drawback is that they are not generalizable outside of the task at hand. 
+    <strong>Verifiers that do not require additional training are based on pre-existing models</strong>. They will not be as precise as trained 
     verifiers, but handle data variation better, and are not dependant on task-specific datasets.
   </p>
 
@@ -1454,13 +1454,23 @@ showFlow('direct');
 
   <p>
     As a last note, it important to notice that verifiers in a sense imitate a kind of response from the environment for the LM, 
-    allowing it to have a perception on how their action had a response. If this topic interests you, you might want to check 
-    this link. <a href="[HYPERLINK]" target="_blank" rel="noopener">[HYPERLINK]</a>.
+    allowing it to have a perception on how their action had a response. If this want to see how much can be done with this interaction, 
+    maybe check this <a href="[HYPERLINK]" target="_blank" rel="noopener">link [the idea is to connect our blog to the other team's]</a>.
   </p>
 </section>
 
 <section style="margin:60px 0;">
   <h2 style="text-align:center;">Reasoning Structures</h2>
+  <div style="max-width:900px; margin:20px auto; padding:18px 24px; background:#f9fafb; border-left:4px solid #2563eb; border-radius:8px; line-height:1.6; text-align:justify; font-size:16px;">
+    <strong>Reasoning LLMs produce multiple of these steps in their answers, and the way we group and organize them together is called the reasoning structure.</strong> 
+    Now the most basic reasoning structure is the <strong>chain</strong>, which you can see often in Chain of Thought models, where there is a logical progression step for step. 
+    This would be a <strong>sequential</strong> type of structure. But there are also 
+    <strong>parallel structures like trees</strong>, where we can have multiple branches, allowing us to explore answers more thoroughly, at the cost of adding computational resources. 
+    Then finally we have <strong>graphs</strong>, where the units are conditioned or <strong>dependencies</strong> between each reasoning step.
+  </div>
+</section>
+</section>
+  
   <iframe src="reasoning_structures.html" width="100%" height="720" style="border:none; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);"></iframe>
 </section>
 

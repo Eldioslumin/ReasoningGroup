@@ -140,7 +140,7 @@ function drawTree(){
 
   // First layer: two reasoning paths
   let l1a = {x:250,y:200,text:"Use P=2(L+W)"};
-  let l1b = {x:650,y:200,text:"Try: W = P/L (wrong)"};
+  let l1b = {x:650,y:200,text:"Use W = P/L (wrong)"};
 
   [l1a,l1b].forEach((pos,i)=>{
     addNode(pos.x,pos.y,pos.text,(i+1)*800,true);
@@ -149,11 +149,11 @@ function drawTree(){
 
   // Second layer (branch A expansions)
   let l2a1 = {x:150,y:340,text:"30=2(10+W)",correct:true,parent:l1a};
-  let l2a2 = {x:350,y:340,text:"30=10+W (mistake)",correct:false,parent:l1a};
+  let l2a2 = {x:350,y:340,text:"30=10+W (wrong)",correct:false,parent:l1a};
 
   // Second layer (branch B expansions)
-  let l2b1 = {x:550,y:340,text:"W=30/10=3",correct:false,parent:l1b};
-  let l2b2 = {x:750,y:340,text:"Maybe W=20? (guess)",correct:false,parent:l1b};
+  let l2b1 = {x:550,y:340,text:"W=30/10=3 (wrong)",correct:false,parent:l1b};
+  let l2b2 = {x:750,y:340,text:"Just guess: Maybe W=20? (wrong)",correct:false,parent:l1b};
 
   [l2a1,l2a2,l2b1,l2b2].forEach((pos,i)=>{
     addNode(pos.x,pos.y,pos.text,(i+3)*800,pos.correct);
