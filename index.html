@@ -1304,6 +1304,167 @@ showFlow('direct');
     pipeline guide in the cookbook: <a href="https://huggingface.co/learn/cookbook/search_and_learn" target="_blank" rel="noopener">
       Search &amp; Learn tutorial</a>. </p>
 
+<section style="margin-top:60px; margin-bottom:40px; max-width:900px; margin-left:auto; margin-right:auto;">
+  <h2 style="
+    font-size:2em;
+    font-weight:700;
+    letter-spacing:0.01em;
+    margin-bottom:18px;
+    background:linear-gradient(90deg, #010610 70%, #eab308 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    text-align:center;
+  ">
+    Verifiers in Reasoning Models
+  </h2>
+
+  <p>
+    Verifiers are part of a larger category of tools we use for the reasoning structures called operators. 
+    And operators do basically everything you can think of. There are operators for refining the reasoning 
+    steps when they fall under certain threshold, or multiply a branch with a policy model. 
+    They can also prune entire paths that we feel are going nowhere. And verifiers do exactly what their name tells us.
+  </p>
+
+  <blockquote style="font-style:italic; background:#fefce8; padding:12px 18px; border-left:4px solid #eab308; border-radius:6px; margin:20px 0;">
+    “The verifier assesses the quality of the final answer or intermediate reasoning steps and provides feedback to the reasoner.” 
+    <a href="https://arxiv.org/html/2504.09037v1" target="_blank" rel="noopener" style="color:#2563eb; text-decoration:none;">
+      (Ke et al., 2025)
+    </a>
+  </blockquote>
+
+  <p>
+    They can be divided based on different categories: binary feedback, score feedback, ranking feedback, and text feedback (Saunders et al., 2022).
+  </p>
+
+  <p>
+    Binary feedback provides a simple pass/fail judgment, while score-based feedback offers continuous values that 
+    indicate the degree of correctness. Ranking feedback compares multiple outputs and orders them, giving the optimization 
+    process relative preferences. Finally, textual feedback delivers the richest information, often including rationales, critiques, 
+    or detailed explanations of why an answer is considered strong or weak.
+  </p>
+
+  <p>
+    The granularity of verification can be considered at three different levels. Token-level verifiers evaluate predictions 
+    one token at a time, offering the most fine-grained form of feedback. Thought-level verifiers instead examine reasoning 
+    steps or sentences as whole units, providing judgments at an intermediate scale. Trajectory-level verifiers operate at the 
+    entire sequence of reasoning from start to finish. Each level offers different advantages, with token-level being the most 
+    detailed, and trajectory-level giving a rounded view of reasoning quality.
+  </p>
+
+  <p>
+    From the perspective of their source, verifiers can be divided into program-based and model-based approaches. 
+    Program-based verifiers rely on deterministic rules, which makes them consistent, interpretable, and transparent. 
+    However, this is in exchange for no adaptability in more dynamic tasks. Model-based verifiers generate judgments through 
+    probabilistic models instead. This allows them to adapt to diverse contexts and tasks, but increases the uncertainty 
+    and decreases reliability.
+  </p>
+
+  <p>
+    Finally, verifiers differ in whether they require additional training. Those that do are often fine-tuned on task-specific 
+    data improving their judgement in one domain. The drawback is that they are not generalizable outside of the task at hand. 
+    Verifiers that do not require additional training are based on pre-existing models. They will not be as precise as trained 
+    verifiers, but handle data variation better, and are not dependant on task-specific datasets.
+  </p>
+
+  <p><strong>Now, here is a table for you to see some examples of verifiers after this long read:</strong></p>
+  <div style="background:#f1f5f9; padding:16px; border-radius:10px; text-align:center; margin:20px 0;">
+    <h3 style="text-align:center; margin:30px 0 14px 0; font-size:1.4em; font-weight:600; color:#111;">
+  Towards Next Generation Post-training Paradigm of Foundation Models via Verifier Engineering
+</h3>
+
+<table style="width:100%; border-collapse:collapse; font-size:0.95em; margin:0 auto; background:#fff; box-shadow:0 3px 14px rgba(0,0,0,0.05); border-radius:10px; overflow:hidden;">
+  <thead style="background:#1e293b; color:#fff;">
+    <tr>
+      <th style="padding:12px; text-align:center;">Verifier Type</th>
+      <th style="padding:12px; text-align:center;">Verification Form</th>
+      <th style="padding:12px; text-align:center;">Verify Granularity</th>
+      <th style="padding:12px; text-align:center;">Verifier Source</th>
+      <th style="padding:12px; text-align:center;">Extra Training</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding:10px;">Golden Annotation</td>
+      <td style="padding:10px;">Binary/Text</td>
+      <td style="padding:10px;">Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+    <tr style="background:#f9fafb;">
+      <td style="padding:10px;">Rule-based</td>
+      <td style="padding:10px;">Binary/Text</td>
+      <td style="padding:10px;">Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+    <tr>
+      <td style="padding:10px;">Code Interpreter</td>
+      <td style="padding:10px;">Binary/Score/Text</td>
+      <td style="padding:10px;">Token/Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+    <tr style="background:#f9fafb;">
+      <td style="padding:10px;">ORM</td>
+      <td style="padding:10px;">Binary/Score/Rank/Text</td>
+      <td style="padding:10px;">Full Trajectory</td>
+      <td style="padding:10px;">Model Based</td>
+      <td style="padding:10px;">Yes</td>
+    </tr>
+    <tr>
+      <td style="padding:10px;">Language Model</td>
+      <td style="padding:10px;">Binary/Score/Rank/Text</td>
+      <td style="padding:10px;">Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Model Based</td>
+      <td style="padding:10px;">Yes</td>
+    </tr>
+    <tr style="background:#f9fafb;">
+      <td style="padding:10px;">Tool</td>
+      <td style="padding:10px;">Binary/Score/Rank/Text</td>
+      <td style="padding:10px;">Token/Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+    <tr>
+      <td style="padding:10px;">Search Engine</td>
+      <td style="padding:10px;">Text</td>
+      <td style="padding:10px;">Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+    <tr style="background:#f9fafb;">
+      <td style="padding:10px;">PRM</td>
+      <td style="padding:10px;">Score</td>
+      <td style="padding:10px;">Token/Thought Step</td>
+      <td style="padding:10px;">Model Based</td>
+      <td style="padding:10px;">Yes</td>
+    </tr>
+    <tr>
+      <td style="padding:10px;">Knowledge Graph</td>
+      <td style="padding:10px;">Text</td>
+      <td style="padding:10px;">Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+
+  <p>
+    As a last note, it important to notice that verifiers in a sense imitate a kind of response from the environment for the LM, 
+    allowing it to have a perception on how their action had a response. If this topic interests you, you might want to check 
+    this link. <a href="[HYPERLINK]" target="_blank" rel="noopener">[HYPERLINK]</a>.
+  </p>
+</section>
+
+<section style="margin:60px 0;">
+  <h2 style="text-align:center;">Reasoning Structures</h2>
+  <iframe src="reasoning_structures.html" width="100%" height="720" style="border:none; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);"></iframe>
+</section>
+
+
 <h2 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Search Strategies</h2>
 
   <p>There are several search strategies to select the best answer including Best-of-N, Beam Search and Diverse Verifier Tree. Let's have a closer look at them</p>

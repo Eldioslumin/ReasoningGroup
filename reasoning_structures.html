@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reasoning Structures</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align:center; background:#f8fafc; }
+    .buttons { margin: 20px; }
+    button {
+      margin: 0 8px;
+      padding: 10px 18px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #2563eb;
+      color: white;
+    }
+    button:hover { background:#1e40af; }
+    svg { background:#fff; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); margin-top:20px; }
+    circle { fill:#2563eb; opacity:0; transition:opacity 0.6s; }
+    line {
+      stroke:#111;
+      stroke-width:2;
+      stroke-dasharray:1000;
+      stroke-dashoffset:1000;
+      animation: drawLine 1s forwards;
+    }
+    .box { fill:white; stroke:#2563eb; stroke-width:2; rx:6; ry:6; }
+    text { font-size:14px; fill:#111; }
+    @keyframes drawLine { to { stroke-dashoffset:0; } }
+  </style>
+</head>
+<body>
+
+<h2>Reasoning Structures Demo</h2>
+<p><strong>Select a structure to see how reasoning unfolds for a problem.</strong></p>
+
+<div class="buttons">
+  <button onclick="drawChain()">Chain</button>
+  <button onclick="drawTree()">Tree</button>
+  <button onclick="drawGraph()">Graph</button>
+</div>
+
+<svg id="viz" width="900" height="650">
+  <g id="edges"></g>
+  <g id="nodes"></g>
+</svg>
+
+<script>
+const svg = document.getElementById("viz");
+const edgesGroup = document.getElementById("edges");
+const nodesGroup = document.getElementById("nodes");
+
+function clearSVG(){ edgesGroup.innerHTML=""; nodesGroup.innerHTML=""; }
+
+// Add reasoning node with label box
+function addNode(x,y,textContent,delay=0,correct=true){
+  let g = document.createElementNS("http://www.w3.org/2000/svg","g");
+
+  let box = document.createElementNS("http://www.w3.org/2000/svg","rect");
+  let paddingX = 10, paddingY = 6;
+  let text = document.createElementNS("http://www.w3.org/2000/svg","text");
+  text.setAttribute("x",x);
+  text.setAttribute("y",y);
+  text.setAttribute("text-anchor","middle");
+  text.setAttribute("dominant-baseline","middle");
+  text.textContent=textContent;
+
+  // measure width for box
+  let estWidth = textContent.length * 7;
+  box.setAttribute("x",x-estWidth/2-paddingX);
+  box.setAttribute("y",y-16);
+  box.setAttribute("width",estWidth+paddingX*2);
+  box.setAttribute("height",32);
+  box.setAttribute("rx",6);
+  box.setAttribute("ry",6);
+  box.setAttribute("fill","white");
+  box.setAttribute("stroke", correct ? "#2563eb" : "#dc2626");
+  box.setAttribute("stroke-width","2");
+
+  g.appendChild(box);
+  g.appendChild(text);
+  nodesGroup.appendChild(g);
+
+  g.style.opacity=0;
+  setTimeout(()=>{ g.style.opacity=1; },delay);
+
+  return g;
+}
+
+// Add edge behind nodes
+function addEdge(x1,y1,x2,y2,delay=0){
+  let l = document.createElementNS("http://www.w3.org/2000/svg","line");
+  l.setAttribute("x1",x1);
+  l.setAttribute("y1",y1);
+  l.setAttribute("x2",x2);
+  l.setAttribute("y2",y2);
+  l.style.strokeDasharray="1000";
+  l.style.strokeDashoffset="1000";
+  l.style.opacity="0";
+  edgesGroup.appendChild(l);
+
+  setTimeout(()=>{
+    l.style.opacity="1";
+    l.style.animation="drawLine 0.8s forwards";
+  },delay);
+}
+
+// ------- Structures ---------
+
+function drawChain(){
+  clearSVG();
+  document.querySelector("h2").innerHTML="Chain Structure";
+  document.querySelector("p").innerHTML="Problem: A train goes at 120 km/h. How long to cover 200 km?";
+
+  let startX=450,startY=80,step=100,delay=800;
+
+  let texts=[
+    "Speed=120, Distance=200",
+    "Formula: t = d ÷ s",
+    "200 ÷ 120 = 1.67",
+    "Answer: ≈ 1h 40m"
+  ];
+
+  let prevX=startX,prevY=startY;
+  texts.forEach((txt,i)=>{
+    addNode(startX,startY+i*step,txt,i*delay);
+    if(i>0) addEdge(prevX,startY+(i-1)*step,startX,startY+i*step,i*delay-400);
+  });
+}
+
+function drawTree(){
+  clearSVG();
+  document.querySelector("h2").innerHTML="Tree Structure";
+  document.querySelector("p").innerHTML="Problem: A rectangle has perimeter 30 and length 10. What is the width?";
+
+  // Root node
+  let root = addNode(450,80,"Given: P=30, L=10",0,true);
+
+  // First layer: two reasoning paths
+  let l1a = {x:250,y:200,text:"Use P=2(L+W)"};
+  let l1b = {x:650,y:200,text:"Try: W = P/L (wrong)"};
+
+  [l1a,l1b].forEach((pos,i)=>{
+    addNode(pos.x,pos.y,pos.text,(i+1)*800,true);
+    addEdge(450,80,pos.x,pos.y,(i+1)*800-400);
+  });
+
+  // Second layer (branch A expansions)
+  let l2a1 = {x:150,y:340,text:"30=2(10+W)",correct:true,parent:l1a};
+  let l2a2 = {x:350,y:340,text:"30=10+W (mistake)",correct:false,parent:l1a};
+
+  // Second layer (branch B expansions)
+  let l2b1 = {x:550,y:340,text:"W=30/10=3",correct:false,parent:l1b};
+  let l2b2 = {x:750,y:340,text:"Maybe W=20? (guess)",correct:false,parent:l1b};
+
+  [l2a1,l2a2,l2b1,l2b2].forEach((pos,i)=>{
+    addNode(pos.x,pos.y,pos.text,(i+3)*800,pos.correct);
+    addEdge(pos.parent.x,pos.parent.y,pos.x,pos.y,(i+3)*800-400);
+  });
+
+  // Final layer: correct solution continues
+  let sol = {x:150,y:480,text:"Solve: W=5",correct:true,parent:l2a1};
+  addNode(sol.x,sol.y,sol.text,7*800,true);
+  addEdge(l2a1.x,l2a1.y,sol.x,sol.y,7*800-400);
+}
+
+
+
+function drawGraph(){
+  clearSVG();
+  document.querySelector("h2").innerHTML="Graph Structure";
+  document.querySelector("p").innerHTML="Problem: Worker A and Worker B finish in 6h together. One is twice as fast. How long will it take them alone?";
+
+  let root = addNode(450,80,"Total Time = 6h",0);
+
+  let mid1 = {x:300,y:200,text:"Worker A rate=x"};
+  let mid2 = {x:600,y:200,text:"Worker B rate=2x"};
+
+  [mid1,mid2].forEach((pos,i)=>{
+    addNode(pos.x,pos.y,pos.text,(i+1)*800);
+    addEdge(450,80,pos.x,pos.y,(i+1)*800-400);
+  });
+
+  let combine = {x:450,y:320,text:"x+2x=1/6"};
+  addNode(combine.x,combine.y,combine.text,3*800);
+  addEdge(mid1.x,mid1.y,combine.x,combine.y,3*800-400);
+  addEdge(mid2.x,mid2.y,combine.x,combine.y,3*800-400);
+
+  let solve = {x:450,y:440,text:"3x=1/6 → x=1/18"};
+  addNode(solve.x,solve.y,solve.text,4*800);
+  addEdge(combine.x,combine.y,solve.x,solve.y,4*800-400);
+
+  let ans1 = {x:350,y:560,text:"A=18h"};
+  let ans2 = {x:550,y:560,text:"B=9h"};
+  addNode(ans1.x,ans1.y,ans1.text,5*800);
+  addNode(ans2.x,ans2.y,ans2.text,6*800);
+  addEdge(solve.x,solve.y,ans1.x,ans1.y,5*800-400);
+  addEdge(solve.x,solve.y,ans2.x,ans2.y,6*800-400);
+}
+</script>
+</body>
+</html>
