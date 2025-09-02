@@ -1360,26 +1360,56 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 
 <body>
 
-  <h1 style="text-align:left">Reasoning Architecture</h2>
-  <h2>Pipeline</h2>
+  <section style="margin-top:60px; margin-bottom:40px;">
+    <h2 style="
+      font-size:2em;
+      font-weight:700;
+      letter-spacing:0.01em;
+      margin-bottom:6px;
+      background:linear-gradient(90deg, #010610 70%, #eab308 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      text-align:center;
+      ">
+      Reasoning Architecture
+    </h2>
+  </section>
 
-  <p>
-    While DeepSeek R1 is a dedicated reasoning model trained with chain-of-thought data and methods such as
-    supervised fine-tuning and reinforcement learning, it's also possible to build a reasoning architecture around a
-    standard language model.
-  </p>
+  <div class="flexrow">
+    
+    <div class="summary">
 
-  <p>
-    In this setup, an LLM (e.g., a Llama 1B or 8b model) produces multiple candidate answers. A reward model then
-    scores these candidates, and a search strategy selects the best answer based on the rewards. This kind of architecture is described 
-    in the Hugging Face cookbook:
-    <a href="https://huggingface.co/learn/cookbook/search_and_learn" target="_blank" rel="noopener">“Search &amp; Learn”</a>.
-  </p>
+      <p>
+        While DeepSeek R1 is a dedicated reasoning model trained with chain-of-thought data and methods such as
+        supervised fine-tuning and reinforcement learning, it's also possible to build a reasoning architecture around a
+        standard language model.
+          </p>
 
-  <p>
-    The dynamic chart below visualizes the architecture: the LLM proposes candidates, the reward model scores them, and the search strategy
-    steers the loop toward the final answer.
-  </p>
+      <p>
+        In this setup, an LLM (e.g., a Llama 1B or 8b model) produces multiple candidate answers. A reward model then
+        scores these candidates, and a search strategy selects the best answer based on the rewards. This kind of architecture is described 
+        in the Hugging Face cookbook:
+        <a href="https://huggingface.co/learn/cookbook/search_and_learn" target="_blank" rel="noopener">“Search &amp; Learn”</a>.
+          </p>
+
+      <p>
+        The dynamic chart below visualizes the architecture: the LLM proposes candidates, the reward model scores them, and the search strategy
+        steers the loop toward the final answer.
+          </p>
+    </div>
+
+    <div class="bubble right">
+      <p>
+        To reproduce the pipeline one can use the Search-and-Learn repository: <a href="https://github.com/huggingface/search-and-learn" 
+        target="_blank" rel="noopener">huggingface/search-and-learn</a>.</p> 
+      <p>
+        Clone the repository, install dependencies as described in the repo, follow the 
+        pipeline guide in the cookbook: <a href="https://huggingface.co/learn/cookbook/search_and_learn" target="_blank" rel="noopener">
+        Search &amp; Learn tutorial</a>. </p>
+    </div>
+  </div>
+  
 
 <div class="wrap">
   <h3 style="text-align:center">Reasoning Search Flow</h3>
@@ -1477,14 +1507,6 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
   });
 })();
 </script>
-
-<p>
-    To reproduce the pipeline one can use the Search-and-Learn repository: <a href="https://github.com/huggingface/search-and-learn" 
-    target="_blank" rel="noopener">huggingface/search-and-learn</a>.</p> 
-    <p>
-    Clone the repository, install dependencies as described in the repo, follow the 
-    pipeline guide in the cookbook: <a href="https://huggingface.co/learn/cookbook/search_and_learn" target="_blank" rel="noopener">
-      Search &amp; Learn tutorial</a>. </p>
 
 <section style="margin-top:60px; margin-bottom:40px; max-width:900px; margin-left:auto; margin-right:auto;">
   <h2 style="
