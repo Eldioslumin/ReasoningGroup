@@ -478,6 +478,82 @@ showFlow('direct');
 
 
 
+<section style="margin:60px auto; max-width:700px;">
+  <h2 style="text-align:center;">Chain of Thought (CoT) Example</h2>
+  <p style="text-align:justify; line-height:1.6;">
+    One of the first attempts to elicit reasoning in LLMs was related to how to prompt them. 
+    Perhpaps the most well known example of this is Chain of Thought (CoT). 
+    In CoT, we improve the quality of the LLM's answers by prompting them to think their answer step by step.
+    This simple tricked improved accuracy in a variety of problems and proved that the reasoning capabilities of LLMs might be dormant.
+    While the techinique improves accuracy and generalizes well over any area, it still has its issues. 
+    CoT is not a scalable technique, as it still relies on the knowledge already existing in the LM.
+
+    Here you can compare how a model answers <em>with</em> and <em>without</em> Chain of Thought prompting, as explained in <a href="https://arxiv.org/abs/2205.11916" 
+   target="_blank" 
+   rel="noopener noreferrer" 
+   title="Chain of Thought Prompting Elicits Reasoning in Large Language Models (Kojima et al., 2022)">
+   Kojima et al., 2022
+</a>.
+
+  </p>
+
+  <!-- Chat Window -->
+  <div id="cot-chat" style="border:1px solid #e5e7eb; border-radius:12px; background:#f9fafb; padding:15px; height:340px; overflow-y:auto; font-family:sans-serif;">
+    <p style="color:#6b7280; text-align:center; margin:0;">Start the conversation below 👇</p>
+  </div>
+
+  <!-- User options -->
+  <div style="text-align:center; margin-top:15px;">
+    <button onclick="askSimple()" style="padding:8px 14px; background:#2563eb; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:10px;">
+      Ask without CoT
+    </button>
+    <button onclick="askCoT()" style="padding:8px 14px; background:#16a34a; color:white; border:none; border-radius:6px; cursor:pointer;">
+      Ask with CoT
+    </button>
+  </div>
+</section>
+
+<script>
+const chatBox = document.getElementById("cot-chat");
+
+// helper to add messages
+function addMessage(text, sender="user"){
+  const msg = document.createElement("div");
+  msg.style.marginBottom = "10px";
+  let bubbleStyle = sender === "user"
+    ? "background:#3b82f6; color:white; text-align:right; float:right;"
+    : "background:white; border:1px solid #d1d5db; text-align:left; float:left;";
+  msg.innerHTML = `<div style="${bubbleStyle} display:inline-block; padding:8px 12px; border-radius:12px; max-width:75%;">${text}</div><div style="clear:both;"></div>`;
+  chatBox.appendChild(msg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function askSimple(){
+  chatBox.innerHTML = ""; // reset
+  addMessage("How many 'r' are in raspberry?","user");
+  setTimeout(()=> addMessage("There are 1 'r'.","bot"), 800);
+}
+
+function askCoT(){
+  chatBox.innerHTML = ""; // reset
+  addMessage("How many 'r' are in raspberry. Let's think step by step.","user");
+
+  setTimeout(()=> addMessage("The word is 'raspberry'.","bot"), 800);
+  setTimeout(()=> addMessage("Let's count: r (1), a, s, p, b, e, r (2), r (3), y.","bot"), 1600);
+  setTimeout(()=> addMessage("So there are 3 'r's in 'raspberry'.","bot"), 2400);
+
+  // New user follow-up
+  setTimeout(()=> {
+    addMessage(`The word is 'raspberry'.\nLet's count: r (1), a, s, p, b, e, r (2), r (3), y.\nSo there are 3 'r's in 'raspberry'.\nTherefore, the answer is:`,"user");
+  }, 3400);
+
+  // Final concise answer
+  setTimeout(()=> addMessage("3 ✅","bot"), 4200);
+}
+</script>
+<p>The first part is for creating the chain of thought itself, 
+  while the second messages ensures a definitive, concise answer.
+</p>
 
 
 
