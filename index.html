@@ -276,6 +276,8 @@
     <span class="arrow">&#8595;</span>
     <div class="section-title wall" tabindex="0" onclick="toggleActive(this)">
       Hitting a Wall
+
+      
       <div class="popup">
         Scaling hits practical limits:<br>Eventually computational resources and data become scarce, and accuracy gains plateau.
       </div>
@@ -669,7 +671,63 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 <!DOCTYPE html>
 <html lang="en">
 <div class="wrap">
-  <h2 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Reinforcement Learning</h2>
+  <style>
+  :root{
+    /* colors */
+    --bg:#f8fafc; --ink:#0f172a; --muted:#64748b;
+    --arrow:#cbd5e1; --node:#bae6fd; --token:#3b82f6;
+    --model:#7dd3fc; --rm:#fde68a; --human:#fecaca; --rect:#e2e8f0;
+    /* spacing */
+    --s0:0; --s1:.25rem; --s2:.5rem; --s3:.75rem; --s4:1rem;
+    --s5:1.25rem; --s6:1.5rem; --s7:2rem; --s8:2.5rem;
+    /* type scale */
+    --fs-h1:22px; --fs-h2:1.35rem; --fs-h3:1.1rem;
+    --fs-p:15px; --fs-sub:14px; --fs-lg:18px;
+  }
+
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}
+
+  .wrap{max-width:1200px;margin-inline:auto;padding:var(--s6) var(--s3) var(--s6)}
+
+  h1,h2,h3{line-height:1.25;font-weight:700}
+  h1{font-size:var(--fs-h1);margin-block:var(--s6) var(--s2);text-align:center}
+  h2{font-size:var(--fs-h2);margin-block:var(--s5) var(--s3)}
+  h3{font-size:var(--fs-h3);margin-block:var(--s5) var(--s3)}
+  p{font-size:var(--fs-p);line-height:1.6;margin-block:var(--s3)}
+  .p-lg{font-size:var(--fs-lg)}
+  .sub{margin-block:var(--s1) var(--s4);text-align:center;color:var(--muted);font-size:var(--fs-sub)}
+  .mr{margin-right:var(--s6)}
+
+  .eq{margin-block:var(--s3)}
+  .stat{margin-block:var(--s2);font-size:var(--fs-p)}
+  code.inline{background:#f8fafc;border:1px solid #e5e7eb;padding:.1rem .4rem;border-radius:6px}
+
+  .ctrl{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3) var(--s4);align-items:center;margin-block:var(--s4)}
+  .ctrl label{color:var(--muted);font-size:var(--fs-p)}
+  .ctrl input[type="range"]{width:100%}
+  @media (max-width: 820px){.ctrl{grid-template-columns:1fr}}
+
+  /* SVG & shared node/edge styles */
+  svg{display:block;width:100%;height:auto}
+  svg text{fill:var(--ink)}
+  .node{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+  .edge{stroke:var(--arrow);stroke-width:3;fill:none;marker-end:url(#arrowhead)}
+  .rect-node{fill:var(--rect);stroke:var(--ink);stroke-width:2}
+  .model-node{fill:var(--model)}
+  .rm-node{fill:var(--rm)}
+  .value-node{fill:var(--rm)} /* value shares color with rm for simplicity */
+  .human-node{fill:var(--human)}
+  .token{fill:var(--token);r:6;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+
+
+  /* KaTeX tweaks */
+  .katex{font-size:95%}
+  .katex.display{margin-block:var(--s2)}
+</style>
+
+  <h2>Reinforcement Learning</h2>
 <p>
   <strong>Reinforcement learning</strong> is a way to train a system by trial and reward.
   An agent tries actions, receives a numeric reward, and gradually learns a rule for choosing actions that
@@ -692,26 +750,6 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RLHF Flow Diagram</title>
-  <style>
-    :root{
-      --bg:#f8fafc; --ink:#0f172a; --muted:#64748b;
-      --arrow:#cbd5e1; --node:#bae6fd; --token:#3b82f6;
-      --model:#7dd3fc; --rm:#fde68a; --human:#fecaca; --rect:#e2e8f0;
-    }
-    body{margin:0;background:var(--bg);color:var(--ink);
-      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}
-    h1{margin:18px 0 6px;text-align:center;font-size:22px}
-    .sub{margin:0 0 8px;text-align:center;color:var(--muted);font-size:14px}
-    .wrap{max-width:1200px;margin:0 auto;padding:0 12px 16px}
-    svg{display:block;width:100%;height:460px}
-    .node{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
-    .edge{stroke:var(--arrow);stroke-width:3;fill:none;marker-end:url(#arrowhead)}
-    .rect-node{fill:var(--rect);stroke:var(--ink);stroke-width:2}
-    .model-node{fill:var(--model)}
-    .rm-node{fill:var(--rm)}
-    .human-node{fill:var(--human)}
-    .token{fill:var(--token);r:6;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
-  </style>
   </head>
 
 
@@ -903,7 +941,6 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
     });
   </script>
 
-
 <div class="wrap">
   <h2 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Reward Model Training Data</h2>
 
@@ -929,38 +966,33 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
         .ex-badge{ fill:#93c5fd; stroke:#334155; }
         .ex-badge text{ fill:#0f172a; font-weight:800; font-size:26px; }
         .ex-edge{ stroke:#94a3b8; stroke-width:3; fill:none; marker-end:url(#exArrow); }
-
-        /* Clean, non-disruptive colored underlines that preserve layout */
         .ex-y1 strong{
           text-decoration: underline;
           text-decoration-thickness: 4px;
           text-underline-offset: 3px;
-          text-decoration-color: #22c55e; /* green */
+          text-decoration-color: #22c55e;
           font-weight: 800;
         }
         .ex-y2 strong{
           text-decoration: underline;
           text-decoration-thickness: 4px;
           text-underline-offset: 3px;
-          text-decoration-color: #ef4444; /* red */
+          text-decoration-color: #ef4444;
           font-weight: 800;
         }
       </style>
     </defs>
 
-    <!-- Prompt -->
     <rect x="460" y="70" width="480" height="90" class="ex-card" filter="url(#exShadow)"/>
     <text x="700" y="122" text-anchor="middle" font-size="28" font-weight="700" fill="#0f172a">
       How do I reset my phone password?
     </text>
 
-    <!-- X bubble -->
     <g transform="translate(700,230)">
       <circle r="44" fill="#93c5fd" stroke="#334155" filter="url(#exShadow)"/>
       <text y="8" text-anchor="middle" font-size="42" font-weight="800" fill="#0f172a">X</text>
     </g>
 
-    <!-- y1 (GREEN underline on all <strong>) -->
     <rect id="ex-y1Card" x="140" y="360" width="560" height="520" class="ex-card" filter="url(#exShadow)"/>
     <foreignObject x="155" y="375" width="530" height="490">
       <div class="ex-body ex-y1">
@@ -970,7 +1002,6 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
       </div>
     </foreignObject>
 
-    <!-- y2 (RED underline on all <strong>) -->
     <rect id="ex-y2Card" x="760" y="360" width="560" height="520" class="ex-card" filter="url(#exShadow)"/>
     <foreignObject x="775" y="375" width="530" height="490">
       <div class="ex-body ex-y2">
@@ -986,11 +1017,9 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
       </div>
     </foreignObject>
 
-    <!-- arrows from X to y1/y2 -->
     <path class="ex-edge" d="M 700 274 V 300 H 420 V 360" />
     <path class="ex-edge" d="M 700 274 V 300 H 1040 V 360" />
 
-    <!-- y1/y2 badges -->
     <g transform="translate(180,905)">
       <rect x="-40" y="-26" width="180" height="96" rx="28" class="ex-badge" filter="url(#exShadow)"/>
       <text x="45" y="32" font-size="42" text-anchor="middle" font-weight="800" fill="#0f172a">y1</text>
@@ -1000,7 +1029,6 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
       <text x="45" y="32" font-size="42" text-anchor="middle" font-weight="800" fill="#0f172a">y2</text>
     </g>
 
-    <!-- preference symbol -->
     <g transform="translate(700,1000)">
       <g transform="translate(-120,0)">
         <circle r="22" fill="#22c55e"/>
@@ -1021,20 +1049,21 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
     <a href="https://huggingface.co/datasets/Dahoas/synthetic-instruct-gptj-pairwise/viewer/default/train?f%5Bchosen%5D%5Bmin%5D=1&f%5Bchosen%5D%5Bmax%5D=311&f%5Bchosen%5D%5Btransform%5D=length&row=15&views%5B%5D=train" target="_blank" rel="noopener">HuggingFace</a>
     the annotators preferred answer <strong>y1</strong>.
   </p>
-</div>
 
-<p style="margin-top:1rem;">
+  <p>
   In this example, the prompt <em>"How do I reset my phone password?"</em> produces two candidate answers. Annotators judged that
-  <strong>y1</strong> was a better response. When analysing both answers we can see that in answer <strong>y1</strong>, underlined in green, there are a series of steps on how to reset a phone password. 
+  <strong>y1</strong> was a better response. When analysing both answers we can see that in answer <strong>y1</strong>, underlined in green, there are a series of steps on how to reset a phone password.
   The generated answer <strong>y2</strong> lists items that might be required but does not explain how to do the task, as we can see underlined in red.
 </p>
+</div>
+
 
 <style>
   .loss2-sec{--ink:#0f172a;--muted:#64748b;--line:#e5e7eb}
   .loss2-sec h2{margin:1.25rem 0 .6rem 0; font-size:1.35rem; font-weight:700}
   .loss2-sec .sub{color:var(--muted); font-size:15px; margin:.25rem 0 .9rem}
   .loss2-sec .eq{margin:.6rem 0 .35rem}
-  .loss2-sec .katex{font-size:95%}          /* math slightly smaller than body */
+  .loss2-sec .katex{font-size:95%}
   .loss2-sec .katex.display{margin:.35rem 0}
   .loss2-sec p{font-size:15px; line-height:1.6; color:var(--ink); margin:.4rem 0}
   .loss2-sec .two-col{display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:.6rem 0}
@@ -1059,29 +1088,27 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
   <p>
     This is the pairwise loss we use to train the reward model. Start by taking the reward score for the
     currently preferred answer \(r(x,y_b)\) and exponentiating it. Using the exponential turns arbitrary
-    scores into positive quantities and lets the model express “how much better” one answer is than another.
+    scores into positive quantities and lets the model express how much better one answer is than another.
   </p>
   <p>
     Next, normalize by the sum of exponentials for both candidates \(y_1\) and \(y_2\). That normalization
-    forms a two-way softmax and yields a probability that the preferred answer is indeed the better one under
+    forms a two way softmax and yields a probability that the preferred answer is indeed the better one under
     the current reward model.
   </p>
   <p>
-    We then take the negative log of that probability. This is the standard maximum-likelihood objective:
+    We then take the negative log of that probability. This is the standard maximum likelihood objective:
     it is numerically stable, converts products into sums over a dataset, and penalizes confident mistakes
     more than small ones. During training we minimize the average of this loss across many labeled comparisons,
     which is why the expectation is implied.
   </p>
 
-<h3 style="margin:1rem 0 .5rem; font-size:1.1rem; font-weight:700;">
-  Let’s look at a numeric example.
-</h3>
-<p>
-  Considering the same prompt <em>“How do I reset my phone password?”</em> and answers <strong>y1</strong>
-  and <strong>y2</strong> as in the example above, you can play with the values that would have been assigned
-  to each answer by the model and choose your preferred answer in order to better understand the effects
-  these values have on the learning process of the reward model.
-</p>
+  <h3>Let us look at a numeric example.</h3>
+  <p>
+    Considering the same prompt <em>“How do I reset my phone password?”</em> and answers <strong>y1</strong>
+    and <strong>y2</strong> as in the example above, you can play with the values that would have been assigned
+    to each answer by the model and choose your preferred answer in order to better understand the effects
+    these values have on the learning process of the reward model.
+  </p>
 
   <div class="ctrl">
     <label for="r1b">Reward \(r(x,y_1)\): <strong id="r1bv">3.2</strong></label>
@@ -1105,33 +1132,361 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
   <p>
     When the two rewards are close, the softmax sits near one half and the loss stays comparatively large, indicating that the model is not very sure.
     As the preferred reward grows much larger than the alternative, the probability approaches one, the loss drops toward zero, and the
-    reward model is saying “I am confident this answer is better.” If the non-preferred answer receives the higher reward, the probability
+    reward model is saying I am confident this answer is better. If the non preferred answer receives the higher reward, the probability
     for the preferred answer becomes small and the loss grows, pushing the model to revise the scores on future updates.
   </p>
 </div>
 
+<!-- ================= PPO GRAPH ================= -->
+<div class="wrap" id="ppo-flow">
+  <h1>Proximal Policy Optimization (PPO)</h1>
+
+  <svg id="ppoSvg" viewBox="0 0 1350 420">
+    <defs>
+      <marker id="ppoArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="var(--arrow, #cbd5e1)"/>
+      </marker>
+    </defs>
+
+    <rect x="20" y="170" width="50" height="36" rx="6" class="node rect-node"/>
+    <text x="45" y="193" text-anchor="middle" font-size="14" font-weight="700">q</text>
+
+    <ellipse cx="195" cy="188" rx="75" ry="34" class="node value-node"/>
+    <text x="195" y="193" text-anchor="middle" font-size="14" font-weight="700">Policy Model</text>
+
+    <rect x="330" y="170" width="60" height="36" rx="6" class="node rect-node"/>
+    <text x="360" y="193" text-anchor="middle" font-size="14" font-weight="700">o</text>
+
+    <ellipse cx="500" cy="115" rx="80" ry="30" class="node model-node"/>
+    <text x="500" y="120" text-anchor="middle" font-size="13" font-weight="700">Reference Model</text>
+
+    <ellipse cx="500" cy="188" rx="80" ry="30" class="node model-node"/>
+    <text x="500" y="193" text-anchor="middle" font-size="14" font-weight="700">Reward Model</text>
+
+    <ellipse cx="500" cy="265" rx="80" ry="30" class="node value-node"/>
+    <text x="500" y="270" text-anchor="middle" font-size="14" font-weight="700">Value Model</text>
+
+
+    <text x="640" y="192" text-anchor="middle" font-weight="700" font-size="16">⊕</text>
+    <text x="640" y="170" text-anchor="middle" font-weight="700" style="fill:#64748b;font-size:13px">KL</text>
+
+
+    <rect x="700" y="170" width="60" height="36" rx="6" class="node rect-node"/>
+    <text x="730" y="193" text-anchor="middle" font-size="14" font-weight="700">r</text>
+
+    <rect x="700" y="248" width="60" height="36" rx="6" class="node rect-node"/>
+    <text x="730" y="271" text-anchor="middle" font-size="14" font-weight="700">v</text>
+
+    <rect x="800" y="206" width="80" height="40" rx="6" class="node rect-node"/>
+    <text x="840" y="231" text-anchor="middle" font-size="14" font-weight="700">GAE</text>
+
+    <rect x="940" y="206" width="64" height="40" rx="6" class="node rect-node"/>
+    <text x="972" y="231" text-anchor="middle" font-size="14" font-weight="700">A</text>
+
+    <path id="ppo_e_q_pol"   class="edge" d="M 70 188 H 120" />
+    <path id="ppo_e_pol_o"   class="edge" d="M 270 188 H 330" />
+
+    <path id="ppo_e_o_ref"   class="edge" d="M 390 188 V 115 H 420" />
+    <path id="ppo_e_o_rm"    class="edge" d="M 390 188 H 420" />
+    <path id="ppo_e_o_val"   class="edge" d="M 390 188 V 265 H 420" />
+
+    <path id="ppo_e_ref_join" class="edge" d="M 580 115 V 170 H 628" />
+    <path id="ppo_e_rm_join"  class="edge" d="M 580 188 H 628" />
+
+    <path id="ppo_e_join_r"  class="edge" d="M 652 188 H 700" />
+    <path id="ppo_e_val_v"   class="edge" d="M 580 265 H 700" />
+
+    <path id="ppo_e_r_gae"   class="edge" d="M 760 188 V 206 H 800" />
+    <path id="ppo_e_v_gae"   class="edge" d="M 760 266 V 246 H 800" />
+
+    <path id="ppo_e_gae_a"   class="edge" d="M 880 226 H 940" />
+    <path id="ppo_e_gae_val" class="edge" d="M 840 246 V 315 H 500 V 295" />
+
+    <path id="ppo_e_a_pol"   class="edge" d="M 972 206 V 30 H 195 V 154" />
+
+    <circle id="ppo_t_main" class="token" opacity="0"/>
+    <circle id="ppo_t_ref"  class="token" opacity="0"/>   
+    <circle id="ppo_t_rm"   class="token" opacity="0"/>   
+    <circle id="ppo_t_val"  class="token" opacity="0"/>   
+
+    <animateMotion id="ppo_m_main1" href="#ppo_t_main" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#ppo_e_q_pol"/></animateMotion>
+    <animateMotion id="ppo_m_main2" href="#ppo_t_main" dur="0.8s" begin="indefinite" fill="freeze"><mpath href="#ppo_e_pol_o"/></animateMotion>
+
+    <animateMotion id="ppo_m_ref1" href="#ppo_t_ref" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#ppo_e_o_ref"/></animateMotion>
+    <animateMotion id="ppo_m_ref2" href="#ppo_t_ref" dur="0.8s" begin="indefinite" fill="freeze"><mpath href="#ppo_e_ref_join"/></animateMotion>
+
+    <animateMotion id="ppo_m_rm1"   href="#ppo_t_rm" dur="0.8s" begin="indefinite" fill="freeze"><mpath href="#ppo_e_o_rm"/></animateMotion>
+    <animateMotion id="ppo_m_rm2"   href="#ppo_t_rm" dur="0.6s" begin="indefinite" fill="freeze"><mpath href="#ppo_e_rm_join"/></animateMotion>
+    <animateMotion id="ppo_m_rm3"   href="#ppo_t_rm" dur="0.6s" begin="indefinite" fill="freeze"><mpath href="#ppo_e_join_r"/></animateMotion>
+    <animateMotion id="ppo_m_rm4"   href="#ppo_t_rm" dur="0.7s" begin="indefinite" fill="freeze"><mpath href="#ppo_e_r_gae"/></animateMotion>
+    <animateMotion id="ppo_m_rm5"   href="#ppo_t_rm" dur="0.7s" begin="indefinite" fill="freeze"><mpath href="#ppo_e_gae_a"/></animateMotion>
+    <animateMotion id="ppo_m_rm6"   href="#ppo_t_rm" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#ppo_e_a_pol"/></animateMotion>
+
+    <animateMotion id="ppo_m_val1"  href="#ppo_t_val" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#ppo_e_o_val"/></animateMotion>
+    <animateMotion id="ppo_m_val2"  href="#ppo_t_val" dur="0.7s" begin="indefinite" fill="freeze"><mpath href="#ppo_e_val_v"/></animateMotion>
+    <animateMotion id="ppo_m_val3"  href="#ppo_t_val" dur="0.7s" begin="indefinite" fill="freeze"><mpath href="#ppo_e_v_gae"/></animateMotion>
+    <animateMotion id="ppo_m_val4"  href="#ppo_t_val" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#ppo_e_gae_val"/></animateMotion>
+  </svg>
+</div>
+
 <script>
-  (function ensureKatexAuto(cb){
-    const haveMain = !!window.katex;
-    const haveAuto = !!window.renderMathInElement;
-    if (haveMain && haveAuto) return cb();
+(function(){
+  const svg  = document.getElementById('ppoSvg');
+  const wrap = document.getElementById('ppo-flow');
 
-    function load(src, onload){
-      const s=document.createElement('script'); s.defer=true; s.src=src; s.onload=onload; document.head.appendChild(s);
+  const m = id => document.getElementById(id);
+  const el = id => document.getElementById(id);
+
+  const t_main = el('ppo_t_main');
+  const t_ref  = el('ppo_t_ref');
+  const t_rm   = el('ppo_t_rm');
+  const t_val  = el('ppo_t_val');
+
+  const mm1=m('ppo_m_main1'), mm2=m('ppo_m_main2');
+
+  const r1=m('ppo_m_ref1'),  r2=m('ppo_m_ref2');
+  const rm1=m('ppo_m_rm1'), rm2=m('ppo_m_rm2'), rm3=m('ppo_m_rm3'), rm4=m('ppo_m_rm4'), rm5=m('ppo_m_rm5'), rm6=m('ppo_m_rm6');
+  const v1=m('ppo_m_val1'), v2=m('ppo_m_val2'), v3=m('ppo_m_val3'), v4=m('ppo_m_val4');
+
+  let running=false, visible=false, atJoin=0, atGAE=0;
+
+  function reset(){
+    [t_main,t_ref,t_rm,t_val].forEach(x=>x.setAttribute('opacity','0'));
+    atJoin=0; atGAE=0;
+  }
+
+  function keepVisible(token, firstAnim, lastAnim){
+    firstAnim.addEventListener('beginEvent', ()=> token.setAttribute('opacity','1'));
+    lastAnim .addEventListener('endEvent',   ()=> token.setAttribute('opacity','0'));
+  }
+  keepVisible(t_main, mm1, mm2);
+  keepVisible(t_ref,  r1,  r2);
+  keepVisible(t_rm,   rm1, rm6);
+  keepVisible(t_val,  v1,  v4);
+
+  function start(){
+    if(running) return;
+    running=true;
+    reset();
+    mm1.beginElement();                    
+  }
+
+  mm1.addEventListener('endEvent', ()=> mm2.beginElement());            
+
+  mm2.addEventListener('endEvent', ()=>{                                 
+    r1.beginElement(); rm1.beginElement(); v1.beginElement();
+  });
+
+  r1.addEventListener('endEvent', ()=> r2.beginElement());
+  r2.addEventListener('endEvent', ()=> { atJoin++; if(atJoin===2) rm3.beginElement(); });
+
+  rm1.addEventListener('endEvent', ()=> rm2.beginElement());
+  rm2.addEventListener('endEvent', ()=> { atJoin++; if(atJoin===2) rm3.beginElement(); });
+
+  rm3.addEventListener('endEvent', ()=> rm4.beginElement());
+
+  v1.addEventListener('endEvent', ()=> v2.beginElement());
+  v2.addEventListener('endEvent', ()=> v3.beginElement());
+
+  function hitGAE(){
+    if(++atGAE===2){
+      rm5.beginElement();        
+      v4.beginElement();         
     }
-    function loadCSS(href){
-      const l=document.createElement('link'); l.rel='stylesheet'; l.href=href; document.head.appendChild(l);
+  }
+  rm4.addEventListener('endEvent', hitGAE);
+  v3 .addEventListener('endEvent', hitGAE);
+
+  rm5.addEventListener('endEvent', ()=> rm6.beginElement());
+
+  rm6.addEventListener('endEvent', ()=>{
+    running=false;
+    if(visible) setTimeout(start, 700);
+  });
+
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        visible=true;
+        try{ svg.unpauseAnimations(); }catch(_){}
+        start();
+      }else{
+        visible=false;
+        try{ svg.pauseAnimations(); }catch(_){}
+      }
+    });
+  }, {threshold:0.25});
+  io.observe(wrap);
+
+  window.addEventListener('load', ()=>{
+    const r = wrap.getBoundingClientRect();
+    if (r.top < innerHeight && r.bottom > 0){
+      visible=true;
+      try{ svg.unpauseAnimations(); }catch(_){}
+      start();
     }
+  });
+})();
+</script>
 
-    if (!haveMain) loadCSS('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css');
-    const afterMain = ()=> load('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js', cb);
-    if (!haveMain) load('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js', afterMain);
-    else if (!haveAuto) afterMain(); else cb();
-  })(initLossV2);
+ 
 
-  function initLossV2(){
+<!-- ========== VALUE MODEL ========== -->
+<div class="wrap loss2-sec" id="value-loss-v2">
+  <h2>Value model</h2>
+
+  <div class="eq"><span id="v2-eq"></span></div>
+
+  <p>
+    The value head answers for a state \(s_t\): how good is this situation.
+    It predicts the discounted return \(G_t\) with
+    \(V(s_t)=\mathbb{E}[G_t\mid S_t=s_t]\) where
+    \(G_t=\sum_{k=0}^{\infty}\gamma^{k}R_{t+1+k}\).
+    We train it with the small squared error
+    \(\mathcal{L}_{\text{value}}=\tfrac12\big(V(s_t)-G_t\big)^2\).
+  </p>
+
+  <p>
+    Why estimate \(V\)? The value model provides the baseline that turns raw reward into a teaching signal for the policy.
+    When an observed or predicted reward is higher than \(V(s_t)\), the outcome was better than expected and the advantage
+    becomes positive; if it is lower, the advantage is negative and the policy should make that behavior less likely.
+    Here, \(s_t\) is the current state, \(R_{t+k}\) are future rewards, \(0\le\gamma<1\) discounts distant outcomes, and
+    \(G_t\) is the total discounted return the model is trying to predict.
+  </p>
+
+  <h3>Let us look at a numeric example.</h3>
+  <p>
+    Use the same phone password path of rewards:
+    \([0.5,\,0.2,\,0.8,\,0.7,\,1.2]\).
+    Move the discount and the prediction and we compute
+    the return \(G_1\), the value loss and a simple advantage
+    \(\hat A \approx r(x,y)-V(s_1)\) that we will reuse in the PPO block.
+  </p>
+
+  <div class="ctrl">
+    <label for="v2-gam">Discount \(\gamma\): <strong id="v2-gamv">0.90</strong></label>
+    <input id="v2-gam" type="range" min="0.50" max="0.99" step="0.01" value="0.90"/>
+
+    <label for="v2-V">Prediction \(V(s_1)\): <strong id="v2-Vv">2.30</strong></label>
+    <input id="v2-V" type="range" min="0.0" max="4.0" step="0.05" value="2.30"/>
+
+    <label for="v2-r">Reward score \(r(x,y)\): <strong id="v2-rv">2.50</strong></label>
+    <input id="v2-r" type="range" min="-2.0" max="4.0" step="0.05" value="2.50"/>
+  </div>
+
+  <p class="stat">
+    Return \(G_1\) = <code class="inline" id="v2-G">2.6256</code> •
+    Value loss \(\tfrac12(V-G)^2\) = <code class="inline" id="v2-L">0.0530</code> •
+    Advantage \(\hat A \approx r-V\) = <code class="inline" id="v2-A">0.2000</code>
+  </p>
+
+    <p>
+    The Discount factor \(\gamma\) controls how much future rewards matter. If you increase \(\gamma\) toward \(1\), later rewards get more weight, so
+    \(G_1\) rises when the tail of the trajectory is mostly positive (as in this example). If you decrease \(\gamma\) toward \(0\), only the next rewards count, so \(G_1\) shrinks and the target becomes short-sighted and more
+    reactive to immediate outcomes. Move the \(\gamma\) slider above to see how \(G_1\), the value loss, and the implied advantage change.
+  </p>
+
+  <div class="eq"><span id="v2-work"></span></div>
+</div>
+
+<!-- ========== PPO POLICY UPDATE ========== -->
+<div class="wrap loss2-sec" id="ppo-clip-v2">
+  <h2>PPO policy update</h2>
+
+  <div class="eq"><span id="ppo2-eq"></span></div>
+
+  <p>
+    The ratio tells how the new policy changes the action probability
+    for the same state and action,
+    \(r_t(\theta)=\frac{\pi_{\theta}(a_t\mid s_t)}{\pi_{\text{old}}(a_t\mid s_t)}\).
+    The advantage \(\hat A_t\) gives direction and strength.
+    The clip at \(1\pm\varepsilon\) keeps the update conservative.
+  </p>
+
+  <p>
+    How the pieces interact: the <em>policy model</em> proposes tokens with probability \(\pi_\theta\); the
+    <em>reward model</em> scores outcomes; the <em>value model</em> predicts how much reward remains.
+    Together they produce \(\hat A_t\), the signal that says whether the taken action was better or worse than expected.
+    If \(r_t=1\) the new policy behaves like the old one; \(r_t&gt;1\) increases the action’s probability; \(r_t&lt;1\)
+    decreases it. Clipping limits the step so learning is steady rather than jumpy. In practice \(\hat A_t\) is often
+    computed with GAE to blend information across several steps for a smoother update.
+  </p>
+
+  <h3 style="margin:1rem 0 .5rem; font-size:1.1rem; font-weight:700;">Let us connect it to the same example.</h3>
+  <p>
+    We reuse the simple advantage from the value block above
+    or you can set it directly. Move the three sliders to see
+    the unclipped and the clipped objective terms.
+  </p>
+
+  <div class="ctrl">
+    <label for="ppo2-pold">\(\pi_{\text{old}}(a\mid s)\): <strong id="ppo2-poldv">0.10</strong></label>
+    <input id="ppo2-pold" type="range" min="0.01" max="0.90" step="0.01" value="0.10"/>
+
+    <label for="ppo2-pnew">\(\pi_{\theta}(a\mid s)\): <strong id="ppo2-pnewv">0.12</strong></label>
+    <input id="ppo2-pnew" type="range" min="0.01" max="0.90" step="0.01" value="0.12"/>
+
+    <label for="ppo2-eps">\(\varepsilon\): <strong id="ppo2-epsv">0.20</strong></label>
+    <input id="ppo2-eps" type="range" min="0.05" max="0.40" step="0.01" value="0.20"/>
+
+    <label for="ppo2-A">\(\hat A\) (optional override): <strong id="ppo2-Av">0.20</strong></label>
+    <input id="ppo2-A" type="range" min="-1.0" max="1.0" step="0.01" value="0.20"/>
+  </div>
+
+  <p class="stat">
+    Ratio \(r_t\) = <code class="inline" id="ppo2-r">1.2000</code> •
+    Unclipped \(r_t \hat A\) = <code class="inline" id="ppo2-u">0.2400</code> •
+    Clipped \(\text{clip}(r_t)\hat A\) = <code class="inline" id="ppo2-c">0.2200</code>
+  </p>
+
+  <div class="eq"><span id="ppo2-work"></span></div>
+
+  <h4 style="margin:.6rem 0 .25rem; font-size:1rem; font-weight:700;">Interpreting the changes</h4>
+  <p>
+    Changing \(\pi_{\theta}(a\mid s)\) or \(\pi_{\text{old}}(a\mid s)\) directly changes the ratio \(r_t\).
+    With \(\hat A_t&gt;0\), increasing \(r_t\) makes the update larger until it hits the upper clip \(1+\varepsilon\);
+    with \(\hat A_t&lt;0\), decreasing \(r_t\) makes the update more negative until the lower clip \(1-\varepsilon\) engages.
+    When \(r_t=1\), the new policy matches the old and the update size is controlled only by \(\hat A_t\).
+  </p>
+  <p>
+    Changing the advantage \(\hat A_t\) (either via the value module above or by sliding it here) sets both the
+    <em>direction</em> and the <em>magnitude</em> of the update. A positive \(\hat A_t\) asks PPO to make the action more likely;
+    a negative \(\hat A_t\) asks it to make the action less likely. Larger \(|\hat A_t|\) means a stronger push—until clipping caps it.
+  </p>
+  <p>
+    Changing \(\varepsilon\) widens or narrows the safe band \([\,1-\varepsilon,\,1+\varepsilon\,]\).
+    A larger \(\varepsilon\) allows bigger policy moves (faster learning but less stable),
+    while a smaller \(\varepsilon\) keeps updates conservative (more stable but slower).
+    Use the sliders to see how the unclipped term \(r_t\hat A_t\) can exceed the clipped term once the ratio crosses the band.
+  </p>
+
+  <div class="eq"><span id="ppo2-work"></span></div>
+</div>
+
+
+<script>
+  (function loadKaTeXOnce(cb){
+    if (window.katex && window.renderMathInElement) return cb();
+    function add(href, rel){
+      const el = document.createElement(rel==='css'?'link':'script');
+      if(rel==='css'){ el.rel='stylesheet'; el.href=href; }
+      else { el.defer=true; el.src=href; }
+      document.head.appendChild(el); return el;
+    }
+    if(!window.katex) add('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css','css');
+    const afterMain = ()=> add('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js').onload = cb;
+    if(!window.katex) add('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js').onload = afterMain;
+    else afterMain();
+  })(initAllMath);
+
+  function initAllMath(){
+    initRewardPairwise();
+    initValueAndPPO();
+  }
+
+  function initRewardPairwise(){
     const $=(id)=>document.getElementById(id);
-    const container = document.getElementById('pairwise-loss-v2');
+    const container = $('pairwise-loss-v2');
     const r1=$('r1b'), r2=$('r2b'), r1v=$('r1bv'), r2v=$('r2bv');
     const pout=$('pout2'), lout=$('lout2');
     const eqMain=$('loss2-eq'), eqWork=$('loss2-work');
@@ -1142,33 +1497,27 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
     try{
       renderMathInElement(container,{
         delimiters:[
-          {left:"$$", right:"$$", display:true},
-          {left:"\\[", right:"\\]", display:true},
-          {left:"\\(", right:"\\)", display:false}
+          {left:"\\(", right:"\\)", display:false},
+          {left:"\\[", right:"\\]", display:true}
         ],
         throwOnError:false
       });
     }catch(e){}
 
     function fmt(x,d=4){ return Number(x).toFixed(d); }
-
     function compute(){
       const v1=parseFloat(r1.value), v2=parseFloat(r2.value);
       r1v.textContent=v1.toFixed(1);
       r2v.textContent=v2.toFixed(1);
-
       const e1=Math.exp(v1), e2=Math.exp(v2), Z=e1+e2;
       const p1=e1/Z, p2=e2/Z;
       const pref=document.querySelector('input[name="pref2"]:checked').value;
       const pb=(pref==='y1')?p1:p2;
       const L=-Math.log(pb);
-
       pout.textContent=fmt(pb);
       lout.textContent=fmt(L);
-
       const rb=(pref==='y1')?v1:v2;
       const erb=(pref==='y1')?e1:e2;
-
       const work = String.raw`
         -\log\!\left(\frac{e^{${rb.toFixed(1)}}}{e^{${v1.toFixed(1)}}+e^{${v2.toFixed(1)}}}\right)
         = -\log\!\left(\frac{${fmt(erb)}}{${fmt(e1)}+${fmt(e2)}}\right)
@@ -1176,16 +1525,130 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
       `;
       katex.render(work, eqWork, {displayMode:true, throwOnError:false});
     }
-
     ['input','change'].forEach(ev=>{
       r1.addEventListener(ev, compute);
       r2.addEventListener(ev, compute);
       document.querySelectorAll('input[name="pref2"]').forEach(el=>el.addEventListener(ev, compute));
     });
-
     compute();
   }
+
+  function initValueAndPPO(){
+    katex.render(String.raw`
+      V(s_t)=\mathbb{E}\!\big[G_t\mid S_t=s_t\big],\quad
+      G_t=\sum_{k=0}^{\infty}\gamma^{k}R_{t+1+k},\quad
+      \mathcal{L}_{\text{value}}=\tfrac12\!\left(V(s_t)-G_t\right)^2
+    `, document.getElementById('v2-eq'), {displayMode:true, throwOnError:false});
+
+    katex.render(String.raw`
+      J_{\text{clip}}(\theta)=\mathbb{E}\!\left[
+        \min\!\big(r_t(\theta)\hat A_t,\,
+        \mathrm{clip}(r_t(\theta),\,1-\varepsilon,\,1+\varepsilon)\hat A_t\big)
+      \right],\qquad
+      r_t(\theta)=\frac{\pi_{\theta}(a_t\mid s_t)}{\pi_{\text{old}}(a_t\mid s_t)}
+    `, document.getElementById('ppo2-eq'), {displayMode:true, throwOnError:false});
+
+    try{
+      renderMathInElement(document.getElementById('value-loss-v2'),{
+        delimiters:[{left:"\\(",right:"\\)",display:false},{left:"\\[",right:"\\]",display:true}],
+        throwOnError:false
+      });
+      renderMathInElement(document.getElementById('ppo-clip-v2'),{
+        delimiters:[{left:"\\(",right:"\\)",display:false},{left:"\\[",right:"\\]",display:true}],
+        throwOnError:false
+      });
+    }catch(e){}
+
+    const gam = document.getElementById('v2-gam');
+    const Vpred = document.getElementById('v2-V');
+    const rxy = document.getElementById('v2-r');
+    const gLab = document.getElementById('v2-gamv');
+    const VLab = document.getElementById('v2-Vv');
+    const rLab = document.getElementById('v2-rv');
+    const Gout = document.getElementById('v2-G');
+    const Lout = document.getElementById('v2-L');
+    const Aout = document.getElementById('v2-A');
+    const vWork = document.getElementById('v2-work');
+
+    const R = [0.5,0.2,0.8,0.7,1.2];
+    const fmt = (x,d=4)=>Number(x).toFixed(d);
+
+    function computeValue(){
+      const g = +gam.value, V1 = +Vpred.value, rx = +rxy.value;
+      gLab.textContent = g.toFixed(2);
+      VLab.textContent = V1.toFixed(2);
+      rLab.textContent = rx.toFixed(2);
+      let G1 = 0, parts = [];
+      for(let k=0;k<R.length;k++){
+        const term = Math.pow(g,k)*R[k];
+        G1 += term;
+        parts.push(`${k===0?'':' + '}\\gamma^{${k}}\\cdot ${R[k].toFixed(1)}`);
+      }
+      const L = 0.5*(V1-G1)*(V1-G1);
+      const A = rx - V1;
+
+      Gout.textContent = fmt(G1);
+      Lout.textContent = fmt(L);
+      Aout.textContent = fmt(A);
+
+      katex.render(String.raw`
+        G_1 = ${parts.join('')} = ${fmt(G1)} \qquad
+        \mathcal{L}_{\text{value}}=\tfrac12\big(${V1.toFixed(2)}-${fmt(G1)}\big)^2 = ${fmt(L)} \qquad
+        \hat A \approx ${rx.toFixed(2)} - ${V1.toFixed(2)} = ${fmt(A)}
+      `, vWork, {displayMode:true, throwOnError:false});
+
+      const Aoverride = document.getElementById('ppo2-A');
+      if(!Aoverride.dataset.touched){
+        Aoverride.value = A.toFixed(2);
+        document.getElementById('ppo2-Av').textContent = Aoverride.value;
+        computePPO();
+      }
+    }
+
+    const pOld = document.getElementById('ppo2-pold');
+    const pNew = document.getElementById('ppo2-pnew');
+    const eps = document.getElementById('ppo2-eps');
+    const Ainp = document.getElementById('ppo2-A');
+    const pOldv = document.getElementById('ppo2-poldv');
+    const pNewv = document.getElementById('ppo2-pnewv');
+    const epsv = document.getElementById('ppo2-epsv');
+    const Av = document.getElementById('ppo2-Av');
+    const rOut = document.getElementById('ppo2-r');
+    const uOut = document.getElementById('ppo2-u');
+    const cOut = document.getElementById('ppo2-c');
+    const ppoWork = document.getElementById('ppo2-work');
+
+    function computePPO(){
+      const po = +pOld.value, pn = +pNew.value, e = +eps.value, A = +Ainp.value;
+      pOldv.textContent = po.toFixed(2);
+      pNewv.textContent = pn.toFixed(2);
+      epsv.textContent = e.toFixed(2);
+      Av.textContent = A.toFixed(2);
+      const rt = pn / po;
+      const uncl = rt * A;
+      const rtClip = Math.max(1-e, Math.min(1+e, rt));
+      const clp = rtClip * A;
+      const fmt2 = (x)=>Number(x).toFixed(4);
+      rOut.textContent = fmt2(rt);
+      uOut.textContent = fmt2(uncl);
+      cOut.textContent = fmt2(clp);
+      katex.render(String.raw`
+        r_t=\frac{${pn.toFixed(2)}}{${po.toFixed(2)}}=${fmt2(rt)},\qquad
+        \min\!\Big(r_t\hat A,\ \mathrm{clip}(r_t,\,1-${e.toFixed(2)},\,1+${e.toFixed(2)})\hat A\Big)
+        = \min\!\big(${fmt2(uncl)},\ ${fmt2(clp)}\big)
+      `, ppoWork, {displayMode:true, throwOnError:false});
+    }
+
+    Ainp.addEventListener('input', ()=>{ Ainp.dataset.touched = '1'; Av.textContent=Ainp.value; computePPO(); });
+    ['input','change'].forEach(ev=>{
+      [gam,Vpred,rxy].forEach(el=>el.addEventListener(ev, computeValue));
+      [pOld,pNew,eps].forEach(el=>el.addEventListener(ev, computePPO));
+    });
+    computeValue();
+    computePPO();
+  }
 </script>
+
 
 
 </body>
