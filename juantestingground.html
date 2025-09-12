@@ -1,0 +1,2782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- Heitke's part - scaling reasoning -->
+
+
+<meta charset="UTF-8">
+<title>Unlocking Machine Reasoning: The RLM Approach</title>
+<style>
+  body {
+    background: #f8fafc;
+    color: #222;
+    font-family: 'Inter', Arial, sans-serif;
+    margin: 0;
+  }
+  header {
+    background: #2563eb;
+    color: #fff;
+    padding: 38px 0 24px 0;
+    text-align: center;
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+    box-shadow: 0 4px 24px #94a3b888;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 2.5em;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+  header p {
+    margin: 18px 0 0 0;
+    font-size: 1.18em;
+    opacity: 0.8;
+    font-weight: 400;
+  }
+  main {
+    max-width: 900px;
+    margin: 38px auto 0 auto;
+    padding: 0 24px;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Unlocking Machine Reasoning: The RLM Approach</h1>
+    <p>How Language Models Move From Memorization to Deliberative Problem-Solving (Allegedly)</p>
+  </header>
+  <main>
+    <!-- Your main content goes here -->
+  </main>
+</body>
+
+<section style="margin-top:60px; margin-bottom:40px;">
+  <h2 style="
+    font-size:2em;
+    font-weight:700;
+    letter-spacing:0.01em;
+    margin-bottom:6px;
+    background:linear-gradient(90deg, #010610 70%, #eab308 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    text-align:center;
+    ">
+    Unlocking Reasoning: What Makes RLMs Different?
+  </h2>
+  <!-- Section content -->
+</section>
+
+
+
+  <meta charset="UTF-8">
+  <title>RLMs Image with Two Speech Bubbles (No False Pointer)</title>
+  <style>
+    body { background: #f8fafc; color: #222; font-family: sans-serif; }
+    .centered { text-align: center; margin-top: 44px; }
+    .robot-img { max-width: 380px; width: 100%; border-radius: 18px; box-shadow: 0 4px 24px #94a3b888; }
+    .flexrow {
+      display: flex; justify-content: center; align-items: flex-start; gap: 32px;
+      margin: 0 auto 24px auto; max-width: 900px;
+    }
+    .bubble {
+      background: #fffbe9;
+      color: #222;
+      max-width: 320px;
+      min-width: 180px;
+      padding: 18px 22px;
+      border-radius: 18px;
+      font-size: 1.13em;
+      line-height: 1.52;
+      box-shadow: 0 2px 18px #eab30855;
+      text-align: left;
+      position: relative;
+      margin-top: 40px;
+    }
+    /* Only the right bubble gets left pointer */
+    .bubble.right:before {
+      content: '';
+      position: absolute;
+      left: -22px;
+      top: 24px;
+      width: 0; height: 0;
+      border: 16px solid transparent;
+      border-right: 22px solid #fffbe9;
+      border-left: 0;
+    }
+    /* Only the left bubble gets right pointer */
+    .bubble.left:after {
+      content: '';
+      position: absolute;
+      right: -22px;
+      top: 24px;
+      width: 0; height: 0;
+      border: 16px solid transparent;
+      border-left: 22px solid #fffbe9;
+      border-right: 0;
+    }
+    /* Summary box */
+    .summary {
+      max-width: 540px;
+      font-size: 1.13em;
+      line-height: 1.52;
+      color: #333;
+      background: #fff;
+      padding: 18px 26px;
+      border-radius: 14px;
+      box-shadow: 0 2px 18px #e0e7ff55;
+      text-align: left;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .summary strong { color: #2563eb; }
+    /* Layout below image: left bubble + summary */
+    .flexrow-below {
+      display: flex; justify-content: center; align-items: flex-start; gap: 32px;
+      margin: 0 auto; max-width: 900px;
+    }
+    @media (max-width: 900px) {
+      .flexrow, .flexrow-below { flex-direction: column; gap: 0; align-items: center; }
+      .robot-img { max-width: 95vw;}
+      .bubble { max-width: 95vw; margin-top: 18px;}
+      .bubble.right:before { left: 22px; top: -16px; border-right: none; border-top: 22px solid #fffbe9; border-left: 16px solid transparent; border-bottom: 0;}
+      .bubble.left:after { right: 22px; top: -16px; border-left: none; border-top: 22px solid #fffbe9; border-right: 16px solid transparent; border-bottom: 0;}
+      .summary { max-width: 95vw; }
+    }
+  </style>
+</head>
+<body>
+  <div class="centered">
+    <!-- Top row: image + right bubble -->
+    <div class="flexrow">
+      <img src="Bild4.png" alt="Robot reasoning vs lookup" class="robot-img">
+      <div class="bubble right">
+        <strong>This is the key idea behind RLMs:</strong>
+        <br>
+        Moving beyond surface fluency to actual reasoning, where tasks are worked through step-by-step.
+      </div>
+    </div>
+    <!-- Below: left bubble + summary -->
+    <div class="flexrow-below" style="margin-top:18px;">
+      <div class="bubble left">
+        In this blog, we’ll explore how these strategies are implemented, and why some approaches seem to foster genuine reasoning more effectively than others.
+      </div>
+      <div class="summary">
+        <strong>Large Language Models (LLMs)</strong> are built to tackle general-purpose tasks—answering questions, solving problems, generating ideas, and following instructions. But many standard LLMs often fall short when it comes to true reasoning. Instead of logical analysis or planning, they tend to memorize and interpolate, skipping the deeper steps that lead to genuine understanding.
+        <br><br>
+        <strong>Reasoning Language Models (RLMs)</strong> represent a new direction: they introduce deliberate problem-solving strategies like step-by-step thinking, exploration, and self-verification. Unlike conventional LLMs, RLMs use search-based inference, generating multiple candidate solutions and choosing the best, rather than relying on a single one-pass answer.
+      </div>
+    </div>
+  </div>
+</body>
+
+
+<meta charset="UTF-8">
+<title>Scaling Laws & AIME Chart Side-by-Side</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body { font-family: sans-serif; background: #f8fafc; color: #111827;}
+  .main-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 56px;
+    max-width: 1400px;
+    margin: 48px auto 0 auto;
+    flex-wrap: wrap;
+  }
+  .visual-box {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 22px #94a3b822;
+    padding: 28px 34px;
+    flex: 1 1 420px;
+    max-width: 630px;
+    min-width: 320px;
+    margin-bottom: 32px;
+  }
+  /* --- Vertical flow row --- */
+  .flow-row {
+    display: flex;
+    flex-direction: column; /* vertical stack */
+    align-items: center;
+    justify-content: flex-start;
+    gap: 36px;  /* spacing between boxes and arrows */
+    margin: 38px 0;
+  }
+  .section-title {
+    position: relative;
+    display: inline-block;
+    font-size: 1.15em;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 12px 22px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    z-index:2;
+    white-space: nowrap;
+    margin-bottom: 12px;
+  }
+  .section-title.scaling { background: #e0f2fe; color: #2563eb; }
+  .section-title.wall { background: #fee2e2; color: #b91c1c; }
+  .section-title.solution { background: #dcfce7; color: #15803d; }
+  .arrow { font-size:2.3em; color: #94a3b8; }
+  .popup {
+    position: absolute;
+    left: 50%; transform: translateX(-50%);
+    top: 120%;
+    background: #fffbe9;
+    border: 1.5px solid #eab308;
+    border-radius: 12px;
+    padding: 18px 24px;
+    min-width: 240px;
+    font-size: 1em;
+    color: #222;
+    box-shadow: 0 6px 32px #eab30844;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s;
+    z-index:50;
+    text-align:left;
+  }
+  .section-title.active .popup,
+  .section-title:hover .popup {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .caption {margin:16px 0 0 0; color:#444;}
+  @media (max-width: 900px) {
+    .main-row {
+      flex-direction: column;
+      gap: 0;
+      align-items: center;
+    }
+    .visual-box { max-width: 98vw; padding: 18px 8vw;}
+    .flow-row {
+      gap: 44px; /* more vertical space on mobile */
+    }
+  }
+</style>
+</head>
+<body>
+<div class="main-row">
+<!-- Left: Scaling Laws Flow -->
+<div class="visual-box">
+  <h3 style="text-align:center; margin-top:0;">How Scaling Laws Led to Test-Time Compute</h3>
+  <div class="flow-row">
+    <div class="section-title scaling" tabindex="0" onclick="toggleActive(this)">
+      Era of Scaling Laws
+      <div class="popup">
+        Progress driven by scale:<br>Accuracy increases with model size, more data, and more training compute.
+      </div>
+    </div>
+    <span class="arrow">&#8595;</span>
+    <div class="section-title wall" tabindex="0" onclick="toggleActive(this)">
+      Hitting a Wall
+      <div class="popup">
+        Scaling hits practical limits:<br>Eventually computational resources and data become scarce, and accuracy gains plateau.
+      </div>
+    </div>
+    <span class="arrow">&#8595;</span>
+    <div class="section-title solution" tabindex="0" onclick="toggleActive(this)">
+      Test-Time Compute
+      <div class="popup">
+        Solution:<br>By increasing compute during inference, performance on new data can be boosted at test-time, so without retraining.
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Right: Chart.js plot -->
+<div class="visual-box">
+  <h3 style="text-align:center; margin-top:0;">Train-Time Compute vs Test-Time Compute</h3>
+  <div style="max-width:600px; margin: 24px auto;">
+    <canvas id="aimeChart" height="320"></canvas>
+  </div>
+</div>
+</div>
+<script>
+// For accessibility: toggle tooltip on click (not just hover)
+function toggleActive(el) {
+  document.querySelectorAll('.section-title').forEach(s => {
+    if (s !== el) s.classList.remove('active');
+  });
+  el.classList.toggle('active');
+}
+// Optional: close tooltip when clicking elsewhere
+document.body.addEventListener('click', function(e){
+  if (!e.target.classList.contains('section-title')) {
+    document.querySelectorAll('.section-title').forEach(s => s.classList.remove('active'));
+  }
+});
+
+// Chart.js setup
+const trainCompute = [32, 42, 51, 52, 55, 58, 59, 70];
+const testCompute = [20, 25, 38, 48, 59, 72, 75];
+const computeBudget = [1,2,3,4,5,6,7,8];
+
+new Chart(document.getElementById('aimeChart').getContext('2d'), {
+  type: 'line',
+  data: {
+    labels: computeBudget,
+    datasets: [
+      {
+        label: 'Train-Time Compute',
+        data: trainCompute,
+        borderColor: '#4e80c4',
+        backgroundColor: 'transparent',
+        borderWidth: 3,
+        tension: 0.35,
+        pointRadius: 5
+      },
+      {
+        label: 'Test-Time Compute',
+        data: testCompute,
+        borderColor: '#f59e42',
+        backgroundColor: 'transparent',
+        borderWidth: 3,
+        borderDash: [7,4],
+        tension: 0.35,
+        pointRadius: 5
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom'},
+      title: { display: false }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: { display:true, text:"AIME Accuracy (%)" }
+      },
+      x: {
+        title: { display:true, text:"Compute Budget" }
+      }
+    }
+  }
+});
+</script>
+</body>
+
+
+
+
+  <meta charset="UTF-8">
+  <title>Direct vs Reasoning Model Flow</title>
+  <style>
+    body { background: #f8fafc; font-family: sans-serif; color: #111827; }
+    .switcher { text-align: center; margin: 35px 0 14px 0; }
+    button { font-size: 1em; padding: 10px 20px; margin: 0 8px; border-radius:6px; border:none; background:#e0e7ef; cursor:pointer; }
+    .flow-wrap { display:flex; justify-content:center; align-items:center; gap:60px; }
+    .label { text-align:center; font-weight:600; font-size:1.1em; margin-top:10px }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center;">Direct vs Reasoning Model</h2>
+  <div class="switcher">
+    <button onclick="showFlow('direct')">Direct Model</button>
+    <button onclick="showFlow('reasoning')">Reasoning Model</button>
+  </div>
+  <div class="flow-wrap">
+    <svg id="flowSVG" viewBox="0 0 750 180" width="750" height="180">
+      <!-- Will be filled dynamically -->
+    </svg>
+  </div>
+  <div id="flowLabel" class="label"></div>
+<script>
+function showFlow(mode) {
+  const svg = document.getElementById('flowSVG');
+  svg.innerHTML = ""; // Clear SVG
+  if (mode === 'direct') {
+    // Draw direct path
+    svg.innerHTML = `
+      <rect x="40" y="60" width="120" height="60" rx="18" fill="#bae6fd" />
+      <rect x="590" y="60" width="120" height="60" rx="18" fill="#fde68a" />
+      <text x="100" y="95" text-anchor="middle" fill="#222" font-size="20" font-weight="600">Input</text>
+      <text x="650" y="95" text-anchor="middle" fill="#222" font-size="20" font-weight="600">Output</text>
+      <path d="M160,90 Q375,40 590,90" stroke="#60a5fa" stroke-width="5" fill="none" marker-end="url(#arrow)" />
+      <defs>
+        <marker id="arrow" markerWidth="12" markerHeight="12" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+          <path d="M0,0 L12,4 L0,8 Z" fill="#60a5fa"/>
+        </marker>
+      </defs>
+    `;
+    document.getElementById('flowLabel').textContent = "Direct mapping: Input leads to Output.";
+  } else {
+    // Reasoning model: input → reasoning tokens → output
+    svg.innerHTML = `
+      <rect x="40" y="60" width="120" height="60" rx="18" fill="#bae6fd" />
+      <rect x="590" y="60" width="120" height="60" rx="18" fill="#fde68a" />
+      <rect x="270" y="30" width="210" height="120" rx="30" fill="#fbbf24" opacity="0.18"/>
+      <text x="100" y="95" text-anchor="middle" fill="#222" font-size="20" font-weight="600">Input</text>
+      <text x="650" y="95" text-anchor="middle" fill="#222" font-size="20" font-weight="600">Output</text>
+      <text x="375" y="55" text-anchor="middle" fill="#fb923c" font-size="18" font-weight="700">Intermediate Steps</text>
+      <text x="375" y="95" text-anchor="middle" fill="#fb923c" font-size="18" font-weight="700">Tokens</text>
+      <text x="375" y="125" text-anchor="middle" fill="red" font-size="18" font-weight="700">Reasoning</text>
+      <path id="flowPath" d="M160,90 Q375,40 590,90" stroke="#fb923c" stroke-width="5" fill="none" marker-end="url(#arrow2)" />
+      <defs>
+        <marker id="arrow2" markerWidth="12" markerHeight="12" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+          <path d="M0,0 L12,4 L0,8 Z" fill="#fb923c"/>
+        </marker>
+      </defs>
+    `;
+    // Add moving tokens (circles) along the path
+    let tokens = [];
+    for (let i=0; i<5; ++i) {
+      let c = document.createElementNS("http://www.w3.org/2000/svg","circle");
+      c.setAttribute("r",12);
+      c.setAttribute("fill",["#60a5fa","#fbbf24","#f59e42","#fb923c","#fde68a"][i]);
+      c.setAttribute("id", `token${i}`);
+      svg.appendChild(c);
+      tokens.push(c);
+    }
+    function animateTokens() {
+      const path = svg.getElementById ? svg.getElementById('flowPath') : document.getElementById('flowPath');
+      if (!path) return;
+      const total = path.getTotalLength();
+      let start = performance.now();
+      function frame(now) {
+        let t = ((now-start)/1000)%1; // 0..1 loop
+        tokens.forEach((c, i) => {
+          let pct = (t + i*0.18)%1;
+          let pt = path.getPointAtLength(pct*total);
+          c.setAttribute("cx", pt.x);
+          c.setAttribute("cy", pt.y);
+        });
+        requestAnimationFrame(frame);
+      }
+      frame(start);
+    }
+    setTimeout(animateTokens,150); // wait for DOM
+    document.getElementById('flowLabel').textContent = "Reasoning model: Intermediate reasoning steps represented by reasoning tokens.";
+  }
+}
+// Show direct by default
+showFlow('direct');
+</script>
+</body>
+</html>
+
+<div style="max-width:720px; margin:60px auto; text-align:center;">
+  <details style="background:#f1f5f9; border-radius:12px; padding:20px; cursor:pointer; box-shadow:0 3px 12px rgba(0,0,0,0.05);">
+    <summary style="font-size:1.4em; font-weight:600; color:#2563eb;">
+      🤔 But what are these intermediate steps?
+    </summary>
+    <p style="margin-top:15px; font-size:1.1em; color:#374151;">
+      And how are reasoning language models (RLMs) actually achieved?
+      <br>
+      To answer that, we’ll look at reasoning architectures such as<br> 
+      <b>search-based methods,<br>reward models,<br></b> and <b>decision-tree style reasoning</b>.
+    </p>
+  </details>
+</div>
+
+
+
+<section style="margin:60px auto; max-width:700px;">
+  <h2 style="text-align:center;">Chain of Thought (CoT)</h2>
+  <p style="text-align:justify; line-height:1.6;">
+    One of the first attempts to elicit reasoning in LLMs was related to how to prompt them. 
+    Perhpaps the most well known example of this is Chain of Thought (CoT). 
+    <strong>In CoT, we improve the quality of the LLM's answers by prompting them to think their answer step by step</strong>.
+    This simple tricked improved accuracy in a variety of problems and proved that the reasoning capabilities of LLMs might be dormant.
+    While the techinique improves accuracy and generalizes well over any area, it still has its issues. 
+    CoT is not a scalable technique, as it still relies on the knowledge already existing in the LM.
+
+    Here you can compare how a model answers <em>with</em> and <em>without</em> Chain of Thought prompting, as explained in <a href="https://arxiv.org/abs/2205.11916" 
+   target="_blank" 
+   rel="noopener noreferrer" 
+   title="Chain of Thought Prompting Elicits Reasoning in Large Language Models (Kojima et al., 2022)">
+   Kojima et al., 2022</a>.
+
+  </p>
+
+  <!-- Chat Window -->
+  <div id="cot-chat" style="border:1px solid #e5e7eb; border-radius:12px; background:#f9fafb; padding:15px; height:340px; overflow-y:auto; font-family:sans-serif;">
+    <p style="color:#6b7280; text-align:center; margin:0;">Start the conversation below 👇</p>
+  </div>
+
+  <!-- User options -->
+  <div style="text-align:center; margin-top:15px;">
+    <button onclick="askSimple()" style="padding:8px 14px; background:#2563eb; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:10px;">
+      Ask without CoT
+    </button>
+    <button onclick="askCoT()" style="padding:8px 14px; background:#16a34a; color:white; border:none; border-radius:6px; cursor:pointer;">
+      Ask with CoT
+    </button>
+  </div>
+</section>
+
+<script>
+const chatBox = document.getElementById("cot-chat");
+
+// helper to add messages
+function addMessage(text, sender="user"){
+  const msg = document.createElement("div");
+  msg.style.marginBottom = "10px";
+  let bubbleStyle = sender === "user"
+    ? "background:#3b82f6; color:white; text-align:right; float:right;"
+    : "background:white; border:1px solid #d1d5db; text-align:left; float:left;";
+  msg.innerHTML = `<div style="${bubbleStyle} display:inline-block; padding:8px 12px; border-radius:12px; max-width:75%;">${text}</div><div style="clear:both;"></div>`;
+  chatBox.appendChild(msg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function askSimple(){
+  chatBox.innerHTML = ""; // reset
+  addMessage("How many 'r' are in raspberry?","user");
+  setTimeout(()=> addMessage("There are 1 'r'.","bot"), 800);
+}
+
+function askCoT(){
+  chatBox.innerHTML = ""; // reset
+  addMessage("How many 'r' are in raspberry. Let's think step by step.","user");
+
+  setTimeout(()=> addMessage("The word is 'raspberry'.","bot"), 800);
+  setTimeout(()=> addMessage("Let's count: r (1), a, s, p, b, e, r (2), r (3), y.","bot"), 1600);
+  setTimeout(()=> addMessage("So there are 3 'r's in 'raspberry'.","bot"), 2400);
+
+  // New user follow-up
+  setTimeout(()=> {
+    addMessage(`The word is 'raspberry'.\nLet's count: r (1), a, s, p, b, e, r (2), r (3), y.\nSo there are 3 'r's in 'raspberry'.\nTherefore, the answer is:`,"user");
+  }, 3400);
+
+  // Final concise answer
+  setTimeout(()=> addMessage("3 ✅","bot"), 4200);
+}
+</script>
+<p>The first part is for creating the chain of thought itself, 
+  while the second messages ensures a definitive, concise answer.
+</p>
+
+
+
+
+
+
+    <p style="font-size:16px; line-height:1.6; text-align:justify;">
+      <strong>Supervised Fine-Tuning (SFT)</strong> is a post-training technique where we update 
+      our model so its answers resamble a specific dataset. 
+      This is useful for alignment, which means developing models that specialize 
+      in a specific topic or must follow certain guidelines.
+      
+      
+      In more mathematical terms, given a set of prompts <m>x</m>, 
+      and their corresponding preferred answers <m>y</m>, 
+      we want our model responses given its current distributions to resamble <m>y</m>.
+      This can be achieved by updating our parameters based on a loss formula. 
+        <div id="sft-eq" style="text-align:center; margin:24px 0;"></div>
+        <div id="sft-grad" style="text-align:center; margin:24px 0;"></div>
+
+      <script>
+      (function ensureKatex(cb){
+        if (window.katex) return cb();
+        const l=document.createElement("link");
+        l.rel="stylesheet"; 
+        l.href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css";
+        document.head.appendChild(l);
+        const s=document.createElement("script");
+        s.src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js";
+        s.onload=cb;
+        document.head.appendChild(s);
+      })(function(){
+        katex.render(String.raw`
+          \nabla_\theta \, \mathcal{L}_{\text{SFT}}(\theta) 
+          = - \mathbb{E}_{x,y} \Bigg[ \sum_{t=1}^{T} 
+          \nabla_\theta \log p_\theta \big(y_t \mid x, y_{<t}\big) \Bigg]
+        `, document.getElementById('sft-grad'), { displayMode:true });
+      });
+      </script>
+      
+      
+
+
+      We last update our parameters through gradient descent, minimazing the loss. And then our output will resamble more our preffered output.
+
+      Make sure to read the <a href="https://arxiv.org/abs/2501.19393" target="_blank" rel="noopener">S1 model paper</a>, which shows the whole process of creating a RLM from scratch, inlcuding data collection through CoT prompting, SFT as a post-training technique, and Budget Forcing during inference (or controlling the lenght of the model's answers).
+    </p>
+
+    
+
+  <div style="text-align:center; margin:30px auto;">
+    <svg id="sft-demo" width="100%" height="260" viewBox="0 0 900 260">
+
+
+      <!-- Prompt -->
+    <rect id="node-x" x="40" y="90" width="240" height="80" rx="14" fill="#bae6fd"/>
+    <text x="160" y="120" text-anchor="middle" font-weight="600">
+      Prompt: 
+      <tspan x="160" dy="1.2em">"How to reset my password?"</tspan>
+    </text>
+
+      <!-- Preferred Answer -->
+      <rect x="320" y="40" width="520" height="60" rx="14" fill="#bbf7d0"/>
+      <text x="580" y="75" text-anchor="middle" font-weight="600">Preferred: "Go to configurations → reset password"</text>
+
+      <!-- Model Output -->
+      <rect id="node-yhat" x="320" y="140" width="520" height="60" rx="14" fill="#fb923c"/>
+      <text id="output-text" x="580" y="175" text-anchor="middle" font-weight="600">Model: "Try turning off your computer"</text>
+
+    
+    </svg>
+
+    <!-- Loss Progress Bar -->
+    <div style="margin-top:30px;">
+      <input type="range" id="loss-slider" min="0" max="3" value="0" step="1" style="width:80%;">
+      <div style="display:flex; justify-content:space-between; width:80%; margin:5px auto; font-size:14px; color:#374151;">
+        <span>High Loss</span>
+        <span>Update Weights (lower loss)</span>
+        <span>Update Weights (lower loss)</span>
+        <span>Zero Loss</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const outputs = [
+  'Model: "Try turning off your computer"',   // high loss
+  'Model: "Click something in settings"',     // step 1
+  'Model: "Go to settings and find password"',// step 2
+  'Model: "Go to configurations → reset password"' // perfect match
+];
+const colors = ["#fb923c","#fcd34d","#fef08a","#bbf7d0"];
+
+document.getElementById("loss-slider").addEventListener("input", function(e){
+  const val = parseInt(e.target.value);
+  document.getElementById("output-text").textContent = outputs[val];
+  document.getElementById("node-yhat").setAttribute("fill", colors[val]);
+
+  // Show loss arrow when not fully trained
+  document.getElementById("loss-arrow").style.opacity = (val<3 ? 1 : 0);
+});
+</script>
+
+
+
+
+
+
+<!-- Lara's part - Reinforcement Learning -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<div class="wrap">
+  <h2 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Reinforcement Learning</h2>
+<p>
+  <strong>Reinforcement learning</strong> is a way to train a system by trial and reward.
+  An agent tries actions, receives a numeric reward, and gradually learns a rule for choosing actions that
+  lead to higher reward. That rule is called the <em>policy</em>.
+</p>
+
+<p>
+  In fine tuning for language models, we apply this idea to align outputs with human preferences.
+  A separate <strong>reward model</strong> turns human judgments into scores, so we train the reward model first.
+</p>
+
+<p>
+  In the classic setup known as <strong>Reinforcement Learning from Human Feedback</strong>,
+  people compare two answers to the same prompt, the reward model learns to score those answers,
+  and the policy learns to pick the ones that score higher.
+  The diagram below shows how feedback trains the reward model and how that model guides the policy during fine tuning.
+</p>
+</div>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RLHF Flow Diagram</title>
+  <style>
+    :root{
+      --bg:#f8fafc; --ink:#0f172a; --muted:#64748b;
+      --arrow:#cbd5e1; --node:#bae6fd; --token:#3b82f6;
+      --model:#7dd3fc; --rm:#fde68a; --human:#fecaca; --rect:#e2e8f0;
+    }
+    body{margin:0;background:var(--bg);color:var(--ink);
+      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}
+    h1{margin:18px 0 6px;text-align:center;font-size:22px}
+    .sub{margin:0 0 8px;text-align:center;color:var(--muted);font-size:14px}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 12px 16px}
+    svg{display:block;width:100%;height:460px}
+    .node{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+    .edge{stroke:var(--arrow);stroke-width:3;fill:none;marker-end:url(#arrowhead)}
+    .rect-node{fill:var(--rect);stroke:var(--ink);stroke-width:2}
+    .model-node{fill:var(--model)}
+    .rm-node{fill:var(--rm)}
+    .human-node{fill:var(--human)}
+    .token{fill:var(--token);r:6;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+  </style>
+  </head>
+
+
+
+<body>
+  <div class="wrap" id="rlhf-flow">
+    <h1>Reward Model Training Flow</h1>
+    <p class="sub">Reinforcement Learning from Human Feedback Pipeline</p>
+
+    <svg id="flowSvg" viewBox="0 100 1000 210">
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="var(--arrow)" />
+        </marker>
+      </defs>
+
+      <rect x="20" y="120" width="60" height="40" class="node rect-node" rx="5"/>
+      <text x="50" y="145" text-anchor="middle" font-size="16" font-weight="bold">X</text>
+
+      <ellipse cx="180" cy="140" rx="60" ry="30" class="node model-node"/>
+      <text x="180" y="145" text-anchor="middle" font-size="16" font-weight="bold">Model</text>
+
+      <rect x="300" y="120" width="120" height="40" class="node rect-node" rx="5"/>
+      <text x="360" y="145" text-anchor="middle" font-size="14" font-weight="bold">continuations</text>
+
+      <ellipse cx="520" cy="140" rx="50" ry="30" class="node rm-node"/>
+      <text x="520" y="145" text-anchor="middle" font-size="16" font-weight="bold">RM</text>
+
+      <rect x="630" y="120" width="80" height="40" class="node rect-node" rx="5"/>
+      <text x="670" y="145" text-anchor="middle" font-size="14" font-weight="bold">reward</text>
+
+      <rect x="780" y="120" width="60" height="40" class="node rect-node" rx="5"/>
+      <text x="810" y="145" text-anchor="middle" font-size="14" font-weight="bold">loss</text>
+
+      <ellipse cx="360" cy="260" rx="70" ry="35" class="node human-node"/>
+      <text x="360" y="255" text-anchor="middle" font-size="14" font-weight="bold">Human</text>
+      <text x="360" y="270" text-anchor="middle" font-size="14" font-weight="bold">Labeler</text>
+
+      <path id="edge_x_model" class="edge" d="M 80 140 H 120" />
+
+      <path id="edge_x_cont" class="edge" d="M 80 140 V 80 H 360 V 120" />
+
+      <path id="edge_x_human" class="edge" d="M 80 140 V 260 H 290" />
+
+      <path id="edge_model_cont" class="edge" d="M 240 140 H 300" />
+
+      <path id="edge_cont_rm" class="edge" d="M 420 140 H 470" />
+
+      <path id="edge_rm_reward" class="edge" d="M 570 140 H 630" />
+
+      <path id="edge_reward_loss" class="edge" d="M 710 140 H 780" />
+
+      <path id="edge_cont_human" class="edge" d="M 360 160 V 225" />
+
+      <path id="edge_human_loss" class="edge" d="M 430 260 H 780 V 140" />
+
+      <path id="edge_loss_rm" class="edge" d="M 840 140 H 900 V 80 H 520 V 110" />
+
+      <circle class="token" id="tok1"/>
+      <circle class="token" id="tok2"/>
+      <circle class="token" id="tok3"/>
+      <circle class="token" id="tok_loss_rm" opacity="0"/>
+
+      <animateMotion id="a1_1" href="#tok1" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#edge_x_model"/></animateMotion>
+      <animateMotion id="a1_2" href="#tok1" dur="0.8s" begin="a1_1.end+0.05s" fill="freeze"><mpath href="#edge_model_cont"/></animateMotion>
+      <animateMotion id="a1_3" href="#tok1" dur="0.8s" begin="a1_2.end+0.05s" fill="freeze"><mpath href="#edge_cont_rm"/></animateMotion>
+      <animateMotion id="a1_4" href="#tok1" dur="0.9s" begin="a1_3.end+0.05s" fill="freeze"><mpath href="#edge_rm_reward"/></animateMotion>
+      <animateMotion id="a1_5" href="#tok1" dur="0.9s" begin="a1_4.end+0.05s" fill="freeze"><mpath href="#edge_reward_loss"/></animateMotion>
+
+      <animateMotion id="a2_1" href="#tok2" dur="1.0s" begin="indefinite" fill="freeze"><mpath href="#edge_x_cont"/></animateMotion>
+      <animateMotion id="a2_2" href="#tok2" dur="0.8s" begin="a2_1.end+0.05s" fill="freeze"><mpath href="#edge_cont_human"/></animateMotion>
+      <animateMotion id="a2_3" href="#tok2" dur="1.0s" begin="indefinite" fill="freeze"><mpath href="#edge_human_loss"/></animateMotion>
+
+      <animateMotion id="a3_1" href="#tok3" dur="1.2s" begin="indefinite" fill="freeze"><mpath href="#edge_x_human"/></animateMotion>
+      <animateMotion id="a3_2" href="#tok3" dur="1.0s" begin="indefinite" fill="freeze"><mpath href="#edge_human_loss"/></animateMotion>
+
+      <animateMotion id="a_lr_1" href="#tok_loss_rm" dur="1.2s" begin="indefinite" fill="freeze"><mpath href="#edge_loss_rm"/></animateMotion>
+      <animateMotion id="a_lr_2" href="#tok_loss_rm" dur="0.9s" begin="a_lr_1.end+0.05s" fill="freeze"><mpath href="#edge_rm_reward"/></animateMotion>
+      <animateMotion id="a_lr_3" href="#tok_loss_rm" dur="0.9s" begin="a_lr_2.end+0.05s" fill="freeze"><mpath href="#edge_reward_loss"/></animateMotion>
+    </svg>
+  </div>
+
+  <script>
+    const svg = document.getElementById('flowSvg');
+    const wrapper = document.getElementById('rlhf-flow');
+
+    const a1_first = document.getElementById('a1_1');
+    const a2_first = document.getElementById('a2_1');
+    const a3_first = document.getElementById('a3_1');
+
+    const a1_last = document.getElementById('a1_5');
+    const a2_last = document.getElementById('a2_3');
+    const a3_last = document.getElementById('a3_2');
+
+    const a_lr_1 = document.getElementById('a_lr_1');
+    const a_lr_2 = document.getElementById('a_lr_2');
+    const a_lr_3 = document.getElementById('a_lr_3');
+
+    const a2_toHuman = document.getElementById('a2_2'); 
+    const a3_toHuman = document.getElementById('a3_1'); 
+    const a2_fromHuman = document.getElementById('a2_3'); 
+    const a3_fromHuman = document.getElementById('a3_2'); 
+
+    const tok1 = document.getElementById('tok1');
+    const tok2 = document.getElementById('tok2');
+    const tok3 = document.getElementById('tok3');
+    const tokLRM = document.getElementById('tok_loss_rm');
+
+    let arrivedCount = 0;  
+    let humanArrivals = 0;  
+    let running = false;
+    let visible = false;
+
+    function resetTokens(){
+      [tok1,tok2,tok3,tokLRM].forEach(t=>{
+        t.setAttribute('r','0');
+        t.setAttribute('opacity', t === tokLRM ? '0' : '1');
+      });
+      requestAnimationFrame(()=>[tok1,tok2,tok3].forEach(t=>t.setAttribute('r','6')));
+    }
+
+    function startCycle(){
+      if (running) return;
+      running = true;
+      arrivedCount = 0;
+      humanArrivals = 0;
+      resetTokens();
+      a1_first.beginElement();
+      a2_first.beginElement();
+      a3_first.beginElement();
+    }
+
+    function beginLossChain(){
+      [tok1,tok2,tok3].forEach(t=>t.setAttribute('opacity','0'));
+      tokLRM.setAttribute('opacity','1');
+      tokLRM.setAttribute('r','6');
+      a_lr_1.beginElement();
+    }
+
+    function maybeFire(){
+      if (arrivedCount === 3){
+        beginLossChain();
+      }
+    }
+
+    function tryLeaveHuman(){
+      if (humanArrivals === 2){
+        a2_fromHuman.beginElement();
+        a3_fromHuman.beginElement();
+      }
+    }
+
+    a2_toHuman.addEventListener('endEvent', ()=>{ humanArrivals++; tryLeaveHuman(); });
+    a3_toHuman.addEventListener('endEvent', ()=>{ humanArrivals++; tryLeaveHuman(); });
+
+    a1_last.addEventListener('endEvent', ()=>{ arrivedCount++; maybeFire(); });
+    a2_last.addEventListener('endEvent', ()=>{ arrivedCount++; maybeFire(); });
+    a3_last.addEventListener('endEvent', ()=>{ arrivedCount++; maybeFire(); });
+
+    a_lr_3.addEventListener('endEvent', ()=>{
+      setTimeout(()=>{
+        running = false;
+        tokLRM.setAttribute('opacity','0');
+        if (visible) startCycle();
+      }, 350);
+    });
+
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          visible = true;
+          try { svg.unpauseAnimations(); } catch(e){}
+          startCycle();
+        }else{
+          visible = false;
+          try { svg.pauseAnimations(); } catch(e){}
+        }
+      });
+    }, {threshold: 0.25});
+    io.observe(wrapper);
+
+    window.addEventListener('load', ()=>{
+      const r = wrapper.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0){
+        visible = true;
+        try { svg.unpauseAnimations(); } catch(e){}
+        startCycle();
+      }
+    });
+  </script>
+
+
+<div class="wrap">
+  <h2 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Reward Model Training Data</h2>
+
+  <p>
+    Training a reward model requires pairs of answers that can be compared. Given the same prompt, annotators decide which answer
+    is better. The chosen answer becomes the <strong>preferred output</strong>, while the less helpful one is marked as not preferred.
+  </p>
+
+  <svg viewBox="0 0 1400 1100" width="100%" height="820" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="exArrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+        <path d="M0,0 L10,5 L0,10 Z" fill="#94a3b8"/>
+      </marker>
+      <filter id="exShadow" x="-50%" y="-50%" width="200%" height="200%">
+        <feDropShadow dx="0" dy="1.5" stdDeviation="1.8" flood-opacity="0.25"/>
+      </filter>
+      <style>
+        .ex-body{
+          font: 28px/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;
+          color:#111827; overflow-wrap:break-word; word-break:normal;
+        }
+        .ex-card{ fill:#eaf2ff; stroke:#94a3b8; rx:12; }
+        .ex-badge{ fill:#93c5fd; stroke:#334155; }
+        .ex-badge text{ fill:#0f172a; font-weight:800; font-size:26px; }
+        .ex-edge{ stroke:#94a3b8; stroke-width:3; fill:none; marker-end:url(#exArrow); }
+
+        /* Clean, non-disruptive colored underlines that preserve layout */
+        .ex-y1 strong{
+          text-decoration: underline;
+          text-decoration-thickness: 4px;
+          text-underline-offset: 3px;
+          text-decoration-color: #22c55e; /* green */
+          font-weight: 800;
+        }
+        .ex-y2 strong{
+          text-decoration: underline;
+          text-decoration-thickness: 4px;
+          text-underline-offset: 3px;
+          text-decoration-color: #ef4444; /* red */
+          font-weight: 800;
+        }
+      </style>
+    </defs>
+
+    <!-- Prompt -->
+    <rect x="460" y="70" width="480" height="90" class="ex-card" filter="url(#exShadow)"/>
+    <text x="700" y="122" text-anchor="middle" font-size="28" font-weight="700" fill="#0f172a">
+      How do I reset my phone password?
+    </text>
+
+    <!-- X bubble -->
+    <g transform="translate(700,230)">
+      <circle r="44" fill="#93c5fd" stroke="#334155" filter="url(#exShadow)"/>
+      <text y="8" text-anchor="middle" font-size="42" font-weight="800" fill="#0f172a">X</text>
+    </g>
+
+    <!-- y1 (GREEN underline on all <strong>) -->
+    <rect id="ex-y1Card" x="140" y="360" width="560" height="520" class="ex-card" filter="url(#exShadow)"/>
+    <foreignObject x="155" y="375" width="530" height="490">
+      <div class="ex-body ex-y1">
+        To reset your phone password, the <strong>first step</strong> is to go to the settings menu of your phone.
+        <strong>Once in settings</strong>, locate the security or “lock screen” settings.
+        <strong>Here, you will be able to reset your password</strong> and create a new one.
+      </div>
+    </foreignObject>
+
+    <!-- y2 (RED underline on all <strong>) -->
+    <rect id="ex-y2Card" x="760" y="360" width="560" height="520" class="ex-card" filter="url(#exShadow)"/>
+    <foreignObject x="775" y="375" width="530" height="490">
+      <div class="ex-body ex-y2">
+        You use the password manager to reset your phone password. To reset your phone password, you need:
+        <ul style="margin:.6rem 0 0 1.4rem; padding:0;">
+          <li><strong>your phone password</strong></li>
+          <li><strong>a password manager app</strong></li>
+          <li>
+            <strong>a password manager app in your phone</strong>, either on your phone or in a trusted mobile app store
+            like iCloud, Facebook Messenger, or Phone Passcode
+          </li>
+        </ul>
+      </div>
+    </foreignObject>
+
+    <!-- arrows from X to y1/y2 -->
+    <path class="ex-edge" d="M 700 274 V 300 H 420 V 360" />
+    <path class="ex-edge" d="M 700 274 V 300 H 1040 V 360" />
+
+    <!-- y1/y2 badges -->
+    <g transform="translate(180,905)">
+      <rect x="-40" y="-26" width="180" height="96" rx="28" class="ex-badge" filter="url(#exShadow)"/>
+      <text x="45" y="32" font-size="42" text-anchor="middle" font-weight="800" fill="#0f172a">y1</text>
+    </g>
+    <g transform="translate(1280,905)">
+      <rect x="-40" y="-26" width="180" height="96" rx="28" class="ex-badge" filter="url(#exShadow)"/>
+      <text x="45" y="32" font-size="42" text-anchor="middle" font-weight="800" fill="#0f172a">y2</text>
+    </g>
+
+    <!-- preference symbol -->
+    <g transform="translate(700,1000)">
+      <g transform="translate(-120,0)">
+        <circle r="22" fill="#22c55e"/>
+        <path d="M -7 0 L -2 6 L 11 -8" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="36" y="9" font-size="32" font-weight="800" fill="#0f172a">y1</text>
+      </g>
+      <text x="0" y="10" text-anchor="middle" font-size="42" font-weight="800" fill="#0f172a">≻</text>
+      <g transform="translate(120,0)">
+        <circle r="22" fill="#f43f5e" opacity=".95"/>
+        <path d="M -8 -8 L 8 8 M -8 8 L 8 -8" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+        <text x="36" y="9" font-size="42" font-weight="800" fill="#0f172a">y2</text>
+      </g>
+    </g>
+  </svg>
+
+  <p style="margin-top:.75rem; font-size:18px;">
+    In this example database in
+    <a href="https://huggingface.co/datasets/Dahoas/synthetic-instruct-gptj-pairwise/viewer/default/train?f%5Bchosen%5D%5Bmin%5D=1&f%5Bchosen%5D%5Bmax%5D=311&f%5Bchosen%5D%5Btransform%5D=length&row=15&views%5B%5D=train" target="_blank" rel="noopener">HuggingFace</a>
+    the annotators preferred answer <strong>y1</strong>.
+  </p>
+</div>
+
+<p style="margin-top:1rem;">
+  In this example, the prompt <em>"How do I reset my phone password?"</em> produces two candidate answers. Annotators judged that
+  <strong>y1</strong> was a better response. When analysing both answers we can see that in answer <strong>y1</strong>, underlined in green, there are a series of steps on how to reset a phone password. 
+  The generated answer <strong>y2</strong> lists items that might be required but does not explain how to do the task, as we can see underlined in red.
+</p>
+
+<style>
+  .loss2-sec{--ink:#0f172a;--muted:#64748b;--line:#e5e7eb}
+  .loss2-sec h2{margin:1.25rem 0 .6rem 0; font-size:1.35rem; font-weight:700}
+  .loss2-sec .sub{color:var(--muted); font-size:15px; margin:.25rem 0 .9rem}
+  .loss2-sec .eq{margin:.6rem 0 .35rem}
+  .loss2-sec .katex{font-size:95%}          /* math slightly smaller than body */
+  .loss2-sec .katex.display{margin:.35rem 0}
+  .loss2-sec p{font-size:15px; line-height:1.6; color:var(--ink); margin:.4rem 0}
+  .loss2-sec .two-col{display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:.6rem 0}
+  .loss2-sec .ans{font-size:15px; line-height:1.55}
+  .loss2-sec .ans .tag{font-weight:700; margin-right:.25rem}
+  .loss2-sec .ctrl{display:grid; grid-template-columns:1fr 1fr; gap:.75rem 1rem; align-items:center; margin:.6rem 0}
+  .loss2-sec label{color:var(--muted); font-size:15px}
+  .loss2-sec input[type="range"]{width:100%}
+  .loss2-sec .stat{margin:.35rem 0; font-size:15px}
+  .loss2-sec code.inline{background:#f8fafc; border:1px solid var(--line); padding:.1rem .4rem; border-radius:6px}
+  @media (max-width: 820px){
+    .loss2-sec .two-col{grid-template-columns:1fr}
+    .loss2-sec .ctrl{grid-template-columns:1fr}
+  }
+</style>
+
+<div class="wrap loss2-sec" id="pairwise-loss-v2">
+  <h2>Pairwise loss for the reward model</h2>
+
+  <div class="eq"><span id="loss2-eq"></span></div>
+
+  <p>
+    This is the pairwise loss we use to train the reward model. Start by taking the reward score for the
+    currently preferred answer \(r(x,y_b)\) and exponentiating it. Using the exponential turns arbitrary
+    scores into positive quantities and lets the model express “how much better” one answer is than another.
+  </p>
+  <p>
+    Next, normalize by the sum of exponentials for both candidates \(y_1\) and \(y_2\). That normalization
+    forms a two-way softmax and yields a probability that the preferred answer is indeed the better one under
+    the current reward model.
+  </p>
+  <p>
+    We then take the negative log of that probability. This is the standard maximum-likelihood objective:
+    it is numerically stable, converts products into sums over a dataset, and penalizes confident mistakes
+    more than small ones. During training we minimize the average of this loss across many labeled comparisons,
+    which is why the expectation is implied.
+  </p>
+
+<h3 style="margin:1rem 0 .5rem; font-size:1.1rem; font-weight:700;">
+  Let’s look at a numeric example.
+</h3>
+<p>
+  Considering the same prompt <em>“How do I reset my phone password?”</em> and answers <strong>y1</strong>
+  and <strong>y2</strong> as in the example above, you can play with the values that would have been assigned
+  to each answer by the model and choose your preferred answer in order to better understand the effects
+  these values have on the learning process of the reward model.
+</p>
+
+  <div class="ctrl">
+    <label for="r1b">Reward \(r(x,y_1)\): <strong id="r1bv">3.2</strong></label>
+    <input id="r1b" type="range" min="-2" max="6" step="0.1" value="3.2"/>
+    <label for="r2b">Reward \(r(x,y_2)\): <strong id="r2bv">1.1</strong></label>
+    <input id="r2b" type="range" min="-2" max="6" step="0.1" value="1.1"/>
+    <label>Preferred \(b\):</label>
+    <div>
+      <label style="margin-right:.9rem"><input type="radio" name="pref2" value="y1" checked/> \(y_1\)</label>
+      <label><input type="radio" name="pref2" value="y2"/> \(y_2\)</label>
+    </div>
+  </div>
+
+  <p class="stat">
+    With these settings, the model assigns a probability of <code class="inline" id="pout2">0.8910</code> to the preferred answer,
+    which gives a loss of \( -\log p \) equal to <code class="inline" id="lout2">0.0501</code>.
+  </p>
+
+  <div class="eq"><span id="loss2-work"></span></div>
+
+  <p>
+    When the two rewards are close, the softmax sits near one half and the loss stays comparatively large, indicating that the model is not very sure.
+    As the preferred reward grows much larger than the alternative, the probability approaches one, the loss drops toward zero, and the
+    reward model is saying “I am confident this answer is better.” If the non-preferred answer receives the higher reward, the probability
+    for the preferred answer becomes small and the loss grows, pushing the model to revise the scores on future updates.
+  </p>
+</div>
+
+<script>
+  (function ensureKatexAuto(cb){
+    const haveMain = !!window.katex;
+    const haveAuto = !!window.renderMathInElement;
+    if (haveMain && haveAuto) return cb();
+
+    function load(src, onload){
+      const s=document.createElement('script'); s.defer=true; s.src=src; s.onload=onload; document.head.appendChild(s);
+    }
+    function loadCSS(href){
+      const l=document.createElement('link'); l.rel='stylesheet'; l.href=href; document.head.appendChild(l);
+    }
+
+    if (!haveMain) loadCSS('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css');
+    const afterMain = ()=> load('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js', cb);
+    if (!haveMain) load('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js', afterMain);
+    else if (!haveAuto) afterMain(); else cb();
+  })(initLossV2);
+
+  function initLossV2(){
+    const $=(id)=>document.getElementById(id);
+    const container = document.getElementById('pairwise-loss-v2');
+    const r1=$('r1b'), r2=$('r2b'), r1v=$('r1bv'), r2v=$('r2bv');
+    const pout=$('pout2'), lout=$('lout2');
+    const eqMain=$('loss2-eq'), eqWork=$('loss2-work');
+
+    katex.render(String.raw`\mathcal{L}(r)=-\log\!\left(\frac{e^{\,r(x,y_b)}}{e^{\,r(x,y_1)}+e^{\,r(x,y_2)}}\right)`,
+                 eqMain, {displayMode:true, throwOnError:false});
+
+    try{
+      renderMathInElement(container,{
+        delimiters:[
+          {left:"$$", right:"$$", display:true},
+          {left:"\\[", right:"\\]", display:true},
+          {left:"\\(", right:"\\)", display:false}
+        ],
+        throwOnError:false
+      });
+    }catch(e){}
+
+    function fmt(x,d=4){ return Number(x).toFixed(d); }
+
+    function compute(){
+      const v1=parseFloat(r1.value), v2=parseFloat(r2.value);
+      r1v.textContent=v1.toFixed(1);
+      r2v.textContent=v2.toFixed(1);
+
+      const e1=Math.exp(v1), e2=Math.exp(v2), Z=e1+e2;
+      const p1=e1/Z, p2=e2/Z;
+      const pref=document.querySelector('input[name="pref2"]:checked').value;
+      const pb=(pref==='y1')?p1:p2;
+      const L=-Math.log(pb);
+
+      pout.textContent=fmt(pb);
+      lout.textContent=fmt(L);
+
+      const rb=(pref==='y1')?v1:v2;
+      const erb=(pref==='y1')?e1:e2;
+
+      const work = String.raw`
+        -\log\!\left(\frac{e^{${rb.toFixed(1)}}}{e^{${v1.toFixed(1)}}+e^{${v2.toFixed(1)}}}\right)
+        = -\log\!\left(\frac{${fmt(erb)}}{${fmt(e1)}+${fmt(e2)}}\right)
+        = -\log(${fmt(pb,3)}) \approx ${fmt(L)}
+      `;
+      katex.render(work, eqWork, {displayMode:true, throwOnError:false});
+    }
+
+    ['input','change'].forEach(ev=>{
+      r1.addEventListener(ev, compute);
+      r2.addEventListener(ev, compute);
+      document.querySelectorAll('input[name="pref2"]').forEach(el=>el.addEventListener(ev, compute));
+    });
+
+    compute();
+  }
+</script>
+
+
+</body>
+</html>
+
+
+
+
+
+<!-- Rodion's part - Reasoning Architecture, Benchmarks -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reasoning Search Flow</title>
+  <style>
+    :root { --bg:#f8fafc; --ink:#111827; --arrow:#94a3b8; --accent:#fb923c; }
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;background:var(--bg);color:var(--ink)}
+    .wrap{width:100%;margin:24px auto;padding:0}
+    .panel{ display:flow-root; margin-bottom:0; }
+    .hint{color:#475569;font-size:14px;margin-top:8px;text-align:center}
+    .token{filter:drop-shadow(0 1px 2px rgba(0,0,0,.35));offset-rotate:0deg}
+    .sub{ margin: 6px 0 8px; }
+    #scene{ display:block; margin:0; }
+    @keyframes move{from{offset-distance:0%}to{offset-distance:100%}}
+  </style>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Best-of-N Search</title>
+  <style>
+    :root{--bg:#f8fafc;--ink:#0f172a;--arrow:#cbd5e1;--good:#22c55e;--bad:#f43f5e;--node:#bae6fd;--token:#3b82f6}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}
+    h1{margin:18px 0 6px;text-align:center;font-size:22px}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 12px 16px}
+    svg{display:block;width:100%;height:380px}
+    .node{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+    .token{r:10;fill:var(--token);filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+    @keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}
+    .pulse{animation:pulse 1.2s ease-in-out infinite}
+    @keyframes pulse{0%{opacity:.6}50%{opacity:1}100%{opacity:.6}}
+    button.run-btn{display:block;margin:0 auto 12px;padding:8px 16px;font-size:14px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer}
+    button.run-btn:hover{background:#f3f4f6}
+    /* Unfold animation for arrows */
+    .edge{stroke:var(--arrow);stroke-width:3;fill:none}
+    .edge.draw{transition:stroke-dashoffset 800ms ease}
+    .fin{opacity:0;transform-box:fill-box;transform-origin:center;}
+    .fin.show{opacity:1;transition:opacity .4s ease, transform .4s ease;transform:scale(1.05)}
+  </style>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beam Search</title>
+  <style>
+    :root{
+      --bg:#f8fafc; --ink:#0f172a; --muted:#64748b;
+      --arrow:#cbd5e1; --node:#bae6fd; --token:#3b82f6;
+      --good:#22c55e; --bad:#f43f5e;
+    }
+    body{margin:0;background:var(--bg);color:var(--ink);
+        font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}
+    h1{margin:18px 0 6px;text-align:center;font-size:22px}
+    .sub{margin:0 0 8px;text-align:center;color:var(--muted);font-size:14px}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 12px 16px}
+    svg{display:block;width:100%;height:420px}
+    .node{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+    .edge{stroke:var(--arrow);stroke-width:3;fill:none}
+    .edge.draw{transition:stroke-dashoffset 700ms ease}
+    .mid{fill:#e5e7eb}
+    .mid.good{fill:var(--good)}
+    .mid.bad{fill:var(--bad);opacity:.9}
+    .leaf{fill:#e5e7eb}
+    .leaf.good{fill:var(--good)}
+    .leaf.bad{fill:var(--bad);opacity:.95}
+    .pulse{animation:pulse 1.2s ease-in-out infinite}
+    @keyframes pulse{0%{opacity:.65}50%{opacity:1}100%{opacity:.65}}
+    @keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}
+  </style>
+
+  <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Diverse Verifier Tree Search — Dynamic Visualization</title>
+    <style>
+      :root{
+        --bg:#f8fafc; --ink:#0f172a; --muted:#64748b;
+        --arrow:#cbd5e1; --node:#bae6fd; --token:#3b82f6;
+        --good:#22c55e; --bad:#f43f5e;
+      }
+      body{margin:0;background:var(--bg);color:var(--ink);
+          font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}
+      h1{margin:18px 0 6px;text-align:center;font-size:22px}
+      .sub{margin:0 0 8px;text-align:center;color:var(--muted);font-size:14px}
+      .wrap{max-width:1200px;margin:0 auto;padding:0 12px 16px}
+      svg{display:block;width:100%;height:420px}
+      .node{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+      .edge{stroke:var(--arrow);stroke-width:3;fill:none}
+      .edge.draw{transition:stroke-dashoffset 700ms ease}
+      .token{fill:var(--token);r:8;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+      .mid{r:10}
+      .mid.good{fill:var(--good)}
+      .mid.bad{fill:var(--bad);opacity:.9}
+      .leaf{r:12}
+      .leaf.good{fill:var(--good)}
+      .leaf.bad{fill:var(--bad);opacity:.95}
+      .pulse{animation:pulse 1.2s ease-in-out infinite}
+      @keyframes pulse{0%{opacity:.65}50%{opacity:1}100%{opacity:.65}}
+      @keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}
+  </style>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Strategies Performance Comparison</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;background:#f8fafc;color:#0f172a}
+    h1{text-align:center;margin:18px 0 6px;font-size:22px}
+    #chart{display:block;margin:0 auto;max-width:900px}
+    .axis path,.axis line{stroke:#94a3b8}
+    .baseline{stroke:#475569;stroke-dasharray:6 6;opacity:.8}
+    .legend text{font-size:12px;dominant-baseline:middle;fill:#0f172a}
+  </style>
+
+  <meta charset="UTF-8">
+  <title>Benchmarks</title>
+  <!-- DataTables + jQuery -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  
+  <meta charset="UTF-8">
+  <style>
+    .hanoi-section {
+      font-family: sans-serif;
+      background: #fefefe;
+      padding: 2rem;
+      text-align: center;
+    }
+    .peg-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-end;
+      height: 200px;
+      margin-top: 3rem;
+    }
+    .peg {
+      width: 10px;
+      height: 150px;
+      background: #333;
+      position: relative;
+    }
+    .disk {
+      position: absolute;
+      height: 20px;
+      border-radius: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .disk1 { width: 100px; background: #FF6B6B; }
+    .disk2 { width: 70px; background: #4ECDC4; }
+    .disk3 { width: 40px; background: #1A535C; }
+
+    .peg-label {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1 style="text-align:left">Reasoning Architecture</h2>
+  <h2>Pipeline</h2>
+
+  <p>
+    While DeepSeek R1 is a dedicated reasoning model trained with chain-of-thought data and methods such as
+    supervised fine-tuning and reinforcement learning, it's also possible to build a reasoning architecture around a
+    standard language model.
+  </p>
+
+  <p>
+    In this setup, an LLM (e.g., a Llama 1B or 8b model) produces multiple candidate answers. A reward model then
+    scores these candidates, and a search strategy selects the best answer based on the rewards. This kind of architecture is described 
+    in the Hugging Face cookbook:
+    <a href="https://huggingface.co/learn/cookbook/search_and_learn" target="_blank" rel="noopener">“Search &amp; Learn”</a>.
+  </p>
+
+  <p>
+    The dynamic chart below visualizes the architecture: the LLM proposes candidates, the reward model scores them, and the search strategy
+    steers the loop toward the final answer.
+  </p>
+
+<div class="wrap">
+  <h3 style="text-align:center">Reasoning Search Flow</h3>
+  <div class="panel">
+    <p class="sub">Gets a problem → produce answers → score answers - choose the best with the strategy - give final answer.</p>
+    <svg id="scene"
+     viewBox="0 0 1200 350"
+     width="100%"
+     height="350"
+     preserveAspectRatio="xMidYMin meet">
+      <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="userSpaceOnUse">
+          <path d="M0,0 L9,3 L0,6 Z" fill="var(--arrow)" />
+        </marker>
+        <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
+        </filter>
+      </defs>
+
+      <script type="application/json" id="points">{
+        "math": {"x":90,  "y":320},
+        "llm":  {"x":400, "y":260},
+        "prm":  {"x":700, "y":260},
+        "search":{"x":620, "y":100 },
+        "final": {"x":1070,"y":350}
+      }</script>
+
+      <g id="edges" stroke="var(--arrow)" stroke-width="3" marker-end="url(#arrow)" opacity=".65" fill="none"></g>
+      <g id="nodes"></g>
+      <circle cx="620" cy="100" r="62" fill="var(--accent)" opacity=".15" filter="url(#soft)" />
+      <g id="tokenLayer"></g>
+    </svg>
+  </div>
+</div>
+
+<script>
+(function(){
+  const P = JSON.parse(document.getElementById('points').textContent);
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const rightOf = (p)=>[p.x+90,p.y];
+  const leftOf  = (p)=>[p.x-90,p.y];
+  const topOf   = (p)=>[p.x,p.y-40];
+  const C = (x1,y1,x2,y2,x,y)=>`C ${x1} ${y1}, ${x2} ${y2}, ${x} ${y}`;
+  const seg=(from,to,bendY)=>{const midX=(from[0]+to[0])/2,by=bendY??from[1];return `M ${from[0]} ${from[1]} ${C(midX,by,midX,by,to[0],to[1])}`};
+
+  const paths={
+    mathToLLM: seg(rightOf(P.math), leftOf(P.llm)),
+    llmToPRM: seg(rightOf(P.llm), leftOf(P.prm)),
+    prmToSearch: seg(rightOf(P.prm), [P.search.x, P.search.y], P.prm.y - 80),
+    searchToLLM: seg([P.search.x-90,P.search.y],[P.llm.x,P.llm.y-40], P.search.y-30),
+    prmToFinal: seg(rightOf(P.prm), leftOf(P.final))
+  };
+
+  function addNode(group,x,y,label,fill){
+    const g=document.createElementNS(svgNS,'g');
+    g.setAttribute('transform',`translate(${x-90},${y-40})`);
+    const rect=document.createElementNS(svgNS,'rect');
+    rect.setAttribute('rx','18');rect.setAttribute('width','180');rect.setAttribute('height','80');
+    rect.setAttribute('fill',fill);rect.setAttribute('style','filter:drop-shadow(0 1px 2px rgba(0,0,0,.15))');
+    const text=document.createElementNS(svgNS,'text');
+    text.setAttribute('x','90');text.setAttribute('y','44');text.setAttribute('text-anchor','middle');
+    text.setAttribute('fill','#111827');text.setAttribute('style','font-weight:600');
+    text.textContent=label;
+    g.appendChild(rect);g.appendChild(text);group.appendChild(g);
+  }
+
+  const nodesG=document.getElementById('nodes');
+  addNode(nodesG,P.math.x,P.math.y,'Input problem','#bae6fd');
+  addNode(nodesG,P.llm.x,P.llm.y,'LLM','#d8b4fe');
+  addNode(nodesG,P.prm.x,P.prm.y,'PRM','#fef08a');
+  addNode(nodesG,P.search.x,P.search.y,'Search strategy','#fdba74');
+  addNode(nodesG,P.final.x,P.final.y,'Final answer','#bae6fd');
+
+  const edgesG=document.getElementById('edges');
+  Object.values(paths).forEach(d=>{const path=document.createElementNS(svgNS,'path');path.setAttribute('d',d);edgesG.appendChild(path);});
+
+  const tokens=[
+    {d:paths.mathToLLM, delay:0.0, color:'#3b82f6'},
+    {d:paths.llmToPRM, delay:0.0, color:'#7c3aed'},
+    {d:paths.prmToSearch, delay:0.0, color:'#f59e0b'},
+    {d:paths.searchToLLM, delay:0.0, color:'#10b981'},
+    {d:paths.prmToFinal, delay:0.0, color:'#22c55e'}
+  ];
+
+  const tokenLayer=document.getElementById('tokenLayer');
+  tokens.forEach(t=>{
+    const c=document.createElementNS(svgNS,'circle');
+    c.setAttribute('r','10');
+    c.setAttribute('fill',t.color);
+    c.classList.add('token');
+    c.style.offsetPath=`path('${t.d}')`;
+    c.style.animation=`move 4s linear ${t.delay}s infinite`;
+    c.style.animationPlayState='running';
+    tokenLayer.appendChild(c);
+  });
+})();
+</script>
+
+<p>
+    To reproduce the pipeline one can use the Search-and-Learn repository: <a href="https://github.com/huggingface/search-and-learn" 
+    target="_blank" rel="noopener">huggingface/search-and-learn</a>.</p> 
+    <p>
+    Clone the repository, install dependencies as described in the repo, follow the 
+    pipeline guide in the cookbook: <a href="https://huggingface.co/learn/cookbook/search_and_learn" target="_blank" rel="noopener">
+      Search &amp; Learn tutorial</a>. </p>
+
+<section style="margin-top:60px; margin-bottom:40px; max-width:900px; margin-left:auto; margin-right:auto;">
+  <h2 style="
+    font-size:2em;
+    font-weight:700;
+    letter-spacing:0.01em;
+    margin-bottom:18px;
+    background:linear-gradient(90deg, #010610 70%, #eab308 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    text-align:center;
+  ">
+    Verifiers in Reasoning Models
+  </h2>
+
+  <p>
+    Verifiers are part of a larger category of tools we use for the the models reasoning process called operators. 
+    And operators do basically everything you can think of. There are operators for refining the reasoning 
+    steps when they fall under certain threshold, or multiply a branch with a policy model. 
+    They can also prune entire paths that we feel are going nowhere. And verifiers do exactly what their name tells us.
+  </p>
+
+  <blockquote style="font-style:italic; background:#fefce8; padding:12px 18px; border-left:4px solid #eab308; border-radius:6px; margin:20px 0;">
+    “The verifier assesses the quality of the final answer or intermediate reasoning steps and provides feedback to the reasoner.” 
+    <a href="https://arxiv.org/html/2504.09037v1" target="_blank" rel="noopener" style="color:#2563eb; text-decoration:none;">
+      (Ke et al., 2025)
+    </a>
+  </blockquote>
+
+  <p>
+    They can be divided based on different categories: <strong>the form</strong> of the verifier's result, the level of <strong>granularity</strong>, the <strong>source</strong> of the verifier, and if they require <strong>  additional training</strong>. 
+    <a href="https://arxiv.org/abs/2411.11504" target="_blank" rel="noopener">(Guan et al., 2022)</a>.
+  </p>
+
+  <p>
+    The feedback can be presented back to the reasoner in many forms. <strong>Binary feedback</strong> provides a simple pass/fail judgment, while <strong> score-based feedback</strong>  offers continuous values that 
+    indicate the degree of correctness. <strong>  Ranking feedback </strong>compares multiple outputs and orders them, giving the optimization 
+    process relative preferences. Finally, <strong> textual feedback </strong>delivers the richest information, often including rationales, critiques, 
+    or detailed explanations of why an answer is considered strong or weak.
+  </p>
+
+  <p>
+    The granularity of verification can be considered at three different levels. <strong> Token-level verifiers</strong> evaluate predictions 
+    one token at a time, offering the most fine-grained form of feedback. <strong>Thought-level verifiers</strong> instead examine reasoning 
+    steps or sentences as whole units, providing judgments at an intermediate scale. <strong>Trajectory-level verifiers</strong> operate at the 
+    entire sequence of reasoning from start to finish. Each level offers different advantages, with token-level being the most 
+    detailed, and trajectory-level giving a rounded view of reasoning quality.
+  </p>
+
+  <p>
+    From the perspective of their source, verifiers can be divided into program-based and model-based approaches. 
+    <strong>Program-based verifiers rely on deterministic rules</strong>, which makes them consistent, interpretable, and transparent. 
+    However, this is in exchange for no adaptability in more dynamic tasks. <strong>Model-based verifiers generate judgments through 
+    probabilistic models instead</strong>. This allows them to adapt to diverse contexts and tasks, but increases the uncertainty 
+    and decreases reliability.
+  </p>
+
+  <p>
+    Finally, verifiers differ in whether they require additional training. <strong>Those that do are often fine-tuned on task-specific 
+    data improving their judgement in one domain</strong>. The drawback is that they are not generalizable outside of the task at hand. 
+    <strong>Verifiers that do not require additional training are based on pre-existing models</strong>. They will not be as precise as trained 
+    verifiers, but handle data variation better, and are not dependant on task-specific datasets.
+  </p>
+
+  <p><strong>Now, here is a table for you to see some examples of verifiers after this long read:</strong></p>
+  <div style="background:#f1f5f9; padding:16px; border-radius:10px; text-align:center; margin:20px 0;">
+    <h3 style="text-align:center; margin:30px 0 14px 0; font-size:1.4em; font-weight:600; color:#111;">
+  Towards Next Generation Post-training Paradigm of Foundation Models via Verifier Engineering
+</h3>
+
+<table style="width:100%; border-collapse:collapse; font-size:0.95em; margin:0 auto; background:#fff; box-shadow:0 3px 14px rgba(0,0,0,0.05); border-radius:10px; overflow:hidden;">
+  <thead style="background:#1e293b; color:#fff;">
+    <tr>
+      <th style="padding:12px; text-align:center;">Verifier Type</th>
+      <th style="padding:12px; text-align:center;">Verification Form</th>
+      <th style="padding:12px; text-align:center;">Verify Granularity</th>
+      <th style="padding:12px; text-align:center;">Verifier Source</th>
+      <th style="padding:12px; text-align:center;">Extra Training</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding:10px;">Golden Annotation</td>
+      <td style="padding:10px;">Binary/Text</td>
+      <td style="padding:10px;">Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+    <tr style="background:#f9fafb;">
+      <td style="padding:10px;">Rule-based</td>
+      <td style="padding:10px;">Binary/Text</td>
+      <td style="padding:10px;">Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+    <tr>
+      <td style="padding:10px;">Code Interpreter</td>
+      <td style="padding:10px;">Binary/Score/Text</td>
+      <td style="padding:10px;">Token/Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+    <tr style="background:#f9fafb;">
+      <td style="padding:10px;">ORM</td>
+      <td style="padding:10px;">Binary/Score/Rank/Text</td>
+      <td style="padding:10px;">Full Trajectory</td>
+      <td style="padding:10px;">Model Based</td>
+      <td style="padding:10px;">Yes</td>
+    </tr>
+    <tr>
+      <td style="padding:10px;">Language Model</td>
+      <td style="padding:10px;">Binary/Score/Rank/Text</td>
+      <td style="padding:10px;">Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Model Based</td>
+      <td style="padding:10px;">Yes</td>
+    </tr>
+    <tr style="background:#f9fafb;">
+      <td style="padding:10px;">Tool</td>
+      <td style="padding:10px;">Binary/Score/Rank/Text</td>
+      <td style="padding:10px;">Token/Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+    <tr>
+      <td style="padding:10px;">Search Engine</td>
+      <td style="padding:10px;">Text</td>
+      <td style="padding:10px;">Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+    <tr style="background:#f9fafb;">
+      <td style="padding:10px;">PRM</td>
+      <td style="padding:10px;">Score</td>
+      <td style="padding:10px;">Token/Thought Step</td>
+      <td style="padding:10px;">Model Based</td>
+      <td style="padding:10px;">Yes</td>
+    </tr>
+    <tr>
+      <td style="padding:10px;">Knowledge Graph</td>
+      <td style="padding:10px;">Text</td>
+      <td style="padding:10px;">Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+
+  <p>
+    As a last note, it important to notice that verifiers in a sense imitate a kind of response from the environment for the LM, 
+    allowing it to have a perception on how their action had a response. If this want to see how much can be done with this interaction, 
+    maybe check this <a href="[HYPERLINK]" target="_blank" rel="noopener">link [the idea is to connect our blog to the other team's]</a>.
+  </p>
+</section>
+
+<section style="margin:60px 0;">
+  <h2 style="text-align:center;">Reasoning Structures</h2>
+  <div style="max-width:900px; margin:20px auto; padding:18px 24px; background:#f9fafb; border-left:4px solid #2563eb; border-radius:8px; line-height:1.6; text-align:justify; font-size:16px;">
+    <strong>Reasoning LLMs produce multiple of these steps in their answers, and the way we group and organize them together is called the reasoning structure.</strong> 
+    Now the most basic reasoning structure is the <strong>chain</strong>, which you can see often in Chain of Thought models, where there is a logical progression step for step. 
+    This would be a <strong>sequential</strong> type of structure. But there are also 
+    <strong>parallel structures like trees</strong>, where we can have multiple branches, allowing us to explore answers more thoroughly, at the cost of adding computational resources. 
+    Then finally we have <strong>graphs</strong>, where the units are conditioned or <strong>dependencies</strong> between each reasoning step.
+  </div>
+</section>
+</section>
+  
+  <iframe src="reasoning_structures.html" width="100%" height="720" style="border:none; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);"></iframe>
+</section>
+
+
+<h2 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Search Strategies</h2>
+
+  <p>There are several search strategies to select the best answer including Best-of-N, Beam Search and Diverse Verifier Tree. Let's have a closer look at them</p>
+
+<h3 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Best-of-N</h3>
+
+  <p>The Best-of-N strategy is a simple but powerful way to improve the quality of responses from a language model. </p>
+    
+    <p>Instead of relying on a single output, the model generates N different candidate answers to the same problem. </p>
+    <p>Each candidate is then evaluated to measure how good or useful it is. Finally, the system selects the candidate with 
+    the highest score.</p>
+
+<div class="wrap">
+  <h3 style="text-align:center">Best-of-N Search</h3>
+  <p class="sub">Generate N candidate answers → score each → select the one with the highest reward.</p>
+  <svg id="bon" viewBox="0 0 1200 400"></svg>
+</div>
+
+<script>
+function startViz(){
+  const N = 5;                 // number of candidates
+  const CYCLE_S = 4;           // seconds per winner refresh
+  const DRAW_MS = 800;         // ms it takes to draw one arrow
+  const STAGGER_MS = 180;      // ms between arrow starts
+
+  const svg = document.getElementById('bon');
+  svg.innerHTML = '';
+  const NS = 'http://www.w3.org/2000/svg';
+
+  // Layout
+  const cx = 600, cy = 80;            // math problem center
+  const leafY = 300;                   // y for final answers
+  const span = 700;                    // horizontal spread for leaves
+  const leftX = cx - span/2, step = span/(N-1);
+
+  // Problem node
+  const gProb = document.createElementNS(NS,'g');
+  gProb.setAttribute('transform',`translate(${cx-80},${cy-28})`);
+  const rProb = document.createElementNS(NS,'rect');
+  rProb.setAttribute('width',160); rProb.setAttribute('height',56); rProb.setAttribute('rx',18); rProb.setAttribute('fill','var(--node)'); rProb.setAttribute('class','node');
+  const tProb = document.createElementNS(NS,'text'); tProb.setAttribute('x',80); tProb.setAttribute('y',34); tProb.setAttribute('text-anchor','middle'); tProb.textContent='Math problem';
+  gProb.appendChild(rProb); gProb.appendChild(tProb); svg.appendChild(gProb);
+
+  const finals = [], balls = [], edges = [];
+
+  for(let i=0;i<N;i++){
+    const x = leftX + i*step;
+    const start = [cx, cy+28];
+    const end = [x, leafY];
+    const midX = (start[0]+end[0])/2;
+    const bendY = cy + 40;
+    const d = `M ${start[0]} ${start[1]} C ${midX} ${bendY}, ${midX} ${bendY}, ${end[0]} ${end[1]}`;
+
+    // Edge path (to be drawn later)
+    const p = document.createElementNS(NS,'path');
+    p.setAttribute('d', d); p.setAttribute('class','edge draw');
+    svg.appendChild(p); edges.push(p);
+
+    // Final nodes (show after edge draws)
+    const fin = document.createElementNS(NS,'circle');
+    fin.setAttribute('cx', end[0]); fin.setAttribute('cy', end[1]); fin.setAttribute('r', 14); fin.setAttribute('fill', '#e5e7eb');
+    fin.setAttribute('class','fin');
+    svg.appendChild(fin); finals.push(fin);
+
+    // Moving token (start after its edge finishes drawing)
+    const ball = document.createElementNS(NS,'circle');
+    ball.setAttribute('class','token');
+    ball.style.offsetPath = `path('${d}')`;
+    svg.appendChild(ball); balls.push(ball);
+  }
+
+  // Animate drawing of each edge with stroke-dasharray
+  edges.forEach((path, idx)=>{
+    const len = path.getTotalLength();
+    path.style.strokeDasharray = `${len}`;
+    path.style.strokeDashoffset = `${len}`; // hidden
+    const startAt = idx*STAGGER_MS;
+    setTimeout(()=>{
+      path.style.strokeDashoffset = '0'; // draw
+      // show final node
+      finals[idx].classList.add('show');
+      // start the token along this path slightly after drawing begins
+      const delayForBall = 0.65*DRAW_MS; // ms
+      setTimeout(()=>{
+        balls[idx].style.animation = `travel ${Math.max(1200, DRAW_MS*2)/1000}s linear 0s infinite`;
+      }, delayForBall);
+    }, startAt);
+  });
+
+  function pickWinner(){
+    const winner = Math.floor(Math.random()*N);
+    finals.forEach((f,i)=>{
+      if(i===winner){ f.setAttribute('fill','var(--good)'); f.classList.add('pulse'); }
+      else { f.setAttribute('fill','var(--bad)'); f.classList.remove('pulse'); }
+    });
+  }
+
+  // first pick after all edges have drawn once
+  const totalDrawTime = (N-1)*STAGGER_MS + DRAW_MS + 200;
+  setTimeout(()=>{ pickWinner()}, totalDrawTime);
+}
+
+// ---- Auto-start when the chart scrolls into view ----
+document.addEventListener('DOMContentLoaded', () => {
+  const target = document.getElementById('bon');
+  if (!('IntersectionObserver' in window)) {
+    // Fallback: start immediately
+    startViz();
+    return;
+  }
+  const obs = new IntersectionObserver(
+    entries => {
+      if (entries[0].isIntersecting) {
+        startViz();
+        obs.disconnect(); // run only once
+      }
+    },
+    { threshold: 0.25 }
+  );
+  obs.observe(target);
+});
+</script>
+
+<h3 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Beam Search</h3>
+
+  <p>Beam Search is a structured search strategy designed to explore multiple solution paths in parallel. </p>
+    
+    <p>The model generates several possibilities, known as beams.</p>
+    <p>At each level, these beams are evaluated and only the top-scoring ones are retained for further expansion.</p>
+   <p>This pruning ensures the search stays tractable while still covering a diverse set of promising candidates.</p>
+
+
+<div class="wrap">
+  <h1>Beam Search</h1>
+  <p class="sub">N beams → keep top-M mid-steps → expand only those → pick best final answer.</p>
+  <svg id="beam" viewBox="0 0 1200 400"></svg>
+</div>
+
+<script>
+function startBeam(){
+  const NS  = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('beam');
+  if (!svg || svg.dataset.started === '1') return; // guard: run once
+  svg.dataset.started = '1';
+  svg.innerHTML = '';
+
+  // ---- Tunables ----
+  const N = 5;            // first-layer beams
+  const M = 2;            // beam width (survivors at intermediate)
+  const CHILDREN = 2;     // children per surviving mid-step
+  const DRAW_MS = 700;    // time to draw one edge
+  const STAGGER_MS = 150; // delay between sibling edges
+  const BALL_MS = 1400;   // token travel time per edge
+
+  // ---- Layout ----
+  const root  = {x:600, y:70};
+  const y1    = 180;      // intermediate layer
+  const y2    = 320;      // leaves
+  const span1 = 560;      // spread for first layer
+  const span2 = 360;      // spread per subtree
+
+  // Root node
+  const gRoot = document.createElementNS(NS,'g');
+  gRoot.setAttribute('transform',`translate(${root.x-80},${root.y-28})`);
+  const r = document.createElementNS(NS,'rect');
+  r.setAttribute('width',160); r.setAttribute('height',56); r.setAttribute('rx',18);
+  r.setAttribute('fill','var(--node)'); r.setAttribute('class','node');
+  const t = document.createElementNS(NS,'text');
+  t.setAttribute('x',80); t.setAttribute('y',34); t.setAttribute('text-anchor','middle');
+  t.textContent = 'Math problem';
+  gRoot.appendChild(r); gRoot.appendChild(t); svg.appendChild(gRoot);
+
+  // Helpers
+  const pathD = (x1,y1,x2,y2) => {
+    const midX = (x1+x2)/2, bendY = (y1+y2)/2;
+    return `M ${x1} ${y1} C ${midX} ${bendY}, ${midX} ${bendY}, ${x2} ${y2}`;
+  };
+  const drawEdge = (d) => {
+    const p = document.createElementNS(NS,'path');
+    p.setAttribute('d', d); p.setAttribute('class','edge draw'); svg.appendChild(p);
+    const len = p.getTotalLength();
+    p.style.strokeDasharray = `${len}`;
+    p.style.strokeDashoffset = `${len}`;
+    return {path:p, len};
+  };
+  const animateDraw = (edge, delay=0) => {
+    setTimeout(()=>{ edge.path.style.strokeDashoffset='0'; }, delay);
+  };
+  const token = (d, delay=0) => {
+    const c = document.createElementNS(NS,'circle');
+    c.setAttribute('class','token');
+    c.setAttribute('r','8');                           // radius set as attribute
+    c.style.offsetPath = `path('${d}')`;
+    setTimeout(()=>{ c.style.animation = `travel ${BALL_MS/1000}s linear 0s 1 forwards`; }, delay);
+    svg.appendChild(c);
+    return c;
+  };
+  const midBall = (x,y,good) => {
+    const c = document.createElementNS(NS,'circle');
+    c.setAttribute('cx',x); c.setAttribute('cy',y);
+    c.setAttribute('r','10');
+    c.setAttribute('class', `mid ${good?'good pulse':'bad'}`);
+    svg.appendChild(c); return c;
+  };
+  const leaf = (x,y) => {
+    const c = document.createElementNS(NS,'circle');
+    c.setAttribute('cx',x); c.setAttribute('cy',y);
+    c.setAttribute('r','12');
+    c.setAttribute('class','leaf');
+    svg.appendChild(c); return c;
+  };
+
+  // First layer edges + tokens
+  const first = [];
+  const firstXStart = root.x - span1/2;
+  for (let i=0;i<N;i++){
+    const x = firstXStart + (span1/(N-1))*i;
+    const d = pathD(root.x, root.y+28, x, y1);
+    const e = drawEdge(d);
+    const startDelay = i*STAGGER_MS;
+    animateDraw(e, startDelay);
+    token(d, startDelay + DRAW_MS*0.4);
+    first.push({x, d, edge:e});
+  }
+
+  // After first layer drawn — pick top-M and show mid balls (green/red)
+  const firstLayerDone = (N-1)*STAGGER_MS + DRAW_MS + 100;
+  setTimeout(()=>{
+    // deterministic center-out winners (replace with random if you prefer)
+    const order = [...Array(N).keys()].sort((a,b)=>Math.abs(a-(N-1)/2)-Math.abs(b-(N-1)/2));
+    const winnersIdx = order.slice(0, M).sort((a,b)=>a-b);
+
+    const winners = [];
+    first.forEach((node, idx)=>{
+      const isWinner = winnersIdx.includes(idx);
+      midBall(node.x, y1, isWinner);
+      if (isWinner) winners.push(node);
+    });
+
+    // Expand only winners
+    const leaves = [];
+    winners.forEach((w, wi)=>{
+      const baseX = w.x - span2/2;
+      for (let c=0;c<CHILDREN;c++){
+        const x2 = baseX + (span2/(CHILDREN-1))*c;
+        const d2 = pathD(w.x, y1+10, x2, y2);
+        const e2 = drawEdge(d2);
+        const delay = wi*CHILDREN*STAGGER_MS + c*STAGGER_MS;
+        animateDraw(e2, delay);
+        token(d2, delay + DRAW_MS*0.4);
+        leaves.push(leaf(x2, y2));
+      }
+    });
+
+    // Final: choose one green winner among leaves (others red) — once
+    const finalPickAt = winners.length*CHILDREN*STAGGER_MS + DRAW_MS + 200;
+    setTimeout(()=>{
+      const winIdx = 0; // deterministic left-most; swap to Math.random() for randomness
+      leaves.forEach((l, i)=>{
+        if (i===winIdx){ l.classList.add('good','pulse'); }
+        else { l.classList.add('bad'); }
+      });
+    }, finalPickAt);
+
+  }, firstLayerDone);
+}
+
+// Auto-start once when the SVG scrolls into view
+document.addEventListener('DOMContentLoaded', () => {
+  const target = document.getElementById('beam');
+  if (!target) return;
+  if (!('IntersectionObserver' in window)) { startBeam(); return; }
+  const obs = new IntersectionObserver(
+    entries => { if (entries[0]?.isIntersecting) { startBeam(); obs.disconnect(); } },
+    { threshold: 0.25 }
+  );
+  obs.observe(target);
+});
+</script>
+
+<h3 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Diverse Verifier Tree Search</h3>
+
+  <p>Unlike standard beam search, where all candidates share a single prefix and compete within the same pool, Diverse Verifier Tree Search 
+    ensures that different subtrees evolve on their own. </p>
+    
+    <p>This separation encourages the search to explore a wider variety of reasoning paths instead of collapsing too quickly on similar solutions.</p>
+    <p>Starting from an initial set of beams, the algorithm splits them into separate subtrees that are expanded independently.</p>
+   <p>At each step, a reward model evaluates the partial solutions and guides which branches to keep growing.</p>
+
+
+<div class="wrap">
+  <h1>Diverse Verifier Tree Search</h1>
+  <p class="sub">Split beams into independent subtrees → verifier selects the best step in each → expand and choose final answers.</p>
+  <svg id="diverse" viewBox="0 0 1200 400"></svg>
+</div>
+
+<script>
+function startDiverse(){
+  const NS  = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('diverse');
+  if (!svg || svg.dataset.started === '1') return;
+  svg.dataset.started = '1';
+  svg.innerHTML = '';
+
+  // ---- Tunables ----
+  const TREES = 2;          // how many subtrees
+  const CHILDREN = 2;       // leaves per subtree
+  const DRAW_MS = 700;
+  const STAGGER_MS = 150;
+  const BALL_MS = 1400;
+
+  // Layout
+  const root = {x:600,y:70};
+  const y1=180, y2=320;
+  const span=400; // spacing between subtrees
+
+  // Root node
+  const gRoot = document.createElementNS(NS,'g');
+  gRoot.setAttribute('transform',`translate(${root.x-80},${root.y-28})`);
+  const r = document.createElementNS(NS,'rect');
+  r.setAttribute('width',160); r.setAttribute('height',56); r.setAttribute('rx',18);
+  r.setAttribute('fill','var(--node)'); r.setAttribute('class','node');
+  const t = document.createElementNS(NS,'text');
+  t.setAttribute('x',80); t.setAttribute('y',34); t.setAttribute('text-anchor','middle');
+  t.textContent='Math problem';
+  gRoot.appendChild(r); gRoot.appendChild(t); svg.appendChild(gRoot);
+
+  // Helpers
+  const pathD=(x1,y1,x2,y2)=>{
+    const midX=(x1+x2)/2,bendY=(y1+y2)/2;
+    return `M ${x1} ${y1} C ${midX} ${bendY}, ${midX} ${bendY}, ${x2} ${y2}`;
+  };
+  const drawEdge=(d)=>{
+    const p=document.createElementNS(NS,'path');
+    p.setAttribute('d',d);p.setAttribute('class','edge draw');svg.appendChild(p);
+    const len=p.getTotalLength();p.style.strokeDasharray=`${len}`;p.style.strokeDashoffset=`${len}`;
+    return {path:p,len};
+  };
+  const animateDraw=(edge,delay=0)=>{setTimeout(()=>{edge.path.style.strokeDashoffset='0';},delay)};
+  const token=(d,delay=0)=>{
+    const c=document.createElementNS(NS,'circle');
+    c.setAttribute('r','8');c.setAttribute('class','token');
+    c.style.offsetPath=`path('${d}')`;
+    setTimeout(()=>{c.style.animation=`travel ${BALL_MS/1000}s linear 0s 1 forwards`;},delay);
+    svg.appendChild(c);return c;
+  };
+  const midBall=(x,y,good)=>{
+    const c=document.createElementNS(NS,'circle');
+    c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r','10');
+    c.setAttribute('class',`mid ${good?'good pulse':'bad'}`);svg.appendChild(c);return c;
+  };
+  const leaf=(x,y)=>{
+    const c=document.createElementNS(NS,'circle');
+    c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r','12');
+    c.setAttribute('class','leaf');svg.appendChild(c);return c;
+  };
+
+  // Create subtrees
+  const subtreeCenters=[root.x-span/2, root.x+span/2];
+  const allLeaves=[];
+
+  subtreeCenters.forEach((cx,i)=>{
+    const d=pathD(root.x,root.y+28,cx,y1);
+    const e=drawEdge(d);
+    animateDraw(e,i*STAGGER_MS);
+    token(d,i*STAGGER_MS+DRAW_MS*0.4);
+
+    // Pick a winner at intermediate level (deterministic: left subtree good, right subtree bad)
+    const isWinner=true;
+    midBall(cx,y1,isWinner);
+
+    // Expand children
+    const baseX=cx-120;
+    for(let j=0;j<CHILDREN;j++){
+      const x2=baseX+(240/(CHILDREN-1))*j;
+      const d2=pathD(cx,y1+10,x2,y2);
+      const e2=drawEdge(d2);
+      animateDraw(e2,j*STAGGER_MS+200);
+      token(d2,j*STAGGER_MS+DRAW_MS*0.4+200);
+      allLeaves.push(leaf(x2,y2));
+    }
+  });
+
+  // Final pick: one green leaf per subtree
+  const finalPickAt=DRAW_MS*2+500;
+  setTimeout(()=>{
+    // deterministically choose left-most of each subtree
+    const leavesPerTree=CHILDREN;
+    allLeaves.forEach((l,i)=>{
+      if(i%leavesPerTree===0){l.classList.add('good','pulse');}
+      else{l.classList.add('bad');}
+    });
+  },finalPickAt);
+}
+
+// Auto-start once on scroll into view
+document.addEventListener('DOMContentLoaded',()=>{
+  const target=document.getElementById('diverse');
+  if(!target)return;
+  if(!('IntersectionObserver'in window)){startDiverse();return;}
+  const obs=new IntersectionObserver(
+    entries=>{if(entries[0]?.isIntersecting){startDiverse();obs.disconnect();}},
+    {threshold:0.25}
+  );
+  obs.observe(target);
+});
+</script>
+
+<h3 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Strategies performance comparison</h3>
+
+  <p>When applying reasoning strategies to language models, it is important to understand how different approaches trade off between 
+    accuracy, diversity, and compute cost.</p>
+    
+    <p>Methods like Best-of-N, Beam Search, and Diverse Verifier Tree Search all leverage verifier feedback in different ways,
+       and comparing their performance highlights which strategies scale most effectively as we increase the number of generations.</p>
+
+<h1>Strategies Performance Comparison</h1>
+<svg id="chart" viewBox="0 0 900 540"></svg> <!-- a bit taller to fit bottom legend -->
+
+<script>
+(function(){
+  // ---- Data ---------------------------------------------------------------
+  const series = {
+    Majority:        [[2,27],[4,33],[8,38],[16,41],[32,44],[64,45],[128,46]],
+    "Best-of-N":     [[2,28],[4,36],[8,40],[16,43],[32,45],[64,48],[128,49]],
+    "Beam search":   [[2,29],[4,38],[8,44],[16,49],[32,51],[64,52],[128,53]],
+    DVTS:            [[2,28],[4,39],[8,42],[16,47],[32,51],[64,55],[128,56]],
+  };
+  const colors = {
+    Majority:"#3b82f6",
+    "Best-of-N":"#f59e0b",
+    "Beam search":"#22c55e",
+    DVTS:"#ef4444"
+  };
+
+  // ---- Layout -------------------------------------------------------------
+  const svg = d3.select("#chart");
+  const margin = {top:30, right:20, bottom:90, left:60}; // extra bottom for legend
+  const width  = 900 - margin.left - margin.right;
+  const height = 540 - margin.top - margin.bottom;
+
+  // Guard to run once
+  function started(){ return svg.attr("data-started")==="1"; }
+  function markStarted(){ svg.attr("data-started","1"); }
+
+  function startChart(){
+    if (started()) return;
+    markStarted();
+
+    const root = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scaleLog().domain([2,128]).range([0,width]);
+    const y = d3.scaleLinear().domain([25,60]).range([height,0]);
+
+    // Axes
+    root.append("g")
+      .attr("transform",`translate(0,${height})`)
+      .attr("class","axis")
+      .call(d3.axisBottom(x).ticks(7,",d"));
+    root.append("g")
+      .attr("class","axis")
+      .call(d3.axisLeft(y));
+
+    // Labels
+    root.append("text")
+      .attr("x",width/2).attr("y",height+40)
+      .attr("text-anchor","middle").text("Number of generations per problem");
+    root.append("text")
+      .attr("transform","rotate(-90)")
+      .attr("x",-height/2).attr("y",-45)
+      .attr("text-anchor","middle").text("MATH-500 accuracy (%)");
+
+    // Baselines
+    root.append("line")
+      .attr("class","baseline").attr("x1",0).attr("x2",width)
+      .attr("y1",y(29)).attr("y2",y(29));
+    root.append("text").attr("x",width-4).attr("y",y(29)-6)
+      .attr("text-anchor","end").text("Llama 3.2 1B");
+    root.append("line")
+      .attr("class","baseline").attr("x1",0).attr("x2",width)
+      .attr("y1",y(51)).attr("y2",y(51));
+    root.append("text").attr("x",width-4).attr("y",y(51)-6)
+      .attr("text-anchor","end").text("Llama 3.1 8B");
+
+    const line = d3.line()
+      .x(d=>x(d[0]))
+      .y(d=>y(d[1]))
+      .curve(d3.curveMonotoneX);
+
+    // Animate each series
+    const names = Object.keys(series);
+    names.forEach((name,i)=>{
+      const values = series[name];
+      const path = root.append("path")
+        .datum(values)
+        .attr("fill","none")
+        .attr("stroke",colors[name])
+        .attr("stroke-width",2)
+        .attr("d",line);
+
+      const L = path.node().getTotalLength();
+      path.attr("stroke-dasharray", `${L} ${L}`)
+          .attr("stroke-dashoffset", L)
+        .transition()
+          .duration(2500)
+          .delay(i*350)
+          .ease(d3.easeLinear)
+          .attr("stroke-dashoffset", 0);
+
+      // Dots that rise up from the bottom
+      root.selectAll(`.dot-${i}`)
+        .data(values).enter()
+        .append("circle")
+        .attr("class",`dot-${i}`)
+        .attr("cx",d=>x(d[0]))
+        .attr("cy",y(25)) // bottom start
+        .attr("r",4)
+        .attr("fill",colors[name])
+        .transition().duration(2500).delay(i*350)
+        .attr("cy",d=>y(d[1]));
+    });
+
+    // ---- Bottom legend (centered) ----------------------------------------
+    const legend = root.append("g")
+      .attr("class","legend")
+      .attr("transform", `translate(${width/2}, ${height+60})`);
+
+    const items = names.map((n,i)=>({name:n, color:colors[n]}));
+    const spacing = 130;  // horizontal spacing between legend items
+    const startX = -((items.length-1)*spacing)/2;
+
+    const lg = legend.selectAll("g.item")
+      .data(items).enter()
+      .append("g")
+      .attr("class","item")
+      .attr("transform",(d,i)=>`translate(${startX + i*spacing},0)`);
+
+    lg.append("circle").attr("r",5).attr("fill",d=>d.color).attr("cx",0).attr("cy",0);
+    lg.append("text").text(d=>d.name).attr("x",10).attr("y",0);
+  }
+
+  // ---- Auto-start when scrolled into view --------------------------------
+  document.addEventListener("DOMContentLoaded", ()=>{
+    const el = document.getElementById("chart");
+    if (!("IntersectionObserver" in window)) { startChart(); return; }
+    const obs = new IntersectionObserver(
+      entries => {
+        if (entries[0]?.isIntersecting) {
+          startChart();
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.25 }
+    );
+    obs.observe(el);
+  });
+})();
+</script>
+
+
+<p><strong>to be continued</strong></p>
+<br></br>
+<br></br>
+
+  <h1 style="text-align:left">How Good Are Models at Reasoning?</h1>
+  <h2>Benchmarks</h2>
+  <p>
+    Benchmarks are widely used to evaluate the capabilities of large language models (LLMs).
+    They consist of curated problem sets focused on specific skills - such as mathematics, programming, scientific understanding, or medical diagnostics.
+    By testing models on these tasks, we get a snapshot of their reasoning power and generalization abilities.
+  </p>
+  <h3>Benchmark Reasoning Categories</h3>
+  <p>
+    Please see the description of possible problem sets in the table below. Each category represents a distinct type of reasoning  challenge used in 
+    benchmark evaluations. You can search through the table by typing keywords (e.g. <em>"math"</em>, <em>"medical"</em>, <em>"code"</em>) into the
+    search bar in the top-right corner of the table.
+  </p>
+    <table id="benchmark-table" class="display">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Description</th>
+          <th>Benchmarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Math Problems</td>
+          <td>Solves mathematical problems showcasing capabilities of reasoning LLMs.</td>
+          <td>AIME, MATH-500, OlympiadBench</td>
+        </tr>
+        <tr>
+          <td>Code Problems</td>
+          <td>Uses logical thinking and structured problem-solving in programming tasks.</td>
+          <td>Codeforces, LiveCodeBench</td>
+        </tr>
+        <tr>
+          <td>Scientific Problems</td>
+          <td>Involves multi-domain reasoning across physics, chemistry, and biology.</td>
+          <td>GPQA Diamond, MMLU-Pro</td>
+        </tr>
+        <tr>
+          <td>Agent Reasoning</td>
+          <td>Tests planning and decision-making in interactive and tool-using environments.</td>
+          <td>WebShop, WebArena, SciWorld</td>
+        </tr>
+        <tr>
+          <td>Medical Reasoning</td>
+          <td>Mimics diagnostic reasoning and treatment planning in clinical contexts.</td>
+          <td>MedQA, Medbullets</td>
+        </tr>
+        <tr>
+          <td>Multimodal Reasoning</td>
+          <td>Combines text and visual input to test cross-modal reasoning skills.</td>
+          <td>MMMU, MathVista, MM-IQ</td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+      A strong model is expected to perform well across multiple diverse benchmarks, demonstrating not just memorization or task-specific tricks, but real, 
+      transferable reasoning. In this way, benchmarks help define what it means for a model to be universal rather than narrowly overfitted.
+    <br>
+    <script>
+      $(document).ready(function () {
+        $('#benchmark-table').DataTable({
+          paging: false,
+          info: false,
+          language: {
+            search: "🔍 Search benchmarks:"
+          }
+        });
+      });
+    </script>
+
+<body>
+  <h3>State-of-the-Art Model Performance on Benchmarks</h3>
+  <p>
+    The following table shows Pass@1 or Percentile scores across several benchmark tasks.
+  </p>
+  <table id="benchmarkTable" class="display">
+    <thead>
+      <tr>
+        <th>Benchmark</th>
+        <th>Metric</th>
+        <th>DeepSeek-R1</th>
+        <th>OpenAI-o1-1217</th>
+        <th>DeepSeek-R1-32B</th>
+        <th>OpenAI-o1-mini</th>
+        <th>DeepSeek-V3</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>AIME 2024</td>
+        <td>Pass@1</td>
+        <td>79.8%</td>
+        <td>79.2%</td>
+        <td>72.6%</td>
+        <td>63.6%</td>
+        <td>39.2%</td>
+      </tr>
+      <tr>
+        <td>Codeforces</td>
+        <td>Percentile</td>
+        <td>96.3%</td>
+        <td>96.6%</td>
+        <td>90.6%</td>
+        <td>93.4%</td>
+        <td>58.7%</td>
+      </tr>
+      <tr>
+        <td>GPQA Diamond</td>
+        <td>Pass@1</td>
+        <td>71.5%</td>
+        <td>75.7%</td>
+        <td>62.1%</td>
+        <td>60.0%</td>
+        <td>59.1%</td>
+      </tr>
+      <tr>
+        <td>MATH-500</td>
+        <td>Pass@1</td>
+        <td>97.3%</td>
+        <td>96.4%</td>
+        <td>94.3%</td>
+        <td>90.0%</td>
+        <td>90.2%</td>
+      </tr>
+      <tr>
+        <td>MMLU</td>
+        <td>Pass@1</td>
+        <td>90.8%</td>
+        <td>91.8%</td>
+        <td>87.4%</td>
+        <td>85.2%</td>
+        <td>88.5%</td>
+      </tr>
+      <tr>
+        <td>SWE-bench Verified</td>
+        <td>Resolved</td>
+        <td>49.2%</td>
+        <td>48.9%</td>
+        <td>41.6%</td>
+        <td>36.8%</td>
+        <td>42.0%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="citation">(DeepSeek-AI et al., 2025)</p>
+
+  <script>
+    $(document).ready(function () {
+      $('#benchmarkTable').DataTable({
+        paging: false,
+        info: false,
+        responsive: true,
+        language: {
+          search: "🔍 Search benchmarks:"
+        }
+      });
+    });
+  </script>
+
+<hr>
+
+<h3>The Problem With Benchmarks</h3>
+<p>Despite their usefulness, traditional benchmarks are facing growing criticism.</p>
+
+<p>
+  Task difficulty is often hard to define. What makes a problem "difficult" is often subjective. This makes it tricky to scale problem sets meaningfully 
+  or test a model's performance on progressively harder tasks.
+</p>
+<p>
+  Another concern is data leakage from training corpora. Many benchmark problems have ended up in the training data of large models, whether intentionally or not. 
+  This makes it unclear whether the model is reasoning through a solution — or simply memorizing and regurgitating it.
+</p>
+
+<h2>Puzzle-Based Benchmarks</h2>
+<p><em>Shojaee et al., 2025</em></p>
+<p>
+  To address these limitations, researchers are exploring alternative benchmarks. One compelling direction is using puzzle-like problems, such as the 
+  Tower of Hanoi, where complexity can be precisely controlled — by simply increasing the number of disks. In this setup, models are evaluated not just 
+  on their accuracy, but on how well they scale with increasing task difficulty.
+</p>
+
+<div class="hanoi-section">
+<h4>Tower of Hanoi (3 Disks)</h4>
+<p>Auto-solving animation (A → C)</p>
+
+<div class="peg-container">
+  <div class="peg" id="pegA"></div>
+  <div class="peg" id="pegB"></div>
+  <div class="peg" id="pegC"></div>
+</div>
+
+<div class="peg-container">
+  <div class="peg-label">A</div>
+  <div class="peg-label">B</div>
+  <div class="peg-label">C</div>
+</div>
+
+<script>
+  const pegs = {
+    A: document.getElementById('pegA'),
+    B: document.getElementById('pegB'),
+    C: document.getElementById('pegC'),
+  };
+
+  const disks = [
+    { class: 'disk1', size: 3 },
+    { class: 'disk2', size: 2 },
+    { class: 'disk3', size: 1 },
+  ];
+
+  let state;
+
+  const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+
+  function resetPegs() {
+    // Clear pegs
+    pegs.A.innerHTML = '';
+    pegs.B.innerHTML = '';
+    pegs.C.innerHTML = '';
+
+    // Reset state
+    state = { A: [], B: [], C: [] };
+
+    // Add disks back to peg A
+    disks.forEach((d, i) => {
+      const el = document.createElement('div');
+      el.className = `disk ${d.class}`;
+      el.style.bottom = `${i * 22}px`;
+      pegs.A.appendChild(el);
+      state.A.push(el);
+    });
+  }
+
+  async function move(n, from, to, aux) {
+    if (n === 0) return;
+    await move(n - 1, from, aux, to);
+
+    await sleep(800);
+    const disk = state[from].pop();
+    state[to].push(disk);
+    pegs[to].appendChild(disk);
+    disk.style.bottom = `${(state[to].length - 1) * 22}px`;
+
+    await move(n - 1, aux, to, from);
+  }
+
+  async function loopHanoi() {
+    while (true) {
+      resetPegs();
+      await move(3, 'A', 'C', 'B');
+      await sleep(1000); // pause before restarting
+    }
+  }
+
+  // Start looping animation
+  loopHanoi();
+</script>
+
+</div>
+
+<h3>When Reasoning Models Collapse</h3>
+<p>
+  A surprising trend emerges as task complexity increases: reasoning-tuned models initially outperform their baseline counterparts, 
+  but beyond a certain threshold, both collapse in performance. This sharp decline challenges assumptions about the robustness of current 
+  reasoning models and exposes their fragility under higher cognitive demands.
+</p>
+
+<h4 style="text-align: center;">Model Accuracy vs. Task Complexity</h4>
+<canvas id="accuracyChart" class="chart-on-scroll" width="700" height="400"></canvas>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  function renderAccuracyChart() {
+  const ctx = document.getElementById('accuracyChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20],
+      datasets: [
+        {
+          label: 'DeepSeek-R1',
+          data: [100, 98, 95, 90, 85, 70, 60, 10, 2, 1, 0, 0],
+          borderColor: '#4ECDC4',
+          backgroundColor: 'transparent',
+          tension: 0.3
+        },
+        {
+          label: 'DeepSeek-V3',
+          data: [98, 97, 96, 85, 30, 20, 10, 5, 1, 0, 0, 0],
+          borderColor: '#FF6B6B',
+          backgroundColor: 'transparent',
+          tension: 0.3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      animation: {
+        duration: 2500,
+        easing: 'easeOutQuart'
+      },
+      plugins: {
+        legend: {
+          position: 'bottom'
+        },
+        title: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: false,
+          max: 100,
+          title: {
+            display: true,
+            text: 'Accuracy (%)'
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Task Complexity'
+          }
+        }
+      }
+    }
+  });
+  }
+</script>
+
+<script>
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        if (entry.target.id === 'accuracyChart') {
+          renderAccuracyChart();
+        }
+        observer.unobserve(entry.target); // only run once
+      }
+    });
+  }, {
+    threshold: 0.4 // Trigger when 40% visible
+  });
+
+  document.querySelectorAll('.chart-on-scroll').forEach(chart => {
+    observer.observe(chart);
+  });
+</script>
+
+
+<h3>Even With Help, They Struggle</h3>
+<p>
+  Interestingly, even when the model is given the solution in the prompt, performance doesn’t improve significantly.
+  This suggests that the model doesn't simply fail to find a solution — it struggles to use or interpret one when given.
+</p>
+
+<h4 style="text-align: center;">Claude-3.7-Sonnet Performance</h4>
+<canvas id="claudeChart" class="chart-on-scroll" width="700" height="400"></canvas>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Chart render function -->
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    function renderClaudeChart() {
+      const ctx = document.getElementById('claudeChart').getContext('2d');
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20],
+          datasets: [
+            {
+              label: 'Default',
+              data: [99.5, 99.5, 99.5, 99.5, 90, 55, 70, 15, 5, 2, 1, 1],
+              borderColor: '#DE6E4B',
+              borderWidth: 3,
+              pointStyle: 'rect',
+              pointRadius: 6,
+              tension: 0.3
+            },
+            {
+              label: 'Algorithm Given',
+              data: [99.5, 99.5, 99.5, 99.5, 90, 70, 65, 10, 2, 1, 1, 1],
+              borderColor: '#B0422F',
+              borderDash: [6, 4],
+              borderWidth: 3,
+              pointStyle: 'circle',
+              pointRadius: 6,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          animation: {
+            duration: 1200,
+            easing: 'easeOutQuart'
+          },
+          plugins: {
+            legend: { position: 'bottom' },
+            title: {
+              display: true,
+              text: 'Accuracy vs Complexity (Number of Disks)'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              title: { display: true, text: 'Accuracy (%)' }
+            },
+            x: {
+              title: { display: true, text: 'Complexity (Number of Disks)' }
+            }
+          }
+        }
+      });
+    }
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.target.id === 'claudeChart') {
+          renderClaudeChart();
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.4
+    });
+
+    document.querySelectorAll('.chart-on-scroll').forEach(chart => {
+      observer.observe(chart);
+    });
+
+  });
+</script>
+
+<h3>A Curious Token Length Effect</h3>
+<p>
+  Another surprising effect: as task complexity grows, models tend to produce shorter outputs - even though longer answers 
+  would likely lead to better performance. This indicates a possible failure in internal planning or token budgeting, challenging the assumption that more capable models
+  will naturally expand their answers as needed.</p>
+
+<h4 style="text-align: center;">o3-mini (high): Output Token Count vs Complexity</h4>
+<canvas id="tokenChart" class="chart-on-scroll" width="700" height="400"></canvas>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    function renderTokenChart() {
+      const ctx = document.getElementById('tokenChart').getContext('2d');
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20],
+          datasets: [
+            {
+              label: 'Average Token Count',
+              data: [500, 900, 2000, 4500, 8500, 20000, 18000, 12000, 7000, 5000, 3000, 2000],
+              borderColor: '#0077BB',
+              borderDash: [6, 4],
+              borderWidth: 3,
+              fill: false,
+              tension: 0.3,
+              pointRadius: 6,
+              pointStyle: 'circle',
+              backgroundColor: 'transparent'
+            },
+            {
+              label: 'Individual Runs',
+              type: 'scatter',
+              data: [
+                { x: 4, y: 4300 }, { x: 4, y: 4700 }, { x: 5, y: 8800 },
+                { x: 5, y: 8000 }, { x: 6, y: 19500 }, { x: 6, y: 20500 },
+                { x: 7, y: 18000 }, { x: 7, y: 17500 }, { x: 8, y: 11000 },
+                { x: 9, y: 7500 }, { x: 9, y: 6900 }, { x: 10, y: 4500 },
+                { x: 15, y: 3100 }, { x: 15, y: 2900 }, { x: 20, y: 2100 }
+              ],
+              backgroundColor: '#E63946',
+              pointRadius: 4,
+              showLine: false
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          animation: {
+            duration: 1500,
+            easing: 'easeOutQuart'
+          },
+          plugins: {
+            legend: {
+              position: 'bottom'
+            },
+            title: {
+              display: true,
+              text: 'Output Length vs. Complexity (Number of Disks)'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Output Tokens'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Complexity (Number of Disks)'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.target.id === 'tokenChart') {
+          renderTokenChart();
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    document.querySelectorAll('.chart-on-scroll').forEach(chart => {
+      observer.observe(chart);
+    });
+
+  });
+</script>
+
+
+<h2>Open Questions Remain</h2>
+<p>
+  To what extent can current models really reason? While benchmarks remain a useful tool, these findings highlight the fragility of current 
+  approaches and the limitations of today's so-called “reasoning models.” There is still a long road ahead to build systems that reason 
+  reliably under increasing task difficulty — and to prove that their reasoning is more than just a memorized pattern.
+</p>
+
+</body>
+</html>
