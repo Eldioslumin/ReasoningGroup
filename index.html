@@ -1465,24 +1465,6 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 
 
 <script>
-  (function loadKaTeXOnce(cb){
-    if (window.katex && window.renderMathInElement) return cb();
-    function add(href, rel){
-      const el = document.createElement(rel==='css'?'link':'script');
-      if(rel==='css'){ el.rel='stylesheet'; el.href=href; }
-      else { el.defer=true; el.src=href; }
-      document.head.appendChild(el); return el;
-    }
-    if(!window.katex) add('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css','css');
-    const afterMain = ()=> add('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js').onload = cb;
-    if(!window.katex) add('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js').onload = afterMain;
-    else afterMain();
-  })(initAllMath);
-
-  function initAllMath(){
-    initRewardPairwise();
-    initValueAndPPO();
-  }
 
   function initRewardPairwise(){
     const $=(id)=>document.getElementById(id);
@@ -1649,179 +1631,7 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
   }
 </script>
 
-
-
-</body>
-</html>
-
-
-
-
-
-<!-- Rodion's part - Reasoning Architecture, Benchmarks -->
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Reasoning Search Flow</title>
-  <style>
-    :root { --bg:#f8fafc; --ink:#111827; --arrow:#94a3b8; --accent:#fb923c; }
-    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;background:var(--bg);color:var(--ink)}
-    .wrap{width:100%;margin:24px auto;padding:0}
-    .panel{ display:flow-root; margin-bottom:0; }
-    .hint{color:#475569;font-size:14px;margin-top:8px;text-align:center}
-    .token{filter:drop-shadow(0 1px 2px rgba(0,0,0,.35));offset-rotate:0deg}
-    .sub{ margin: 6px 0 8px; }
-    #scene{ display:block; margin:0; }
-    @keyframes move{from{offset-distance:0%}to{offset-distance:100%}}
-  </style>
-
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Best-of-N Search</title>
-  <style>
-    :root{--bg:#f8fafc;--ink:#0f172a;--arrow:#cbd5e1;--good:#22c55e;--bad:#f43f5e;--node:#bae6fd;--token:#3b82f6}
-    body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}
-    h1{margin:18px 0 6px;text-align:center;font-size:22px}
-    .wrap{max-width:1200px;margin:0 auto;padding:0 12px 16px}
-    svg{display:block;width:100%;height:380px}
-    .node{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
-    .token{r:10;fill:var(--token);filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
-    @keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}
-    .pulse{animation:pulse 1.2s ease-in-out infinite}
-    @keyframes pulse{0%{opacity:.6}50%{opacity:1}100%{opacity:.6}}
-    button.run-btn{display:block;margin:0 auto 12px;padding:8px 16px;font-size:14px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer}
-    button.run-btn:hover{background:#f3f4f6}
-    /* Unfold animation for arrows */
-    .edge{stroke:var(--arrow);stroke-width:3;fill:none}
-    .edge.draw{transition:stroke-dashoffset 800ms ease}
-    .fin{opacity:0;transform-box:fill-box;transform-origin:center;}
-    .fin.show{opacity:1;transition:opacity .4s ease, transform .4s ease;transform:scale(1.05)}
-  </style>
-
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Beam Search</title>
-  <style>
-    :root{
-      --bg:#f8fafc; --ink:#0f172a; --muted:#64748b;
-      --arrow:#cbd5e1; --node:#bae6fd; --token:#3b82f6;
-      --good:#22c55e; --bad:#f43f5e;
-    }
-    body{margin:0;background:var(--bg);color:var(--ink);
-        font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}
-    h1{margin:18px 0 6px;text-align:center;font-size:22px}
-    .sub{margin:0 0 8px;text-align:center;color:var(--muted);font-size:14px}
-    .wrap{max-width:1200px;margin:0 auto;padding:0 12px 16px}
-    svg{display:block;width:100%;height:420px}
-    .node{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
-    .edge{stroke:var(--arrow);stroke-width:3;fill:none}
-    .edge.draw{transition:stroke-dashoffset 700ms ease}
-    .mid{fill:#e5e7eb}
-    .mid.good{fill:var(--good)}
-    .mid.bad{fill:var(--bad);opacity:.9}
-    .leaf{fill:#e5e7eb}
-    .leaf.good{fill:var(--good)}
-    .leaf.bad{fill:var(--bad);opacity:.95}
-    .pulse{animation:pulse 1.2s ease-in-out infinite}
-    @keyframes pulse{0%{opacity:.65}50%{opacity:1}100%{opacity:.65}}
-    @keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}
-  </style>
-
-  <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Diverse Verifier Tree Search — Dynamic Visualization</title>
-    <style>
-      :root{
-        --bg:#f8fafc; --ink:#0f172a; --muted:#64748b;
-        --arrow:#cbd5e1; --node:#bae6fd; --token:#3b82f6;
-        --good:#22c55e; --bad:#f43f5e;
-      }
-      body{margin:0;background:var(--bg);color:var(--ink);
-          font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}
-      h1{margin:18px 0 6px;text-align:center;font-size:22px}
-      .sub{margin:0 0 8px;text-align:center;color:var(--muted);font-size:14px}
-      .wrap{max-width:1200px;margin:0 auto;padding:0 12px 16px}
-      svg{display:block;width:100%;height:420px}
-      .node{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
-      .edge{stroke:var(--arrow);stroke-width:3;fill:none}
-      .edge.draw{transition:stroke-dashoffset 700ms ease}
-      .token{fill:var(--token);r:8;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
-      .mid{r:10}
-      .mid.good{fill:var(--good)}
-      .mid.bad{fill:var(--bad);opacity:.9}
-      .leaf{r:12}
-      .leaf.good{fill:var(--good)}
-      .leaf.bad{fill:var(--bad);opacity:.95}
-      .pulse{animation:pulse 1.2s ease-in-out infinite}
-      @keyframes pulse{0%{opacity:.65}50%{opacity:1}100%{opacity:.65}}
-      @keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}
-  </style>
-
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Strategies Performance Comparison</title>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <style>
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;background:#f8fafc;color:#0f172a}
-    h1{text-align:center;margin:18px 0 6px;font-size:22px}
-    #chart{display:block;margin:0 auto;max-width:900px}
-    .axis path,.axis line{stroke:#94a3b8}
-    .baseline{stroke:#475569;stroke-dasharray:6 6;opacity:.8}
-    .legend text{font-size:12px;dominant-baseline:middle;fill:#0f172a}
-  </style>
-
-  <meta charset="UTF-8">
-  <title>Benchmarks</title>
-  <!-- DataTables + jQuery -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-  
-  <meta charset="UTF-8">
-  <style>
-    .hanoi-section {
-      font-family: sans-serif;
-      background: #fefefe;
-      padding: 2rem;
-      text-align: center;
-    }
-    .peg-container {
-      display: flex;
-      justify-content: space-around;
-      align-items: flex-end;
-      height: 200px;
-      margin-top: 3rem;
-    }
-    .peg {
-      width: 10px;
-      height: 150px;
-      background: #333;
-      position: relative;
-    }
-    .disk {
-      position: absolute;
-      height: 20px;
-      border-radius: 5px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-    .disk1 { width: 100px; background: #FF6B6B; }
-    .disk2 { width: 70px; background: #4ECDC4; }
-    .disk3 { width: 40px; background: #1A535C; }
-
-    .peg-label {
-      margin-top: 1rem;
-      font-weight: bold;
-    }
-  </style>
-</head>
-
-<!-- ================= GRPO (from scratch, with split + converge arrows) ================= -->
+<!-- ================= GRPO (from scratch, with split + converge arrows) (Juan)================= -->
 <div class="wrap" id="grpo-flow">
   <h1>Group Relative Policy Optimization (GRPO)</h1>
 
@@ -1950,6 +1760,7 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
     <text x="530" y="25" class="small" font-weight="700">KL</text>
 
     <!-- =================== GRPO SPLIT/MERGE ANIMATION (PPO-style) =================== -->
+
 <!-- ================= GRPO Animation ================= -->
 <svg id="grpoSvg" viewBox="0 0 1500 360" aria-label="GRPO diagram">
 
@@ -2177,6 +1988,416 @@ mAJoin.addEventListener('endEvent', ()=>{
 
   </svg>
 </div>
+
+
+
+<!-- ========== GRPO Math and Formulas (back to Lara) ========== -->
+<div class="wrap loss2-sec" id="grpo-sec">
+  <h2>GRPO: group-relative policy optimization</h2>
+
+  <div class="eq"><span id="grpo-eq"></span></div>
+
+
+  <p>
+    GRPO updates the policy with a clipped objective like PPO but <strong>does not use a value model</strong>.
+    For a group of candidates for the same prompt, it standardizes the rewards to get a group-relative advantage.
+    This idea, presented in <em>DeepSeekMath</em> by Shao et&nbsp;al., 2024
+    (<a href="https://doi.org/10.48550/arXiv.2402.03300" target="_blank" rel="noopener">arXiv:2402.03300</a>),
+    removes the need for an explicit baseline \(V(s)\): we only ask “how good is this output compared with its peers?”.
+  </p>
+
+  <div class="eq"><span id="grpo-adv-eq"></span></div>
+
+  <p>
+    Positive \(A_i\) means “better than the group”, negative \(A_i\) means “worse than the group”.
+    As in PPO, the update is <em>clipped</em> for stability, and a KL penalty keeps the new policy
+    close to a reference model (typically the base LM) to preserve fluency and avoid reward hacking:
+  </p>
+
+  <div class="eq"><span id="grpo-kl-eq"></span></div>
+
+
+  <h3 style="margin:1rem 0 .5rem; font-size:1.1rem; font-weight:700;">Interactive example (same prompt)</h3>
+  <p>
+    Set the three rewards \(r_1,r_2,r_3\) for one prompt, pick which output \(o_i\) we optimize, and adjust the probabilities.
+    We compute \(A_i\), the ratio \(r_t=\pi_\theta/\pi_{\text{old}}\), its clipped version, the KL penalty, and the GRPO objective.
+  </p>
+
+  <div class="ctrl">
+    <label for="g-r1">Reward \(r_1\): <strong id="g-r1v">2.50</strong></label>
+    <input id="g-r1" type="range" min="-1.0" max="4.0" step="0.05" value="2.50"/>
+
+    <label for="g-r2">Reward \(r_2\): <strong id="g-r2v">1.80</strong></label>
+    <input id="g-r2" type="range" min="-1.0" max="4.0" step="0.05" value="1.80"/>
+
+    <label for="g-r3">Reward \(r_3\): <strong id="g-r3v">0.70</strong></label>
+    <input id="g-r3" type="range" min="-1.0" max="4.0" step="0.05" value="0.70"/>
+
+    <label>Optimize sample:</label>
+    <div>
+      <label style="margin-right:1.0rem"><input type="radio" name="g-which" value="1" checked/> \(o_1\)</label>
+      <label style="margin-right:1.0rem"><input type="radio" name="g-which" value="2"/> \(o_2\)</label>
+      <label><input type="radio" name="g-which" value="3"/> \(o_3\)</label>
+    </div>
+
+    <label for="g-pold">\(\pi_{\text{old}}(o_i\mid q)\): <strong id="g-poldv">0.10</strong></label>
+    <input id="g-pold" type="range" min="0.01" max="0.90" step="0.01" value="0.10"/>
+
+    <label for="g-pnew">\(\pi_{\theta}(o_i\mid q)\): <strong id="g-pnewv">0.13</strong></label>
+    <input id="g-pnew" type="range" min="0.01" max="0.90" step="0.01" value="0.13"/>
+
+    <label for="g-pref">\(\pi_{\text{ref}}(o_i\mid q)\): <strong id="g-prefv">0.12</strong></label>
+    <input id="g-pref" type="range" min="0.01" max="0.90" step="0.01" value="0.12"/>
+
+    <label for="g-eps">\(\varepsilon\): <strong id="g-epsv">0.20</strong></label>
+    <input id="g-eps" type="range" min="0.05" max="0.40" step="0.01" value="0.20"/>
+
+    <label for="g-beta">\(\beta\): <strong id="g-betav">0.10</strong></label>
+    <input id="g-beta" type="range" min="0.00" max="0.50" step="0.01" value="0.10"/>
+  </div>
+
+  <p class="stat">
+    mean \(=\) <code class="inline" id="g-mean">1.6667</code> • std \(=\) <code class="inline" id="g-std">0.9074</code> •
+    \(A_i\) \(=\) <code class="inline" id="g-Ai">0.9186</code>
+  </p>
+
+  <p class="stat">
+    Ratio \(r_t\) \(=\) <code class="inline" id="g-rt">1.3000</code> •
+    Unclipped \(r_tA_i\) \(=\) <code class="inline" id="g-un">1.1932</code> •
+    Clipped \(\text{clip}(r_t)\,A_i\) \(=\) <code class="inline" id="g-cl">1.0105</code> •
+    \(D_{\text{KL}}\) \(=\) <code class="inline" id="g-kl">0.0040</code>
+  </p>
+
+  <p class="stat">
+    GRPO objective \(=\) <code class="inline" id="g-L">1.0065</code>
+  </p>
+
+  <div class="eq"><span id="grpo-work"></span></div>
+
+    <h4 style="margin:.8rem 0 .35rem; font-size:1rem; font-weight:700;">Interpreting the changes</h4>
+  <p>
+    <strong>\(r_t=\pi_{\theta}/\pi_{\text{old}}\)</strong> sets direction: with \(A_i&gt;0\) increasing \(r_t\) boosts the objective
+    (until clipping at \(1+\varepsilon\)); with \(A_i&lt;0\) decreasing \(r_t\) helps. <strong>\(\varepsilon\)</strong> widens or narrows
+    the safe band \([1-\varepsilon,\,1+\varepsilon]\): large \(\varepsilon\) learns faster but is less stable.
+    <strong>\(\beta\)</strong> scales the KL anchor: higher \(\beta\) pulls the policy toward the reference distribution
+    \(\pi_{\text{ref}}\) (useful to preserve base-model fluency and curb reward hacking).
+  </p>
+  <p>
+    Unlike PPO, GRPO’s “baseline” comes from the <em>group</em>.
+    Raising other candidates can shrink your \(A_i\) even if your reward stays the same, because
+    \(A_i\) measures how much better or worse \(o_i\) is relative to its peers.
+  </p>
+
+  <div class="eq"><span id="grpo-work"></span></div>
+
+
+
+<script>
+  function initGRPO(){
+    katex.render(String.raw`
+      \mathcal{L}_{\mathrm{GRPO}}(\theta)
+      = \frac{1}{G}\sum_{i=1}^{G}
+      \Big(
+        \min\!\big(r_t^{(i)}\,A_i,\ \mathrm{clip}(r_t^{(i)},\,1-\varepsilon,\,1+\varepsilon)\,A_i\big)
+      \Big)
+      \;-\;\beta\,D_{\mathrm{KL}}\!\big(\pi_{\theta}\,\|\,\pi_{\mathrm{ref}}\big)
+    `, document.getElementById('grpo-eq'), {displayMode:true, throwOnError:false});
+
+    katex.render(String.raw`
+      A_i \;=\; \frac{r_i-\operatorname{mean}\!\big(\{r_1,\ldots,r_G\}\big)}
+                      {\operatorname{std}\!\big(\{r_1,\ldots,r_G\}\big)}
+    `, document.getElementById('grpo-adv-eq'), {displayMode:true, throwOnError:false});
+
+    katex.render(String.raw`
+      D_{\mathrm{KL}}\!\big(\pi_{\theta}\,\|\,\pi_{\mathrm{ref}}\big)
+      \;=\; \frac{\pi_{\mathrm{ref}}(o_i\mid q)}{\pi_{\theta}(o_i\mid q)}
+            \;-\;\log\!\frac{\pi_{\mathrm{ref}}(o_i\mid q)}{\pi_{\theta}(o_i\mid q)}\;-\;1
+    `, document.getElementById('grpo-kl-eq'), {displayMode:true, throwOnError:false});
+
+    try{
+      renderMathInElement(document.getElementById('grpo-sec'),{
+        delimiters:[{left:"\\(",right:"\\)",display:false},{left:"\\[",right:"\\]",display:true}],
+        throwOnError:false
+      });
+    }catch(e){}
+
+    const $=(id)=>document.getElementById(id);
+    const r1=$('g-r1'), r2=$('g-r2'), r3=$('g-r3');
+    const r1v=$('g-r1v'), r2v=$('g-r2v'), r3v=$('g-r3v');
+    const pold=$('g-pold'), pnew=$('g-pnew'), pref=$('g-pref');
+    const poldv=$('g-poldv'), pnewv=$('g-pnewv'), prefv=$('g-prefv');
+    const eps=$('g-eps'), bet=$('g-beta');
+    const epsv=$('g-epsv'), betv=$('g-betav');
+
+    const meanOut=$('g-mean'), stdOut=$('g-std'), AiOut=$('g-Ai');
+    const rtOut=$('g-rt'), unOut=$('g-un'), clOut=$('g-cl'), klOut=$('g-kl'), LOut=$('g-L');
+    const work=$('grpo-work');
+
+    function fmt(x,d=4){ return Number(x).toFixed(d); }
+    function sampleStd(a){
+      const m = a.reduce((s,x)=>s+x,0)/a.length;
+      const v = a.reduce((s,x)=>s+(x-m)*(x-m),0)/(a.length-1);
+      return [m, Math.sqrt(Math.max(v,0))];
+    }
+    function idx(){ return parseInt(document.querySelector('input[name="g-which"]:checked').value,10)-1; }
+
+    function compute(){
+      r1v.textContent=(+r1.value).toFixed(2);
+      r2v.textContent=(+r2.value).toFixed(2);
+      r3v.textContent=(+r3.value).toFixed(2);
+      poldv.textContent=(+pold.value).toFixed(2);
+      pnewv.textContent=(+pnew.value).toFixed(2);
+      prefv.textContent=(+pref.value).toFixed(2);
+      epsv.textContent=(+eps.value).toFixed(2);
+      betv.textContent=(+bet.value).toFixed(2);
+
+      const R=[+r1.value,+r2.value,+r3.value];
+      const [mu,sd]=sampleStd(R);
+      const k=idx();
+      const Ai = sd>0 ? (R[k]-mu)/sd : 0;
+
+      const rt = (+pnew.value)/(+pold.value);
+      const rtc = Math.max(1-(+eps.value), Math.min(1+(+eps.value), rt));
+      const un = rt*Ai, cl = rtc*Ai;
+
+      const ratioRef = (+pref.value)/(+pnew.value);
+      const Dkl = ratioRef - Math.log(ratioRef) - 1;
+      const L = Math.min(un,cl) - (+bet.value)*Dkl;
+
+      meanOut.textContent=fmt(mu);
+      stdOut.textContent=fmt(sd);
+      AiOut.textContent=fmt(Ai);
+      rtOut.textContent=fmt(rt);
+      unOut.textContent=fmt(un);
+      clOut.textContent=fmt(cl);
+      klOut.textContent=fmt(Dkl);
+      LOut.textContent=fmt(L);
+
+      katex.render(String.raw`
+        \begin{aligned}
+        &\text{mean}=\frac{r_1+r_2+r_3}{3}
+          =\frac{${(+r1.value).toFixed(2)}+${(+r2.value).toFixed(2)}+${(+r3.value).toFixed(2)}}{3}
+          =${fmt(mu)} ,\quad \text{std}\approx ${fmt(sd)}\\[2pt]
+        &A_i=\frac{${R[k].toFixed(2)}-${fmt(mu)}}{${fmt(sd)}}\approx ${fmt(Ai)}\\[4pt]
+        &r_t=\frac{\pi_{\theta}}{\pi_{\text{old}}}
+          =\frac{${(+pnew.value).toFixed(2)}}{${(+pold.value).toFixed(2)}}=${fmt(rt)},\ \ 
+          \mathrm{clip}(r_t,\,1-${(+eps.value).toFixed(2)},\,1+${(+eps.value).toFixed(2)})=${fmt(rtc)}\\[2pt]
+        &\text{unclipped}=r_tA_i=${fmt(rt)}\cdot${fmt(Ai)}=${fmt(un)},\quad
+          \text{clipped}=${fmt(rtc)}\cdot${fmt(Ai)}=${fmt(cl)}\\[4pt]
+        &D_{\mathrm{KL}}
+          =\frac{${(+pref.value).toFixed(2)}}{${(+pnew.value).toFixed(2)}}
+           -\log\!\left(\frac{${(+pref.value).toFixed(2)}}{${(+pnew.value).toFixed(2)}}\right)-1
+          \approx ${fmt(Dkl)}\\[2pt]
+        &\text{GRPO}=\min(${fmt(un)},\,${fmt(cl)})\;-\;${(+bet.value).toFixed(2)}\cdot${fmt(Dkl)}
+          \approx \boxed{\,${fmt(L)}\,}
+        \end{aligned}
+      `, work, {displayMode:true, throwOnError:false});
+    }
+
+    ['input','change'].forEach(ev=>{
+      [r1,r2,r3,pold,pnew,pref,eps,bet].forEach(el=>el.addEventListener(ev, compute));
+      document.querySelectorAll('input[name="g-which"]').forEach(el=>el.addEventListener(ev, compute));
+    });
+    compute();
+  }
+
+  
+
+    (function loadKaTeXOnce(cb){
+    if (window.katex && window.renderMathInElement) return cb();
+    function add(href, rel){
+      const el = document.createElement(rel==='css'?'link':'script');
+      if(rel==='css'){ el.rel='stylesheet'; el.href=href; }
+      else { el.defer=true; el.src=href; }
+      document.head.appendChild(el); return el;
+    }
+    if(!window.katex) add('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css','css');
+    const afterMain = ()=> add('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js').onload = cb;
+    if(!window.katex) add('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js').onload = afterMain;
+    else afterMain();
+  })(initAllMath);
+
+  function initAllMath(){
+    initRewardPairwise();
+    initValueAndPPO();
+    initGRPO();
+  }
+
+</script>
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+<!-- Rodion's part - Reasoning Architecture, Benchmarks -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reasoning Search Flow</title>
+  <style>
+    :root { --bg:#f8fafc; --ink:#111827; --arrow:#94a3b8; --accent:#fb923c; }
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;background:var(--bg);color:var(--ink)}
+    .wrap{width:100%;margin:24px auto;padding:0}
+    .panel{ display:flow-root; margin-bottom:0; }
+    .hint{color:#475569;font-size:14px;margin-top:8px;text-align:center}
+    .token{filter:drop-shadow(0 1px 2px rgba(0,0,0,.35));offset-rotate:0deg}
+    .sub{ margin: 6px 0 8px; }
+    #scene{ display:block; margin:0; }
+    @keyframes move{from{offset-distance:0%}to{offset-distance:100%}}
+  </style>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Best-of-N Search</title>
+  <style>
+    :root{--bg:#f8fafc;--ink:#0f172a;--arrow:#cbd5e1;--good:#22c55e;--bad:#f43f5e;--node:#bae6fd;--token:#3b82f6}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}
+    h1{margin:18px 0 6px;text-align:center;font-size:22px}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 12px 16px}
+    svg{display:block;width:100%;height:380px}
+    .node{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+    .token{r:10;fill:var(--token);filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+    @keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}
+    .pulse{animation:pulse 1.2s ease-in-out infinite}
+    @keyframes pulse{0%{opacity:.6}50%{opacity:1}100%{opacity:.6}}
+    button.run-btn{display:block;margin:0 auto 12px;padding:8px 16px;font-size:14px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer}
+    button.run-btn:hover{background:#f3f4f6}
+    /* Unfold animation for arrows */
+    .edge{stroke:var(--arrow);stroke-width:3;fill:none}
+    .edge.draw{transition:stroke-dashoffset 800ms ease}
+    .fin{opacity:0;transform-box:fill-box;transform-origin:center;}
+    .fin.show{opacity:1;transition:opacity .4s ease, transform .4s ease;transform:scale(1.05)}
+  </style>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beam Search</title>
+  <style>
+    :root{
+      --bg:#f8fafc; --ink:#0f172a; --muted:#64748b;
+      --arrow:#cbd5e1; --node:#bae6fd; --token:#3b82f6;
+      --good:#22c55e; --bad:#f43f5e;
+    }
+    body{margin:0;background:var(--bg);color:var(--ink);
+        font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}
+    h1{margin:18px 0 6px;text-align:center;font-size:22px}
+    .sub{margin:0 0 8px;text-align:center;color:var(--muted);font-size:14px}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 12px 16px}
+    svg{display:block;width:100%;height:420px}
+    .node{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+    .edge{stroke:var(--arrow);stroke-width:3;fill:none}
+    .edge.draw{transition:stroke-dashoffset 700ms ease}
+    .mid{fill:#e5e7eb}
+    .mid.good{fill:var(--good)}
+    .mid.bad{fill:var(--bad);opacity:.9}
+    .leaf{fill:#e5e7eb}
+    .leaf.good{fill:var(--good)}
+    .leaf.bad{fill:var(--bad);opacity:.95}
+    .pulse{animation:pulse 1.2s ease-in-out infinite}
+    @keyframes pulse{0%{opacity:.65}50%{opacity:1}100%{opacity:.65}}
+    @keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}
+  </style>
+
+  <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Diverse Verifier Tree Search — Dynamic Visualization</title>
+    <style>
+      :root{
+        --bg:#f8fafc; --ink:#0f172a; --muted:#64748b;
+        --arrow:#cbd5e1; --node:#bae6fd; --token:#3b82f6;
+        --good:#22c55e; --bad:#f43f5e;
+      }
+      body{margin:0;background:var(--bg);color:var(--ink);
+          font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}
+      h1{margin:18px 0 6px;text-align:center;font-size:22px}
+      .sub{margin:0 0 8px;text-align:center;color:var(--muted);font-size:14px}
+      .wrap{max-width:1200px;margin:0 auto;padding:0 12px 16px}
+      svg{display:block;width:100%;height:420px}
+      .node{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+      .edge{stroke:var(--arrow);stroke-width:3;fill:none}
+      .edge.draw{transition:stroke-dashoffset 700ms ease}
+      .token{fill:var(--token);r:8;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+      .mid{r:10}
+      .mid.good{fill:var(--good)}
+      .mid.bad{fill:var(--bad);opacity:.9}
+      .leaf{r:12}
+      .leaf.good{fill:var(--good)}
+      .leaf.bad{fill:var(--bad);opacity:.95}
+      .pulse{animation:pulse 1.2s ease-in-out infinite}
+      @keyframes pulse{0%{opacity:.65}50%{opacity:1}100%{opacity:.65}}
+      @keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}
+  </style>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Strategies Performance Comparison</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;background:#f8fafc;color:#0f172a}
+    h1{text-align:center;margin:18px 0 6px;font-size:22px}
+    #chart{display:block;margin:0 auto;max-width:900px}
+    .axis path,.axis line{stroke:#94a3b8}
+    .baseline{stroke:#475569;stroke-dasharray:6 6;opacity:.8}
+    .legend text{font-size:12px;dominant-baseline:middle;fill:#0f172a}
+  </style>
+
+  <meta charset="UTF-8">
+  <title>Benchmarks</title>
+  <!-- DataTables + jQuery -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  
+  <meta charset="UTF-8">
+  <style>
+    .hanoi-section {
+      font-family: sans-serif;
+      background: #fefefe;
+      padding: 2rem;
+      text-align: center;
+    }
+    .peg-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-end;
+      height: 200px;
+      margin-top: 3rem;
+    }
+    .peg {
+      width: 10px;
+      height: 150px;
+      background: #333;
+      position: relative;
+    }
+    .disk {
+      position: absolute;
+      height: 20px;
+      border-radius: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .disk1 { width: 100px; background: #FF6B6B; }
+    .disk2 { width: 70px; background: #4ECDC4; }
+    .disk3 { width: 40px; background: #1A535C; }
+
+    .peg-label {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
 
 
 
