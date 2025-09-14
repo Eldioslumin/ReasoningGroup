@@ -804,8 +804,317 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
   and the policy learns to pick the ones that score higher.
   The diagram below shows how feedback trains the reward model and how that model guides the policy during fine tuning.
 </p>
-
 </div>
+
+<title>RLHF Flow Diagram</title>
+</head>
+
+
+
+<body>
+  <div class="wrap" id="rlhf-flow">
+    <h1>Reward Model Training Flow</h1>
+    <p class="sub">Reinforcement Learning from Human Feedback Pipeline</p>
+
+    <svg id="flowSvg" viewBox="0 100 1000 210">
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="var(--arrow)" />
+        </marker>
+      </defs>
+
+      <rect x="20" y="120" width="60" height="40" class="node rect-node" rx="5"/>
+      <text x="50" y="145" text-anchor="middle" font-size="16" font-weight="bold">X</text>
+
+      <ellipse cx="180" cy="140" rx="60" ry="30" class="node model-node"/>
+      <text x="180" y="145" text-anchor="middle" font-size="16" font-weight="bold">Model</text>
+
+      <rect x="300" y="120" width="120" height="40" class="node rect-node" rx="5"/>
+      <text x="360" y="145" text-anchor="middle" font-size="14" font-weight="bold">continuations</text>
+
+      <ellipse cx="520" cy="140" rx="50" ry="30" class="node rm-node"/>
+      <text x="520" y="145" text-anchor="middle" font-size="16" font-weight="bold">RM</text>
+
+      <rect x="630" y="120" width="80" height="40" class="node rect-node" rx="5"/>
+      <text x="670" y="145" text-anchor="middle" font-size="14" font-weight="bold">reward</text>
+
+      <rect x="780" y="120" width="60" height="40" class="node rect-node" rx="5"/>
+      <text x="810" y="145" text-anchor="middle" font-size="14" font-weight="bold">loss</text>
+
+      <ellipse cx="360" cy="260" rx="70" ry="35" class="node human-node"/>
+      <text x="360" y="255" text-anchor="middle" font-size="14" font-weight="bold">Human</text>
+      <text x="360" y="270" text-anchor="middle" font-size="14" font-weight="bold">Labeler</text>
+
+      <path id="edge_x_model" class="edge" d="M 80 140 H 120" />
+
+      <path id="edge_x_cont" class="edge" d="M 80 140 V 80 H 360 V 120" />
+
+      <path id="edge_x_human" class="edge" d="M 80 140 V 260 H 290" />
+
+      <path id="edge_model_cont" class="edge" d="M 240 140 H 300" />
+
+      <path id="edge_cont_rm" class="edge" d="M 420 140 H 470" />
+
+      <path id="edge_rm_reward" class="edge" d="M 570 140 H 630" />
+
+      <path id="edge_reward_loss" class="edge" d="M 710 140 H 780" />
+
+      <path id="edge_cont_human" class="edge" d="M 360 160 V 225" />
+
+      <path id="edge_human_loss" class="edge" d="M 430 260 H 780 V 140" />
+
+      <path id="edge_loss_rm" class="edge" d="M 840 140 H 900 V 80 H 520 V 110" />
+
+      <circle class="token" id="tok1"/>
+      <circle class="token" id="tok2"/>
+      <circle class="token" id="tok3"/>
+      <circle class="token" id="tok_loss_rm" opacity="0"/>
+
+      <animateMotion id="a1_1" href="#tok1" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#edge_x_model"/></animateMotion>
+      <animateMotion id="a1_2" href="#tok1" dur="0.8s" begin="a1_1.end+0.05s" fill="freeze"><mpath href="#edge_model_cont"/></animateMotion>
+      <animateMotion id="a1_3" href="#tok1" dur="0.8s" begin="a1_2.end+0.05s" fill="freeze"><mpath href="#edge_cont_rm"/></animateMotion>
+      <animateMotion id="a1_4" href="#tok1" dur="0.9s" begin="a1_3.end+0.05s" fill="freeze"><mpath href="#edge_rm_reward"/></animateMotion>
+      <animateMotion id="a1_5" href="#tok1" dur="0.9s" begin="a1_4.end+0.05s" fill="freeze"><mpath href="#edge_reward_loss"/></animateMotion>
+
+      <animateMotion id="a2_1" href="#tok2" dur="1.0s" begin="indefinite" fill="freeze"><mpath href="#edge_x_cont"/></animateMotion>
+      <animateMotion id="a2_2" href="#tok2" dur="0.8s" begin="a2_1.end+0.05s" fill="freeze"><mpath href="#edge_cont_human"/></animateMotion>
+      <animateMotion id="a2_3" href="#tok2" dur="1.0s" begin="indefinite" fill="freeze"><mpath href="#edge_human_loss"/></animateMotion>
+
+      <animateMotion id="a3_1" href="#tok3" dur="1.2s" begin="indefinite" fill="freeze"><mpath href="#edge_x_human"/></animateMotion>
+      <animateMotion id="a3_2" href="#tok3" dur="1.0s" begin="indefinite" fill="freeze"><mpath href="#edge_human_loss"/></animateMotion>
+
+      <animateMotion id="a_lr_1" href="#tok_loss_rm" dur="1.2s" begin="indefinite" fill="freeze"><mpath href="#edge_loss_rm"/></animateMotion>
+      <animateMotion id="a_lr_2" href="#tok_loss_rm" dur="0.9s" begin="a_lr_1.end+0.05s" fill="freeze"><mpath href="#edge_rm_reward"/></animateMotion>
+      <animateMotion id="a_lr_3" href="#tok_loss_rm" dur="0.9s" begin="a_lr_2.end+0.05s" fill="freeze"><mpath href="#edge_reward_loss"/></animateMotion>
+    </svg>
+  </div>
+
+  <script>
+    const svg = document.getElementById('flowSvg');
+    const wrapper = document.getElementById('rlhf-flow');
+
+    const a1_first = document.getElementById('a1_1');
+    const a2_first = document.getElementById('a2_1');
+    const a3_first = document.getElementById('a3_1');
+
+    const a1_last = document.getElementById('a1_5');
+    const a2_last = document.getElementById('a2_3');
+    const a3_last = document.getElementById('a3_2');
+
+    const a_lr_1 = document.getElementById('a_lr_1');
+    const a_lr_2 = document.getElementById('a_lr_2');
+    const a_lr_3 = document.getElementById('a_lr_3');
+
+    const a2_toHuman = document.getElementById('a2_2'); 
+    const a3_toHuman = document.getElementById('a3_1'); 
+    const a2_fromHuman = document.getElementById('a2_3'); 
+    const a3_fromHuman = document.getElementById('a3_2'); 
+
+    const tok1 = document.getElementById('tok1');
+    const tok2 = document.getElementById('tok2');
+    const tok3 = document.getElementById('tok3');
+    const tokLRM = document.getElementById('tok_loss_rm');
+
+    let arrivedCount = 0;  
+    let humanArrivals = 0;  
+    let running = false;
+    let visible = false;
+
+    function resetTokens(){
+      [tok1,tok2,tok3,tokLRM].forEach(t=>{
+        t.setAttribute('r','0');
+        t.setAttribute('opacity', t === tokLRM ? '0' : '1');
+      });
+      requestAnimationFrame(()=>[tok1,tok2,tok3].forEach(t=>t.setAttribute('r','6')));
+    }
+
+    function startCycle(){
+      if (running) return;
+      running = true;
+      arrivedCount = 0;
+      humanArrivals = 0;
+      resetTokens();
+      a1_first.beginElement();
+      a2_first.beginElement();
+      a3_first.beginElement();
+    }
+
+    function beginLossChain(){
+      [tok1,tok2,tok3].forEach(t=>t.setAttribute('opacity','0'));
+      tokLRM.setAttribute('opacity','1');
+      tokLRM.setAttribute('r','6');
+      a_lr_1.beginElement();
+    }
+
+    function maybeFire(){
+      if (arrivedCount === 3){
+        beginLossChain();
+      }
+    }
+
+    function tryLeaveHuman(){
+      if (humanArrivals === 2){
+        a2_fromHuman.beginElement();
+        a3_fromHuman.beginElement();
+      }
+    }
+
+    a2_toHuman.addEventListener('endEvent', ()=>{ humanArrivals++; tryLeaveHuman(); });
+    a3_toHuman.addEventListener('endEvent', ()=>{ humanArrivals++; tryLeaveHuman(); });
+
+    a1_last.addEventListener('endEvent', ()=>{ arrivedCount++; maybeFire(); });
+    a2_last.addEventListener('endEvent', ()=>{ arrivedCount++; maybeFire(); });
+    a3_last.addEventListener('endEvent', ()=>{ arrivedCount++; maybeFire(); });
+
+    a_lr_3.addEventListener('endEvent', ()=>{
+      setTimeout(()=>{
+        running = false;
+        tokLRM.setAttribute('opacity','0');
+        if (visible) startCycle();
+      }, 350);
+    });
+
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          visible = true;
+          try { svg.unpauseAnimations(); } catch(e){}
+          startCycle();
+        }else{
+          visible = false;
+          try { svg.pauseAnimations(); } catch(e){}
+        }
+      });
+    }, {threshold: 0.25});
+    io.observe(wrapper);
+
+    window.addEventListener('load', ()=>{
+      const r = wrapper.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0){
+        visible = true;
+        try { svg.unpauseAnimations(); } catch(e){}
+        startCycle();
+      }
+    });
+  </script>
+
+<div class="wrap">
+  <h2 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Reward Model Training Data</h2>
+
+  <p>
+    Training a reward model requires pairs of answers that can be compared. Given the same prompt, annotators decide which answer
+    is better. The chosen answer becomes the <strong>preferred output</strong>, while the less helpful one is marked as not preferred.
+  </p>
+
+  <svg viewBox="0 0 1400 1100" width="100%" height="820" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="exArrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+        <path d="M0,0 L10,5 L0,10 Z" fill="#94a3b8"/>
+      </marker>
+      <filter id="exShadow" x="-50%" y="-50%" width="200%" height="200%">
+        <feDropShadow dx="0" dy="1.5" stdDeviation="1.8" flood-opacity="0.25"/>
+      </filter>
+      <style>
+        .ex-body{
+          font: 28px/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;
+          color:#111827; overflow-wrap:break-word; word-break:normal;
+        }
+        .ex-card{ fill:#eaf2ff; stroke:#94a3b8; rx:12; }
+        .ex-badge{ fill:#93c5fd; stroke:#334155; }
+        .ex-badge text{ fill:#0f172a; font-weight:800; font-size:26px; }
+        .ex-edge{ stroke:#94a3b8; stroke-width:3; fill:none; marker-end:url(#exArrow); }
+        .ex-y1 strong{
+          text-decoration: underline;
+          text-decoration-thickness: 4px;
+          text-underline-offset: 3px;
+          text-decoration-color: #22c55e;
+          font-weight: 800;
+        }
+        .ex-y2 strong{
+          text-decoration: underline;
+          text-decoration-thickness: 4px;
+          text-underline-offset: 3px;
+          text-decoration-color: #ef4444;
+          font-weight: 800;
+        }
+      </style>
+    </defs>
+
+    <rect x="460" y="70" width="480" height="90" class="ex-card" filter="url(#exShadow)"/>
+    <text x="700" y="122" text-anchor="middle" font-size="28" font-weight="700" fill="#0f172a">
+      How do I reset my phone password?
+    </text>
+
+    <g transform="translate(700,230)">
+      <circle r="44" fill="#93c5fd" stroke="#334155" filter="url(#exShadow)"/>
+      <text y="8" text-anchor="middle" font-size="42" font-weight="800" fill="#0f172a">X</text>
+    </g>
+
+    <rect id="ex-y1Card" x="140" y="360" width="560" height="520" class="ex-card" filter="url(#exShadow)"/>
+    <foreignObject x="155" y="375" width="530" height="490">
+      <div class="ex-body ex-y1">
+        To reset your phone password, the <strong>first step</strong> is to go to the settings menu of your phone.
+        <strong>Once in settings</strong>, locate the security or “lock screen” settings.
+        <strong>Here, you will be able to reset your password</strong> and create a new one.
+      </div>
+    </foreignObject>
+
+    <rect id="ex-y2Card" x="760" y="360" width="560" height="520" class="ex-card" filter="url(#exShadow)"/>
+    <foreignObject x="775" y="375" width="530" height="490">
+      <div class="ex-body ex-y2">
+        You use the password manager to reset your phone password. To reset your phone password, you need:
+        <ul style="margin:.6rem 0 0 1.4rem; padding:0;">
+          <li><strong>your phone password</strong></li>
+          <li><strong>a password manager app</strong></li>
+          <li>
+            <strong>a password manager app in your phone</strong>, either on your phone or in a trusted mobile app store
+            like iCloud, Facebook Messenger, or Phone Passcode
+          </li>
+        </ul>
+      </div>
+    </foreignObject>
+
+    <path class="ex-edge" d="M 700 274 V 300 H 420 V 360" />
+    <path class="ex-edge" d="M 700 274 V 300 H 1040 V 360" />
+
+    <g transform="translate(180,905)">
+      <rect x="-40" y="-26" width="180" height="96" rx="28" class="ex-badge" filter="url(#exShadow)"/>
+      <text x="45" y="32" font-size="42" text-anchor="middle" font-weight="800" fill="#0f172a">y1</text>
+    </g>
+    <g transform="translate(1280,905)">
+      <rect x="-40" y="-26" width="180" height="96" rx="28" class="ex-badge" filter="url(#exShadow)"/>
+      <text x="45" y="32" font-size="42" text-anchor="middle" font-weight="800" fill="#0f172a">y2</text>
+    </g>
+
+    <g transform="translate(700,1000)">
+      <g transform="translate(-120,0)">
+        <circle r="22" fill="#22c55e"/>
+        <path d="M -7 0 L -2 6 L 11 -8" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="36" y="9" font-size="32" font-weight="800" fill="#0f172a">y1</text>
+      </g>
+      <text x="0" y="10" text-anchor="middle" font-size="42" font-weight="800" fill="#0f172a">≻</text>
+      <g transform="translate(120,0)">
+        <circle r="22" fill="#f43f5e" opacity=".95"/>
+        <path d="M -8 -8 L 8 8 M -8 8 L 8 -8" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+        <text x="36" y="9" font-size="42" font-weight="800" fill="#0f172a">y2</text>
+      </g>
+    </g>
+  </svg>
+
+  <p style="margin-top:.75rem; font-size:18px;">
+    In this example database in
+    <a href="https://huggingface.co/datasets/Dahoas/synthetic-instruct-gptj-pairwise/viewer/default/train?f%5Bchosen%5D%5Bmin%5D=1&f%5Bchosen%5D%5Bmax%5D=311&f%5Bchosen%5D%5Btransform%5D=length&row=15&views%5B%5D=train" target="_blank" rel="noopener">HuggingFace</a>
+    the annotators preferred answer <strong>y1</strong>.
+  </p>
+
+  <p>
+  In this example, the prompt <em>"How do I reset my phone password?"</em> produces two candidate answers. Annotators judged that
+  <strong>y1</strong> was a better response. When analysing both answers we can see that in answer <strong>y1</strong>, underlined in green, there are a series of steps on how to reset a phone password.
+  The generated answer <strong>y2</strong> lists items that might be required but does not explain how to do the task, as we can see underlined in red.
+</p>
+</div>
+
+
 
 
 <style>
