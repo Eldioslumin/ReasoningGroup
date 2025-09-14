@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<!-- Heitke's part - scaling reasoning -->
-
-
-<meta charset="UTF-8">
-<title>Unlocking Machine Reasoning: The RLM Approach</title>
 <style>
   body {
     background: #f8fafc;
@@ -40,17 +34,58 @@
     margin: 38px auto 0 auto;
     padding: 0 24px;
   }
+  .highlight-box {
+  background: #fef9c3;      /* light yellow */
+  border-left: 6px solid #facc15; /* accent border */
+  padding: 18px 22px;
+  border-radius: 10px;
+  margin: 28px 0;
+  font-size: 1.05em;
+  line-height: 1.6;
+  color: #374151;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+}
+
+.loss2-sec{--ink:#0f172a;--muted:#64748b;--line:#e5e7eb}
+.loss2-sec h2{margin:1.25rem 0 .6rem 0; font-size:1.35rem; font-weight:700}
+.loss2-sec .sub{color:var(--muted); font-size:15px; margin:.25rem 0 .9rem}
+.loss2-sec .eq{margin:.6rem 0 .35rem}
+.loss2-sec .katex{font-size:95%}
+.loss2-sec .katex.display{margin:.35rem 0}
+.loss2-sec p{font-size:15px; line-height:1.6; color:var(--ink); margin:.4rem 0}
+.loss2-sec .two-col{display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:.6rem 0}
+.loss2-sec .ans{font-size:15px; line-height:1.55}
+.loss2-sec .ans .tag{font-weight:700; margin-right:.25rem}
+.loss2-sec .ctrl{display:grid; grid-template-columns:1fr 1fr; gap:.75rem 1rem; align-items:center; margin:.6rem 0}
+.loss2-sec label{color:var(--muted); font-size:15px}
+.loss2-sec input[type="range"]{width:100%}
+.loss2-sec .stat{margin:.35rem 0; font-size:15px}
+.loss2-sec code.inline{background:#f8fafc; border:1px solid var(--line); padding:.1rem .4rem; border-radius:6px}
+@media (max-width: 820px){
+  .loss2-sec .two-col{grid-template-columns:1fr}
+  .loss2-sec .ctrl{grid-template-columns:1fr}
+}
 </style>
 </head>
-<body>
+
+<body> 
+<meta charset="UTF-8">
+<!-- KaTeX JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<!-- KaTeX JS -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+
+<!-- Heitke's part - scaling reasoning -->
+<title>Unlocking Machine Reasoning: The RLM Approach</title>
+
+<section>
   <header>
     <h1>Unlocking Machine Reasoning: The RLM Approach</h1>
     <p>How Language Models Move From Memorization to Deliberative Problem-Solving (Allegedly)</p>
   </header>
-  <main>
-    <!-- Your main content goes here -->
-  </main>
-</body>
+</section>
 
 <section style="margin-top:60px; margin-bottom:40px;">
   <h2 style="
@@ -69,12 +104,9 @@
   <!-- Section content -->
 </section>
 
-
-
-  <meta charset="UTF-8">
-  <title>RLMs Image with Two Speech Bubbles (No False Pointer)</title>
+<title>RLMs Image with Two Speech Bubbles (No False Pointer)</title>
   <style>
-    body { background: #f8fafc; color: #222; font-family: sans-serif; }
+    section { background: #f8fafc; color: #222; font-family: sans-serif; }
     .centered { text-align: center; margin-top: 44px; }
     .robot-img { max-width: 380px; width: 100%; border-radius: 18px; box-shadow: 0 4px 24px #94a3b888; }
     .flexrow {
@@ -147,8 +179,9 @@
       .summary { max-width: 95vw; }
     }
   </style>
-</head>
-<body>
+
+
+<section>
   <div class="centered">
     <!-- Top row: image + right bubble -->
     <div class="flexrow">
@@ -171,14 +204,12 @@
       </div>
     </div>
   </div>
-</body>
+</section>
 
-
-<meta charset="UTF-8">
 <title>Scaling Laws & AIME Chart Side-by-Side</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  body { font-family: sans-serif; background: #f8fafc; color: #111827;}
+  section { font-family: sans-serif; background: #f8fafc; color: #111827;}
   .main-row {
     display: flex;
     align-items: flex-start;
@@ -260,8 +291,8 @@
     }
   }
 </style>
-</head>
-<body>
+
+<section>
 <div class="main-row">
 <!-- Left: Scaling Laws Flow -->
 <div class="visual-box">
@@ -291,15 +322,19 @@
     </div>
   </div>
 </div>
+
+
 <!-- Right: Chart.js plot -->
 <div class="visual-box">
   <h3 style="text-align:center; margin-top:0;">Train-Time Compute vs Test-Time Compute</h3>
   <div style="max-width:600px; margin: 24px auto;">
     <canvas id="aimeChart" height="320"></canvas>
   </div>
+
 </div>
 </div>
 <script>
+
 // For accessibility: toggle tooltip on click (not just hover)
 function toggleActive(el) {
   document.querySelectorAll('.section-title').forEach(s => {
@@ -363,22 +398,21 @@ new Chart(document.getElementById('aimeChart').getContext('2d'), {
   }
 });
 </script>
-</body>
+
+</section>
 
 
 
-
-  <meta charset="UTF-8">
   <title>Direct vs Reasoning Model Flow</title>
   <style>
-    body { background: #f8fafc; font-family: sans-serif; color: #111827; }
+    section { background: #f8fafc; font-family: sans-serif; color: #111827; }
     .switcher { text-align: center; margin: 35px 0 14px 0; }
     button { font-size: 1em; padding: 10px 20px; margin: 0 8px; border-radius:6px; border:none; background:#e0e7ef; cursor:pointer; }
     .flow-wrap { display:flex; justify-content:center; align-items:center; gap:60px; }
     .label { text-align:center; font-weight:600; font-size:1.1em; margin-top:10px }
   </style>
-</head>
-<body>
+
+<section>
   <h2 style="text-align:center;">Direct vs Reasoning Model</h2>
   <div class="switcher">
     <button onclick="showFlow('direct')">Direct Model</button>
@@ -423,7 +457,7 @@ function showFlow(mode) {
       <path id="flowPath" d="M160,90 Q375,40 590,90" stroke="#fb923c" stroke-width="5" fill="none" marker-end="url(#arrow2)" />
       <defs>
         <marker id="arrow2" markerWidth="12" markerHeight="12" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
-          <path d="M0,0 L12,4 L0,8 Z" fill="#fb923c"/>
+          <path d="M0,0 L12,4 L0,8 Z" fill="#60a5fa"/>
         </marker>
       </defs>
     `;
@@ -461,8 +495,8 @@ function showFlow(mode) {
 // Show direct by default
 showFlow('direct');
 </script>
-</body>
-</html>
+</section>
+
 
 <div style="max-width:720px; margin:60px auto; text-align:center;">
   <details style="background:#f1f5f9; border-radius:12px; padding:20px; cursor:pointer; box-shadow:0 3px 12px rgba(0,0,0,0.05);">
@@ -479,8 +513,9 @@ showFlow('direct');
 </div>
 
 
+<!--CoT Explanation-->
 
-<section style="margin:60px auto; max-width:700px;">
+<section style="margin:60px auto; max-width:1000px;">
   <h2 style="text-align:center;">Chain of Thought (CoT) Example</h2>
   <p style="text-align:justify; line-height:1.6;">
     One of the first attempts to elicit reasoning in LLMs was related to how to prompt them. 
@@ -513,7 +548,7 @@ showFlow('direct');
       Ask with CoT
     </button>
   </div>
-</section>
+
 
 <script>
 const chatBox = document.getElementById("cot-chat");
@@ -552,124 +587,148 @@ function askCoT(){
   // Final concise answer
   setTimeout(()=> addMessage("3 ✅","bot"), 4200);
 }
-</script>
-<p>The first part is for creating the chain of thought itself, 
-  while the second messages ensures a definitive, concise answer.
-</p>
+  </script>
+  <p>The first part is for creating the chain of thought itself, 
+    while the second messages ensures a definitive, concise answer.
+  </p>
+</section>
 
 
 
-
-
+  <!-- SFT Explanation Section -->
+  <div style="max-width:1000px; margin:60px auto; text-align:center;"> 
+      <h2 style="text-align:center;">Supervised Fine-Tuning</h2>
 
     <p style="font-size:16px; line-height:1.6; text-align:justify;">
+      However useful CoT is, only being able retrieve the latent capabilities of the model is a hard limit of the technique.
+      A reasoning model should be able to go beyond its training data, and actually think beyond its preobtained information.
+      To remedy this, researchers started testing different techniques and algorithms to enhance the reasoning capabilities of LLMs.
       <strong>Supervised Fine-Tuning (SFT)</strong> is a post-training technique where we update 
       our model so its answers resamble a specific dataset. 
       This is useful for alignment, which means developing models that specialize 
-      in a specific topic or must follow certain guidelines.
+      in a specific topic or must follow certain guidelines. 
       
       
-      In more mathematical terms, given a set of prompts <m>x</m>, 
+      <br> <br>In more mathematical terms, given a set of prompts <m>x</m>, 
       and their corresponding preferred answers <m>y</m>, 
       we want our model responses given its current distributions to resamble <m>y</m>.
       This can be achieved by updating our parameters based on a loss formula. 
         <div id="sft-eq" style="text-align:center; margin:24px 0;"></div>
         <div id="sft-grad" style="text-align:center; margin:24px 0;"></div>
 
-      <script>
-      (function ensureKatex(cb){
-        if (window.katex) return cb();
-        const l=document.createElement("link");
-        l.rel="stylesheet"; 
-        l.href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css";
-        document.head.appendChild(l);
-        const s=document.createElement("script");
-        s.src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js";
-        s.onload=cb;
-        document.head.appendChild(s);
-      })(function(){
-        katex.render(String.raw`
-          \nabla_\theta \, \mathcal{L}_{\text{SFT}}(\theta) 
-          = - \mathbb{E}_{x,y} \Bigg[ \sum_{t=1}^{T} 
-          \nabla_\theta \log p_\theta \big(y_t \mid x, y_{<t}\big) \Bigg]
-        `, document.getElementById('sft-grad'), { displayMode:true });
-      });
-      </script>
-      
-      
+          <script>
+          (function ensureKatex(cb){
+            if (window.katex) return cb();
+            const l=document.createElement("link");
+            l.rel="stylesheet"; 
+            l.href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css";
+            document.head.appendChild(l);
+            const s=document.createElement("script");
+            s.src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js";
+            s.onload=cb;
+            document.head.appendChild(s);
+          })(function(){
+            katex.render(String.raw`
+              \nabla_\theta \, \mathcal{L}_{\text{SFT}}(\theta) 
+              = - \mathbb{E}_{x,y} \Bigg[ \sum_{t=1}^{T} 
+              \nabla_\theta \log p_\theta \big(y_t \mid x, y_{<t}\big) \Bigg]
+            `, document.getElementById('sft-grad'), { displayMode:true });
+          });
+          </script>
+      <p style="font-size:16px; line-height:1.6; text-align:justify;">
+      We last update our parameters through gradient descent, minimazing the loss. And then our output will resamble more our preferred output.
+      </p>
+
+      <div class="highlight-box"> 
+        By training model through SFT on CoT outputs, we can ensure that our LLMs will produce these reasoning steps autonomously, 
+        without the need to prompt them to do so, enhancing their reasoning capabilities. </div>  
+
+      <p style="font-size:16px; line-height:16.; text-align:justify;">
+      If you want to see this technique in action, make sure to read the <a href="https://arxiv.org/abs/2501.19393" target="_blank" rel="noopener">S1 model paper</a>, 
+      which shows the whole process of creating a RLM from scratch, 
+      inlcuding data collection through CoT prompting, SFT as a post-training technique, 
+      and Budget Forcing during inference (or controlling the lenght of the model's answers).
+      </p>
 
 
-      We last update our parameters through gradient descent, minimazing the loss. And then our output will resamble more our preffered output.
+    </div>
 
-      Make sure to read the <a href="https://arxiv.org/abs/2501.19393" target="_blank" rel="noopener">S1 model paper</a>, which shows the whole process of creating a RLM from scratch, inlcuding data collection through CoT prompting, SFT as a post-training technique, and Budget Forcing during inference (or controlling the lenght of the model's answers).
-    </p>
 
+
+<div style="max-width:1000px; margin:20px auto; text-align:center;">
+    <h2 style="margin-bottom: 30px; color: #1f2937;">Supervised Fine-Tuning (SFT) Process</h2>
     
+    <svg id="sft-demo" width="100%" height="220" viewBox="0 0 900 220">
+        <!-- Prompt -->
+        <rect id="node-x" x="40" y="20" width="240" height="80" rx="14" fill="#bae6fd" stroke="#0ea5e9" stroke-width="1"/>
+        <text x="160" y="45" text-anchor="middle" font-weight="600" fill="#0c4a6e">
+            Prompt: 
+            <tspan x="160" dy="1.2em">"How to reset my password?"</tspan>
+        </text>
 
-  <div style="text-align:center; margin:30px auto;">
-    <svg id="sft-demo" width="100%" height="260" viewBox="0 0 900 260">
+        <!-- Preferred Answer -->
+        <rect x="320" y="10" width="520" height="60" rx="14" fill="#bbf7d0" stroke="#10b981" stroke-width="1"/>
+        <text x="580" y="35" text-anchor="middle" font-weight="600" fill="#064e3b">Preferred: "Go to configurations → reset password"</text>
 
+        <!-- Model Output -->
+        <rect id="node-yhat" x="320" y="120" width="520" height="60" rx="14" fill="#fb923c" stroke="#ea580c" stroke-width="1"/>
+        <text id="output-text" x="580" y="155" text-anchor="middle" font-weight="600" fill="#9a3412">Model Output: "Throw water to your computer"</text>
 
-      <!-- Prompt -->
-    <rect id="node-x" x="40" y="90" width="240" height="80" rx="14" fill="#bae6fd"/>
-    <text x="160" y="120" text-anchor="middle" font-weight="600">
-      Prompt: 
-      <tspan x="160" dy="1.2em">"How to reset my password?"</tspan>
-    </text>
-
-      <!-- Preferred Answer -->
-      <rect x="320" y="40" width="520" height="60" rx="14" fill="#bbf7d0"/>
-      <text x="580" y="75" text-anchor="middle" font-weight="600">Preferred: "Go to configurations → reset password"</text>
-
-      <!-- Model Output -->
-      <rect id="node-yhat" x="320" y="140" width="520" height="60" rx="14" fill="#fb923c"/>
-      <text id="output-text" x="580" y="175" text-anchor="middle" font-weight="600">Model: "Try turning off your computer"</text>
-
-    
+        <!-- Arrow marker definition -->
+        <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#ef4444"/>
+            </marker>
+        </defs>
     </svg>
 
     <!-- Loss Progress Bar -->
-    <div style="margin-top:30px;">
-      <input type="range" id="loss-slider" min="0" max="3" value="0" step="1" style="width:80%;">
-      <div style="display:flex; justify-content:space-between; width:80%; margin:5px auto; font-size:14px; color:#374151;">
-        <span>High Loss</span>
-        <span>Update Weights (lower loss)</span>
-        <span>Update Weights (lower loss)</span>
-        <span>Zero Loss</span>
-      </div>
+    <div style="margin-top:20px;">
+        <input type="range" id="loss-slider" min="0" max="3" value="0" step="1" style="width:80%; height: 8px;">
+        <div style="display:flex; justify-content:space-between; width:80%; margin:10px auto; font-size:14px; color:#374151;">
+            <span>High Loss</span>
+            <span>Update Weights</span>
+            <span>Update Weights</span>
+            <span>Zero Loss</span>
+        </div>
     </div>
-  </div>
-</section>
+
+    <div style="margin-top: 30px; text-align: left; max-width: 800px; margin-left: auto; margin-right: auto;">
+        <h3 style="color: #1f2937; margin-bottom: 15px;">How SFT Works:</h3>
+        <p style="color: #4b5563; line-height: 1.6; margin-bottom: 10px;">
+            <strong>Step 1:</strong> The model receives a prompt and generates an answer that may not be optimal.
+        </p>
+        <p style="color: #4b5563; line-height: 1.6; margin-bottom: 10px;">
+            <strong>Step 2:</strong> The model's output is compared to the preferred/correct answer, creating a loss signal.
+        </p>
+        <p style="color: #4b5563; line-height: 1.6; margin-bottom: 10px;">
+            <strong>Step 3:</strong> Through backpropagation, the model's weights are updated to reduce this loss.
+        </p>
+        <p style="color: #4b5563; line-height: 1.6;">
+            <strong>Step 4:</strong> After many iterations, the model learns to produce outputs closer to the preferred answers.
+        </p>
+    </div>
+</div>
 
 <script>
 const outputs = [
-  'Model: "Try turning off your computer"',   // high loss
-  'Model: "Click something in settings"',     // step 1
-  'Model: "Go to settings and find password"',// step 2
-  'Model: "Go to configurations → reset password"' // perfect match
+    'Model: "Throw water to your computer"',   // high loss
+    'Model: "Click something in settings"',     // step 1
+    'Model: "Go to settings and find password"',// step 2
+    'Model: "Go to configurations → reset password"' // perfect match
 ];
 const colors = ["#fb923c","#fcd34d","#fef08a","#bbf7d0"];
 
 document.getElementById("loss-slider").addEventListener("input", function(e){
-  const val = parseInt(e.target.value);
-  document.getElementById("output-text").textContent = outputs[val];
-  document.getElementById("node-yhat").setAttribute("fill", colors[val]);
+    const val = parseInt(e.target.value);
+    document.getElementById("output-text").textContent = outputs[val];
+    document.getElementById("node-yhat").setAttribute("fill", colors[val]);
 
-  // Show loss arrow when not fully trained
-  document.getElementById("loss-arrow").style.opacity = (val<3 ? 1 : 0);
+    // Show loss arrow when not fully trained
+    document.getElementById("loss-arrow").style.opacity = (val < 3 ? 1 : 0);
 });
 </script>
 
-
-
-
-
-
-<!-- Lara's part - Reinforcement Learning -->
-
-
-<!DOCTYPE html>
-<html lang="en">
 <div class="wrap">
   <style>
   :root{
@@ -747,10 +806,8 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 </p>
 </div>
 
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RLHF Flow Diagram</title>
-  </head>
+<title>RLHF Flow Diagram</title>
+</head>
 
 
 
@@ -1056,6 +1113,8 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
   The generated answer <strong>y2</strong> lists items that might be required but does not explain how to do the task, as we can see underlined in red.
 </p>
 </div>
+
+
 
 
 <style>
@@ -1631,6 +1690,8 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
   }
 </script>
 
+<!--HERE WAS GRPO-->
+
 <!-- ================= GRPO (from scratch, with split + converge arrows) (Juan)================= -->
 <div class="wrap" id="grpo-flow">
   <h1>Group Relative Policy Optimization (GRPO)</h1>
@@ -1759,7 +1820,6 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
     <text x="500" y="5" class="small" font-weight="700">GRPO update</text>
     <text x="530" y="25" class="small" font-weight="700">KL</text>
 
-    <!-- =================== GRPO SPLIT/MERGE ANIMATION (PPO-style) =================== -->
 
 <!-- ================= GRPO Animation ================= -->
 <svg id="grpoSvg" viewBox="0 0 1500 360" aria-label="GRPO diagram">
@@ -2224,12 +2284,8 @@ mAJoin.addEventListener('endEvent', ()=>{
   }
 
 </script>
-
-
-
-
 </body>
-</html>
+
 
 
 
@@ -2237,13 +2293,9 @@ mAJoin.addEventListener('endEvent', ()=>{
 
 <!-- Rodion's part - Reasoning Architecture, Benchmarks -->
 
-
-<!DOCTYPE html>
-<html lang="en">
 <head>
 
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <title>Reasoning Search Flow</title>
   <style>
     :root { --bg:#f8fafc; --ink:#111827; --arrow:#94a3b8; --accent:#fb923c; }
@@ -2257,8 +2309,7 @@ mAJoin.addEventListener('endEvent', ()=>{
     @keyframes move{from{offset-distance:0%}to{offset-distance:100%}}
   </style>
 
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <title>Best-of-N Search</title>
   <style>
     :root{--bg:#f8fafc;--ink:#0f172a;--arrow:#cbd5e1;--good:#22c55e;--bad:#f43f5e;--node:#bae6fd;--token:#3b82f6}
@@ -2280,8 +2331,6 @@ mAJoin.addEventListener('endEvent', ()=>{
     .fin.show{opacity:1;transition:opacity .4s ease, transform .4s ease;transform:scale(1.05)}
   </style>
 
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Beam Search</title>
   <style>
     :root{
@@ -2309,9 +2358,7 @@ mAJoin.addEventListener('endEvent', ()=>{
     @keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}
   </style>
 
-  <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Diverse Verifier Tree Search — Dynamic Visualization</title>
+  <title>Diverse Verifier Tree Search — Dynamic Visualization</title>
     <style>
       :root{
         --bg:#f8fafc; --ink:#0f172a; --muted:#64748b;
@@ -2396,12 +2443,267 @@ mAJoin.addEventListener('endEvent', ()=>{
       font-weight: bold;
     }
   </style>
-</head>
 
 
 
 
-<body>
+<!-- Here was the R1 STUFF BEFORE-->
+
+    <div class="wrap">
+        <div class="intro-section">
+            <h2>The R1 Breakthrough: Emergent Reasoning Through Reinforcement Learning</h2>
+            
+            <p>
+                All the techniques explained above are used and combined nowadays to create state of the art reasoning models.
+                Perhaps one of the most emblematic reasoning model releases is the R1 series, with their accompanying paper:
+                <a href="https://arxiv.org/pdf/2501.12948">"DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning" (2025)</a>
+                By analzying their research, we hope it is clearer how this techniques are used in practice.
+              </p>
+            
+            <h3>R1 Series Development</h3>
+            <p>
+              The DeepSeek team worked with three different approaches for training reasoning models.
+              With just Reinforcement Learning on Chain-of-Thought data, they trained DeepSeek-R1-Zero, a model that surpassed similar sized models in reasoning.
+              But after proving the relevancy of Reinforcement Learning, the researchers  noticed some problems in the output of DeepSeek-R1-Zero,
+              mostly related to readability and language mixing. So while the model would reason, it did so in ways humans could not always interpret.
+              Therefore, a new training paradigm with extra steps was created to train the DeepSeek-R1 model, specifically designed to prevent these issues while keeping the improved reasoning capabilities.
+              The trainig scheme included Supervised-Fine-Tuning, two stages of Reinforcement Learning, and Rejection Sampling.
+              In addition to these two approaches, they also described the process of distillation, 
+              where the output of a larger and more complex LLM is used to train a smaller LLM to improve its reasoning capabilities. 
+            </p>
+
+
+            <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>How R1 Models are Trained</title>
+        <style>
+        .wrap {
+            margin-top: 0px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .switcher {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .switcher button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .switcher button:hover {
+            background: #2563eb;
+        }
+        
+        .flow-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        #r1SVG {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .label {
+            text-align: center;
+            font-weight: 600;
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        
+        #r1Stages, #r1zerostages {
+            max-width: 720px;
+            margin: 20px auto;
+            line-height: 1.6;
+            display: none;
+        }
+        
+        #r1Stages h3, #r1zerostages h3 {
+            margin-bottom: 20px;
+            color: #1f2937;
+        }
+        
+        #r1Stages p, #r1zerostages p {
+            margin-bottom: 15px;
+            color: #374151;
+        }
+        
+        #r1Stages strong, #r1zerostages strong {
+            color: #111827;
+        }
+    </style>
+
+    <div class="wrap" id="r1-flow">
+        <h2 style="text-align:center;">How R1 Models are Trained</h2>
+        <div class="switcher">
+            <button onclick="showR1('zero')">R1-Zero</button>
+            <button onclick="showR1('r1')">R1</button>
+        </div>
+
+        <div class="flow-wrap">
+            <svg id="r1SVG" viewBox="0 0 950 140" width="850" height="140">
+                <!-- Will be filled dynamically -->
+            </svg>
+        </div>
+        <div id="r1Label" class="label"></div>
+
+        <div id="r1Stages">
+            <h3>R1 Training Stages</h3>
+
+            <p><strong>Stage 1 – Cold Start (SFT with CoT)</strong><br>
+            We fine-tune the base model on a small set of high-quality chain-of-thought examples.
+            This avoids unstable early RL and improves initial readability and structure.
+            Outputs follow a consistent format with reasoning + summary.</p>
+
+            <p><strong>Stage 2 – Reasoning-Oriented RL (GRPO)</strong><br>
+            We apply GRPO to improve performance on math, logic, and science tasks.
+            The reward combines task accuracy and language consistency to encourage readable, correct outputs.</p>
+
+            <p><strong>Stage 3 – Rejection Sampling + SFT</strong><br>
+            We sample outputs from the RL model and keep only the best completions.
+            We add non-reasoning tasks to improve general capabilities like writing and QA.
+            This results in a cleaner, broader training set.</p>
+
+            <p><strong>Stage 4 – RL for All Scenarios</strong><br>
+            We apply another RL phase to align the model with human preferences.
+            We focus on helpfulness (using the summary) and harmlessness (using the full output).
+            This final stage refines both reasoning and safety across diverse prompts.</p>
+        </div>
+
+        <div id="r1zerostages">
+            <h3>R1-Zero Training Process</h3>
+            <p><strong>Unique Training Stage</strong><br>
+            We only use Reinforcement Learning to improve the base model, 
+            allowing the exploration of Chain-of-Thought when faced with difficult tasks.
+            R1 proved to researchers that Reinforcement Learning is a powerful enough technique
+            to improve the reasoninng capabilities of LLMs by itself, without the need of SFT.
+          </p>
+        </div>
+    </div>
+
+    <script>
+    function showR1(mode) {
+        const svg = document.getElementById('r1SVG');
+        svg.innerHTML = "";
+        const r1stages = document.getElementById("r1Stages");
+        const r1zerostages = document.getElementById("r1zerostages");
+
+        if (mode === "zero") {
+            r1stages.style.display = "none";
+            r1zerostages.style.display = "block";
+            svg.setAttribute("viewBox", "0 0 950 140");
+            svg.setAttribute("height", "140");
+
+           // R1-Zero training: Policy model trained via RL, no SFT warmup
+            svg.innerHTML = `
+                <rect x="275" y="40" width="160" height="60" rx="16" fill="#bae6fd"/>
+                <rect x="515" y="40" width="200" height="60" rx="16" fill="#bbf7d0"/>
+
+                <text x="355" y="75" text-anchor="middle" font-size="18" font-weight="600">Base LLM</text>
+                <text x="615" y="75" text-anchor="middle" font-size="18" font-weight="600">RL Training</text>
+
+                <defs>
+                    <marker id="r1Arrow" markerWidth="12" markerHeight="12" refX="8" refY="4" orient="auto">
+                        <path d="M0,0 L12,4 L0,8 Z" fill="#60a5fa"/>
+                    </marker>
+                </defs>
+                <path d="M435,70 H515" stroke="#60a5fa" stroke-width="4" />
+            `;
+            document.getElementById("r1Label").textContent =
+                "R1-Zero is trained directly with Reinforcement Learning.";
+        } else {
+            r1stages.style.display = "block";
+            r1zerostages.style.display = "none";
+            svg.setAttribute("viewBox", "0 0 950 140");
+            svg.setAttribute("height", "140");
+
+            // R1 training: staged approach
+            svg.innerHTML = `
+                <rect x="20" y="40" width="180" height="60" rx="14" fill="#bfdbfe"/>
+                <rect x="240" y="40" width="200" height="60" rx="14" fill="#bbf7d0"/>
+                <rect x="460" y="40" width="220" height="60" rx="14" fill="#fde68a"/>
+                <rect x="720" y="40" width="200" height="60" rx="14" fill="#fca5a5"/>
+
+                <text x="110" y="65" text-anchor="middle" font-size="14" font-weight="600">Step 1:</text>
+                <text x="110" y="80" text-anchor="middle" font-size="14" font-weight="600">SFT with CoT</text>
+                
+                <text x="340" y="65" text-anchor="middle" font-size="14" font-weight="600">Step 2:</text>
+                <text x="340" y="80" text-anchor="middle" font-size="14" font-weight="600">RL for Reasoning</text>
+                
+                <text x="570" y="60" text-anchor="middle" font-size="14" font-weight="600">Step 3:</text>
+                <text x="570" y="75" text-anchor="middle" font-size="13" font-weight="600">Rejection Sampling</text>
+                <text x="570" y="88" text-anchor="middle" font-size="13" font-weight="600">+ SFT</text>
+                
+                <text x="820" y="65" text-anchor="middle" font-size="14" font-weight="600">Step 4:</text>
+                <text x="820" y="80" text-anchor="middle" font-size="14" font-weight="600">RL for Alignment</text>
+
+                <defs>
+                    <marker id="r1ArrowBlue" markerWidth="12" markerHeight="12" refX="8" refY="4" orient="auto">
+                        <path d="M0,0 L12,4 L0,8 Z" fill="#3b82f6"/>
+                    </marker>
+                </defs>
+                <path d="M200,70 H240" stroke="#60a5fa" stroke-width="3" />
+                <path d="M440,70 H460" stroke="#60a5fa" stroke-width="3" />
+                <path d="M680,70 H720" stroke="#60a5fa" stroke-width="3" />
+            `;
+            document.getElementById("r1Label").textContent =
+                "R1 is trained in four stages: SFT, RL, rejection sampling, and RL again.";
+        }
+    }
+
+    // Initialize with R1 view
+    showR1("r1");
+    </script>
+    <h3>Evidence of Emergent Reasoning</h3>
+            <p>
+                The most compelling evidence of R1's success is how the model discovered to "think longer" about difficult problems. During training, something remarkable happened that wasn't explicitly programmed:
+            </p>
+            
+            <figure style="text-align:center; max-width: 1000px; margin: 2rem auto;">
+            <img src="R1_Graph.jpg" alt="Average length per response during training" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+
+            <figcaption style="margin-top: 0.75rem; font-size: 0.95rem; color: #1e293b;">
+                <strong>Figure:</strong> DeepSeek-R1-Zero average response length during training.
+                Notice how the model spontaneously learns to generate longer, more detailed reasoning as training progresses – from ~500 tokens initially to nearly 10,000 tokens,
+                indicating deeper chain-of-thought reasoning without explicit instruction. Figure from DeepSeek-AI et al, 2025
+            </figcaption>
+            </figure>
+            
+            <div class="highlight-box">
+                <p>
+                    <strong>Key Insight:</strong> The model wasn't told to write longer responses. 
+                    It discovered on its own that complex problems require more detailed thinking, improving its accuracy.
+                </p>
+            </div>
+            
+            <h3>What This Breakthrough Means</h3>
+            <p>
+            The training lead to some interesting findings. The extra length of the answers also came with an emergence of reasoning behaviours
+            similar to that of humans. The LLM was able to realize its apporach to solve some problems was mistaken, leading to self-correction
+            and an exploration of alternative approaches to solve the issues.
+            with no need of human intervention.  
+            </p>
+
+        </div>
+    </div>
+
+    
+
+
+
 
   <section style="margin-top:60px; margin-bottom:40px;">
     <h2 style="
@@ -2551,23 +2853,7 @@ mAJoin.addEventListener('endEvent', ()=>{
 })();
 </script>
 
-
-
-<section style="margin:60px 0;">
-  <h2 style="text-align:center;">Reasoning Structures</h2>
-  <div style="max-width:900px; margin:20px auto; padding:18px 24px; background:#f9fafb; border-left:4px solid #2563eb; border-radius:8px; line-height:1.6; text-align:justify; font-size:16px;">
-    <strong>Reasoning LLMs produce multiple of these steps in their answers, and the way we group and organize them together is called the reasoning structure.</strong> 
-    Now the most basic reasoning structure is the <strong>chain</strong>, which you can see often in Chain of Thought models, where there is a logical progression step for step. 
-    This would be a <strong>sequential</strong> type of structure. But there are also 
-    <strong>parallel structures like trees</strong>, where we can have multiple branches, allowing us to explore answers more thoroughly, at the cost of adding computational resources. 
-    Then finally we have <strong>graphs</strong>, where the units are conditioned or <strong>dependencies</strong> between each reasoning step.
-  </div>
-</section>
-</section>
-  
-  <iframe src="reasoning_structures.html" width="100%" height="720" style="border:none; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.1);"></iframe>
-</section>
-
+<!--HERE WAS REASONING STRUCTURES-->
 
 <h2 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Search Strategies</h2>
 
@@ -2977,161 +3263,12 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 </script>
 
-<section style="margin-top:60px; margin-bottom:40px; max-width:900px; margin-left:auto; margin-right:auto;">
-  <h2 style="
-    font-size:2em;
-    font-weight:700;
-    letter-spacing:0.01em;
-    margin-bottom:18px;
-    background:linear-gradient(90deg, #010610 70%, #eab308 100%);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    background-clip:text;
-    text-align:center;
-  ">
-    Verifiers in Reasoning Models
-  </h2>
 
-  <p>
-    Verifiers are part of a larger category of tools we use for the the models reasoning process called operators. 
-    And operators do basically everything you can think of. There are operators for refining the reasoning 
-    steps when they fall under certain threshold, or multiply a branch with a policy model. 
-    They can also prune entire paths that we feel are going nowhere. And verifiers do exactly what their name tells us.
-  </p>
 
-  <blockquote style="font-style:italic; background:#fefce8; padding:12px 18px; border-left:4px solid #eab308; border-radius:6px; margin:20px 0;">
-    “The verifier assesses the quality of the final answer or intermediate reasoning steps and provides feedback to the reasoner.” 
-    <a href="https://arxiv.org/html/2504.09037v1" target="_blank" rel="noopener" style="color:#2563eb; text-decoration:none;">
-      (Ke et al., 2025)
-    </a>
-  </blockquote>
 
-  <p>
-    They can be divided based on different categories: <strong>the form</strong> of the verifier's result, the level of <strong>granularity</strong>, the <strong>source</strong> of the verifier, and if they require <strong>  additional training</strong>. 
-    <a href="https://arxiv.org/abs/2411.11504" target="_blank" rel="noopener">(Guan et al., 2022)</a>.
-  </p>
 
-  <p>
-    The feedback can be presented back to the reasoner in many forms. <strong>Binary feedback</strong> provides a simple pass/fail judgment, while <strong> score-based feedback</strong>  offers continuous values that 
-    indicate the degree of correctness. <strong>  Ranking feedback </strong>compares multiple outputs and orders them, giving the optimization 
-    process relative preferences. Finally, <strong> textual feedback </strong>delivers the richest information, often including rationales, critiques, 
-    or detailed explanations of why an answer is considered strong or weak.
-  </p>
 
-  <p>
-    The granularity of verification can be considered at three different levels. <strong> Token-level verifiers</strong> evaluate predictions 
-    one token at a time, offering the most fine-grained form of feedback. <strong>Thought-level verifiers</strong> instead examine reasoning 
-    steps or sentences as whole units, providing judgments at an intermediate scale. <strong>Trajectory-level verifiers</strong> operate at the 
-    entire sequence of reasoning from start to finish. Each level offers different advantages, with token-level being the most 
-    detailed, and trajectory-level giving a rounded view of reasoning quality.
-  </p>
-
-  <p>
-    From the perspective of their source, verifiers can be divided into program-based and model-based approaches. 
-    <strong>Program-based verifiers rely on deterministic rules</strong>, which makes them consistent, interpretable, and transparent. 
-    However, this is in exchange for no adaptability in more dynamic tasks. <strong>Model-based verifiers generate judgments through 
-    probabilistic models instead</strong>. This allows them to adapt to diverse contexts and tasks, but increases the uncertainty 
-    and decreases reliability.
-  </p>
-
-  <p>
-    Finally, verifiers differ in whether they require additional training. <strong>Those that do are often fine-tuned on task-specific 
-    data improving their judgement in one domain</strong>. The drawback is that they are not generalizable outside of the task at hand. 
-    <strong>Verifiers that do not require additional training are based on pre-existing models</strong>. They will not be as precise as trained 
-    verifiers, but handle data variation better, and are not dependant on task-specific datasets.
-  </p>
-
-  <p><strong>Now, here is a table for you to see some examples of verifiers after this long read:</strong></p>
-  <div style="background:#f1f5f9; padding:16px; border-radius:10px; text-align:center; margin:20px 0;">
-    <h3 style="text-align:center; margin:30px 0 14px 0; font-size:1.4em; font-weight:600; color:#111;">
-  Towards Next Generation Post-training Paradigm of Foundation Models via Verifier Engineering
-</h3>
-
-<table style="width:100%; border-collapse:collapse; font-size:0.95em; margin:0 auto; background:#fff; box-shadow:0 3px 14px rgba(0,0,0,0.05); border-radius:10px; overflow:hidden;">
-  <thead style="background:#1e293b; color:#fff;">
-    <tr>
-      <th style="padding:12px; text-align:center;">Verifier Type</th>
-      <th style="padding:12px; text-align:center;">Verification Form</th>
-      <th style="padding:12px; text-align:center;">Verify Granularity</th>
-      <th style="padding:12px; text-align:center;">Verifier Source</th>
-      <th style="padding:12px; text-align:center;">Extra Training</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="padding:10px;">Golden Annotation</td>
-      <td style="padding:10px;">Binary/Text</td>
-      <td style="padding:10px;">Thought Step/Full Trajectory</td>
-      <td style="padding:10px;">Program Based</td>
-      <td style="padding:10px;">No</td>
-    </tr>
-    <tr style="background:#f9fafb;">
-      <td style="padding:10px;">Rule-based</td>
-      <td style="padding:10px;">Binary/Text</td>
-      <td style="padding:10px;">Thought Step/Full Trajectory</td>
-      <td style="padding:10px;">Program Based</td>
-      <td style="padding:10px;">No</td>
-    </tr>
-    <tr>
-      <td style="padding:10px;">Code Interpreter</td>
-      <td style="padding:10px;">Binary/Score/Text</td>
-      <td style="padding:10px;">Token/Thought Step/Full Trajectory</td>
-      <td style="padding:10px;">Program Based</td>
-      <td style="padding:10px;">No</td>
-    </tr>
-    <tr style="background:#f9fafb;">
-      <td style="padding:10px;">ORM</td>
-      <td style="padding:10px;">Binary/Score/Rank/Text</td>
-      <td style="padding:10px;">Full Trajectory</td>
-      <td style="padding:10px;">Model Based</td>
-      <td style="padding:10px;">Yes</td>
-    </tr>
-    <tr>
-      <td style="padding:10px;">Language Model</td>
-      <td style="padding:10px;">Binary/Score/Rank/Text</td>
-      <td style="padding:10px;">Thought Step/Full Trajectory</td>
-      <td style="padding:10px;">Model Based</td>
-      <td style="padding:10px;">Yes</td>
-    </tr>
-    <tr style="background:#f9fafb;">
-      <td style="padding:10px;">Tool</td>
-      <td style="padding:10px;">Binary/Score/Rank/Text</td>
-      <td style="padding:10px;">Token/Thought Step/Full Trajectory</td>
-      <td style="padding:10px;">Program Based</td>
-      <td style="padding:10px;">No</td>
-    </tr>
-    <tr>
-      <td style="padding:10px;">Search Engine</td>
-      <td style="padding:10px;">Text</td>
-      <td style="padding:10px;">Thought Step/Full Trajectory</td>
-      <td style="padding:10px;">Program Based</td>
-      <td style="padding:10px;">No</td>
-    </tr>
-    <tr style="background:#f9fafb;">
-      <td style="padding:10px;">PRM</td>
-      <td style="padding:10px;">Score</td>
-      <td style="padding:10px;">Token/Thought Step</td>
-      <td style="padding:10px;">Model Based</td>
-      <td style="padding:10px;">Yes</td>
-    </tr>
-    <tr>
-      <td style="padding:10px;">Knowledge Graph</td>
-      <td style="padding:10px;">Text</td>
-      <td style="padding:10px;">Thought Step/Full Trajectory</td>
-      <td style="padding:10px;">Program Based</td>
-      <td style="padding:10px;">No</td>
-    </tr>
-  </tbody>
-</table>
-
-  </div>
-
-  <p>
-    As a last note, it important to notice that verifiers in a sense imitate a kind of response from the environment for the LM, 
-    allowing it to have a perception on how their action had a response. If this want to see how much can be done with this interaction, 
-    maybe check this <a href="[HYPERLINK]" target="_blank" rel="noopener">link [the idea is to connect our blog to the other team's]</a>.
-  </p>
-</section>
+<!--Strategies comparision-->
 
 <h3 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Strategies performance comparison</h3>
 
@@ -3285,10 +3422,164 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
+<section style="margin-top:60px; margin-bottom:40px; max-width:900px; margin-left:auto; margin-right:auto;">
+  <h2 style="
+    font-size:2em;
+    font-weight:700;
+    letter-spacing:0.01em;
+    margin-bottom:18px;
+    background:linear-gradient(90deg, #010610 70%, #eab308 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    text-align:center;
+  ">
+    Verifiers in Reasoning Models
+  </h2>
 
-<p><strong>to be continued</strong></p>
-<br></br>
-<br></br>
+  <p>
+    But how do we know which paths to explore along the branches of our trees when using each strategy? 
+    This is when <b>verifiers</b> come in play.
+    Verifiers are part of a larger category of tools we use for the the models reasoning process called operators. 
+    And operators do basically everything you can think of. There are operators for refining the reasoning 
+    steps when they fall under certain threshold, or multiply a branch with a policy model. 
+    They can also prune entire paths that are going nowhere. And verifiers do exactly what their name tells us. 
+  </p>
+
+  <blockquote style="font-style:italic; background:#fefce8; padding:12px 18px; border-left:4px solid #eab308; border-radius:6px; margin:20px 0;">
+    “The verifier assesses the quality of the final answer or intermediate reasoning steps and provides feedback to the reasoner.” 
+    <a href="https://arxiv.org/html/2504.09037v1" target="_blank" rel="noopener" style="color:#2563eb; text-decoration:none;">
+      (Ke et al., 2025)
+    </a>
+  </blockquote>
+
+  <p>
+    They can be divided based on different categories: <strong>the form</strong> of the verifier's result, the level of <strong>granularity</strong>, the <strong>source</strong> of the verifier, and if they require <strong>  additional training</strong>. 
+    <a href="https://arxiv.org/abs/2411.11504" target="_blank" rel="noopener">(Guan et al., 2022)</a>.
+  </p>
+
+  <p>
+    The feedback can be presented back to the reasoner in many forms. <strong>Binary feedback</strong> provides a simple pass/fail judgment, while <strong> score-based feedback</strong>  offers continuous values that 
+    indicate the degree of correctness. <strong>  Ranking feedback </strong>compares multiple outputs and orders them, giving the optimization 
+    process relative preferences. Finally, <strong> textual feedback </strong>delivers the richest information, often including rationales, critiques, 
+    or detailed explanations of why an answer is considered strong or weak.
+  </p>
+
+  <p>
+    The granularity of verification can be considered at three different levels. <strong> Token-level verifiers</strong> evaluate predictions 
+    one token at a time, offering the most fine-grained form of feedback. <strong>Thought-level verifiers</strong> instead examine reasoning 
+    steps or sentences as whole units, providing judgments at an intermediate scale. <strong>Trajectory-level verifiers</strong> operate at the 
+    entire sequence of reasoning from start to finish. Each level offers different advantages, with token-level being the most 
+    detailed, and trajectory-level giving a rounded view of reasoning quality.
+  </p>
+
+  <p>
+    From the perspective of their source, verifiers can be divided into program-based and model-based approaches. 
+    <strong>Program-based verifiers rely on deterministic rules</strong>, which makes them consistent, interpretable, and transparent. 
+    However, this is in exchange for no adaptability in more dynamic tasks. <strong>Model-based verifiers generate judgments through 
+    probabilistic models instead</strong>. This allows them to adapt to diverse contexts and tasks, but increases the uncertainty 
+    and decreases reliability.
+  </p>
+
+  <p>
+    Finally, verifiers differ in whether they require additional training. <strong>Those that do are often fine-tuned on task-specific 
+    data improving their judgement in one domain</strong>. The drawback is that they are not generalizable outside of the task at hand. 
+    <strong>Verifiers that do not require additional training are based on pre-existing models</strong>. They will not be as precise as trained 
+    verifiers, but handle data variation better, and are not dependant on task-specific datasets.
+  </p>
+
+  <p><strong>Now, here is a table for you to see some examples of verifiers after this long read:</strong></p>
+  <div style="background:#f1f5f9; padding:16px; border-radius:10px; text-align:center; margin:20px 0;">
+    <h3 style="text-align:center; margin:30px 0 14px 0; font-size:1.4em; font-weight:600; color:#111;">
+  Towards Next Generation Post-training Paradigm of Foundation Models via Verifier Engineering
+</h3>
+
+<table style="width:100%; border-collapse:collapse; font-size:0.95em; margin:0 auto; background:#fff; box-shadow:0 3px 14px rgba(0,0,0,0.05); border-radius:10px; overflow:hidden;">
+  <thead style="background:#1e293b; color:#fff;">
+    <tr>
+      <th style="padding:12px; text-align:center;">Verifier Type</th>
+      <th style="padding:12px; text-align:center;">Verification Form</th>
+      <th style="padding:12px; text-align:center;">Verify Granularity</th>
+      <th style="padding:12px; text-align:center;">Verifier Source</th>
+      <th style="padding:12px; text-align:center;">Extra Training</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding:10px;">Golden Annotation</td>
+      <td style="padding:10px;">Binary/Text</td>
+      <td style="padding:10px;">Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+    <tr style="background:#f9fafb;">
+      <td style="padding:10px;">Rule-based</td>
+      <td style="padding:10px;">Binary/Text</td>
+      <td style="padding:10px;">Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+    <tr>
+      <td style="padding:10px;">Code Interpreter</td>
+      <td style="padding:10px;">Binary/Score/Text</td>
+      <td style="padding:10px;">Token/Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+    <tr style="background:#f9fafb;">
+      <td style="padding:10px;">ORM</td>
+      <td style="padding:10px;">Binary/Score/Rank/Text</td>
+      <td style="padding:10px;">Full Trajectory</td>
+      <td style="padding:10px;">Model Based</td>
+      <td style="padding:10px;">Yes</td>
+    </tr>
+    <tr>
+      <td style="padding:10px;">Language Model</td>
+      <td style="padding:10px;">Binary/Score/Rank/Text</td>
+      <td style="padding:10px;">Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Model Based</td>
+      <td style="padding:10px;">Yes</td>
+    </tr>
+    <tr style="background:#f9fafb;">
+      <td style="padding:10px;">Tool</td>
+      <td style="padding:10px;">Binary/Score/Rank/Text</td>
+      <td style="padding:10px;">Token/Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+    <tr>
+      <td style="padding:10px;">Search Engine</td>
+      <td style="padding:10px;">Text</td>
+      <td style="padding:10px;">Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+    <tr style="background:#f9fafb;">
+      <td style="padding:10px;">PRM</td>
+      <td style="padding:10px;">Score</td>
+      <td style="padding:10px;">Token/Thought Step</td>
+      <td style="padding:10px;">Model Based</td>
+      <td style="padding:10px;">Yes</td>
+    </tr>
+    <tr>
+      <td style="padding:10px;">Knowledge Graph</td>
+      <td style="padding:10px;">Text</td>
+      <td style="padding:10px;">Thought Step/Full Trajectory</td>
+      <td style="padding:10px;">Program Based</td>
+      <td style="padding:10px;">No</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+
+  <p>
+    As a last note, it important to notice that verifiers in a sense imitate a kind of response from the environment for the LM, 
+    allowing it to have a perception on how their action had a response. If this want to see how much can be done with this interaction, 
+    maybe check this <a href="[HYPERLINK]" target="_blank" rel="noopener">link [the idea is to connect our blog to the other team's]</a>.
+  </p>
+</section>
+
 
   <h1 style="text-align:left">How Good Are Models at Reasoning?</h1>
   <h2>Benchmarks</h2>
