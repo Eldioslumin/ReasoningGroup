@@ -34,6 +34,31 @@
     margin: 38px auto 0 auto;
     padding: 0 24px;
   }
+
+  footer {
+    background:#2563eb;
+    color:#fff  !important;;
+    padding:38px 0 24px;
+    text-align:center;
+    box-shadow:0 4px 24px #94a3b888;
+    display:flex;               
+    justify-content:center;
+
+    width:100vw;
+    margin-left:calc(50% - 50vw);
+    margin-right:calc(50% - 50vw);
+    border-top-left-radius:18px;   
+    border-top-right-radius:18px;
+  }
+
+footer p{
+  margin:0;
+  max-width:900px;         
+  padding:0 24px;            
+  text-align:center;
+  color:#fff;
+  }
+
   .highlight-box {
   background: #fef9c3;      /* light yellow */
   border-left: 6px solid #facc15; /* accent border */
@@ -65,6 +90,8 @@
   .loss2-sec .two-col{grid-template-columns:1fr}
   .loss2-sec .ctrl{grid-template-columns:1fr}
 }
+
+footer, footer * { color:#fff !important; }
 </style>
 </head>
 
@@ -91,11 +118,11 @@
   </header>
 </section>
 
+
 <section class="wrap" id="blog-intro">
   <p>
-    This blogpost grew out of work done as part of a research seminar at the University of Potsdam by
-    Heitke Grops, Juan Danza Rovira, Lara Neubauer da Costa Schertel and Rodion Zorin under the
-    supervision of Prof. David Schlangen. Our aim was to explore the field of Reasoning Models and make
+    In this blog, we’ll explore how these strategies are implemented, and why some approaches seem to foster genuine reasoning more effectively than others.
+    Our aim is to explore the field of Reasoning Models and make
     the topic approachable in an educational format. We move from the general concepts and ideas behind
     these models to the mathematical formulas that ground them, as well as the different frameworks that
     implement them and how they perform across benchmarks.
@@ -222,9 +249,6 @@
   </div>
     <!-- Below: left bubble + summary -->
     <div class="flexrow-below" style="margin-top:18px;">
-      <div class="bubble left">
-        In this blog, we’ll explore how these strategies are implemented, and why some approaches seem to foster genuine reasoning more effectively than others.
-      </div>
       <div class="summary">
         <strong>Large Language Models (LLMs)</strong> are built to tackle general-purpose tasks—answering questions, solving problems, generating ideas, and following instructions. But many standard LLMs often fall short when it comes to true reasoning. Instead of logical analysis or planning, they tend to memorize and interpolate, skipping the deeper steps that lead to genuine understanding.
         <br><br>
@@ -4487,4 +4511,13 @@ document.addEventListener('DOMContentLoaded',()=>{
 </p>
 
 </body>
+
+<section>
+  <footer>
+    <p> This blogpost grew out of work done as part of a research seminar at the University of Potsdam by
+    Heitke Grops, Juan Danza Rovira, Lara Neubauer da Costa Schertel and Rodion Zorin under the
+    supervision of Prof. David Schlangen. Thank you for reading!
+    </p>
+  </footer>
+</section>
 </html>
