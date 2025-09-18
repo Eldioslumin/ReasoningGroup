@@ -83,7 +83,8 @@
 <section>
   <header>
     <h1>Unlocking Machine Reasoning: The RLM Approach</h1>
-    <p>How Language Models Move From Memorization to Deliberative Problem-Solving (Allegedly)</p>
+    <p>How Language Models Move From Memorization to Deliberative Problem-Solving (Allegedly):<br>Unpacking Strategies and Methods Driving Reasoning in LLMs.
+    </p>
   </header>
 </section>
 
@@ -182,16 +183,19 @@
 
 
 <section>
-  <div class="centered">
-    <!-- Top row: image + right bubble -->
-    <div class="flexrow">
+  <div class="flexrow">
+    <div style="display:flex; flex-direction:column; align-items:center;">
       <img src="Bild4.png" alt="Robot reasoning vs lookup" class="robot-img">
-      <div class="bubble right">
-        <strong>This is the key idea behind RLMs:</strong>
-        <br>
-        Moving beyond surface fluency to actual reasoning, where tasks are worked through step-by-step.
+      <div class="caption" style="font-size:0.9em; color:#555; margin-top:6px;">
+        Image: Alex Shipps/MIT CSAIL
       </div>
     </div>
+    <div class="bubble right">
+      <strong>This is the key idea behind RLMs:</strong>
+      <br>
+      Moving beyond surface fluency to actual reasoning, where tasks are worked through step-by-step.
+    </div>
+  </div>
     <!-- Below: left bubble + summary -->
     <div class="flexrow-below" style="margin-top:18px;">
       <div class="bubble left">
@@ -205,6 +209,13 @@
     </div>
   </div>
 </section>
+
+
+
+
+
+
+
 
 <title>Scaling Laws & AIME Chart Side-by-Side</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -300,7 +311,7 @@
   <div class="flow-row">
     <div class="section-title scaling" tabindex="0" onclick="toggleActive(this)">
       Era of Scaling Laws
-      <div class="popup">
+      <div class="popup" style="text-align:center">
         Progress driven by scale:<br>Accuracy increases with model size, more data, and more training compute.
       </div>
     </div>
@@ -309,15 +320,15 @@
       Hitting a Wall
 
       
-      <div class="popup">
-        Scaling hits practical limits:<br>Eventually computational resources and data become scarce, and accuracy gains plateau.
+      <div class="popup" style="text-align:center">
+        Scaling hits practical limits:<br>Eventually computational resources and data become scarce, accuracy gains plateau.
       </div>
     </div>
     <span class="arrow">&#8595;</span>
     <div class="section-title solution" tabindex="0" onclick="toggleActive(this)">
       Test-Time Compute
-      <div class="popup">
-        Solution:<br>By increasing compute during inference, performance on new data can be boosted at test-time, so without retraining.
+      <div class="popup" style="text-align:center">
+        Solution:<br>By increasing compute during inference, performance on new data<br>can be boosted at test-time, so without retraining.
       </div>
     </div>
   </div>
@@ -389,10 +400,20 @@ new Chart(document.getElementById('aimeChart').getContext('2d'), {
     scales: {
       y: {
         beginAtZero: true,
-        title: { display:true, text:"AIME Accuracy (%)" }
+        title: { display:true, text:"AIME Accuracy (%)" },
+        grid: {
+      drawTicks: true,   // keep tick marks
+      drawOnChartArea: false  // remove the horizontal grid lines
+    }
       },
       x: {
-        title: { display:true, text:"Compute Budget" }
+        type: 'logarithmic',
+        title: { display:true, text:"Compute budget (log scale)" },
+        ticks: { display:false },
+        grid: {
+      drawTicks: true,   // keep tick marks
+      drawOnChartArea: false  // remove the horizontal grid lines
+    }
       }
     }
   }
@@ -400,6 +421,17 @@ new Chart(document.getElementById('aimeChart').getContext('2d'), {
 </script>
 
 </section>
+
+<div style="max-width:900px; margin:2rem auto; font-size:1.05em; color:#333; text-align:left; line-height:1.5;">
+    Scaling alone drove major gains over the past decade, but its limits are becoming clear. 
+    Test-time compute offers a complementary approach: models can "think harder" when needed, 
+    improving reasoning and robustness without retraining. This shift intends moving from 
+    brute-force scaling toward more adaptable AI.
+</div>
+
+
+
+
 
 
 
@@ -497,6 +529,13 @@ showFlow('direct');
 </script>
 </section>
 
+<div style="max-width:900px; margin:2rem auto; font-size:1.05em; color:#333; text-align:left; line-height:1.5;">
+  Instead of mapping inputs directly to outputs, reasoning models break the task into intermediate steps. 
+  These reasoning tokens are intended to make the model’s internal process visible, helping it structure and refine 
+  its reasoning. This approach seemingly improves accuracy on complex problems while keeping the model’s 
+  outputs interpretable.
+</div>
+
 
 <div style="max-width:720px; margin:60px auto; text-align:center;">
   <details style="background:#f1f5f9; border-radius:12px; padding:20px; cursor:pointer; box-shadow:0 3px 12px rgba(0,0,0,0.05);">
@@ -504,13 +543,14 @@ showFlow('direct');
       🤔 But what are these intermediate steps?
     </summary>
     <p style="margin-top:15px; font-size:1.1em; color:#374151;">
-      And how are reasoning language models (RLMs) actually achieved?
+      And how are RLMs actually achieved?
       <br>
       To answer that, we’ll look at reasoning architectures such as<br> 
       <b>search-based methods,<br>reward models,<br></b> and <b>decision-tree style reasoning</b>.
     </p>
   </details>
 </div>
+
 
 
 <!--CoT Explanation-->
@@ -814,14 +854,19 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 <body>
   <div class="wrap" id="rlhf-flow">
     <h1>Reward Model Training Flow</h1>
-    <p class="sub">Reinforcement Learning from Human Feedback Pipeline</p>
+  
+    <style>
+      #rlhf-flow .edge{ stroke:#cbd5e1; stroke-width:3; fill:none; marker-end:url(#grpoArrow); }
+      #rlhf-flow .back{ stroke:#64748b; stroke-width:3; fill:none; stroke-dasharray:7 5; marker-end:url(#grpoArrow); }
+      #rlhf-flow .node{ filter:drop-shadow(0 2px 4px rgba(0,0,0,.08)); }
+      #rlhf-flow .rect-node{ fill:#e2e8f0; stroke:#0f172a; stroke-width:2; }
+      #rlhf-flow .model-node{ fill:#7dd3fc; stroke:#0f172a; stroke-width:2; }
+      #rlhf-flow .value-node{ fill:#fde68a; stroke:#0f172a; stroke-width:2; }
+      #rlhf-flow .small{ font-size:12px; fill:#334155; }
+    </style>
 
-    <svg id="flowSvg" viewBox="0 100 1000 210">
-      <defs>
-        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-          <polygon points="0 0, 10 3.5, 0 7" fill="var(--arrow)" />
-        </marker>
-      </defs>
+
+    <svg id="flowSvg">
 
       <rect x="20" y="120" width="60" height="40" class="node rect-node" rx="5"/>
       <text x="50" y="145" text-anchor="middle" font-size="16" font-weight="bold">X</text>
@@ -1200,12 +1245,17 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 <div class="wrap" id="ppo-flow">
   <h1>Proximal Policy Optimization (PPO)</h1>
 
-  <svg id="ppoSvg" viewBox="0 0 1350 420">
-    <defs>
-      <marker id="ppoArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-        <polygon points="0 0, 10 3.5, 0 7" fill="var(--arrow, #cbd5e1)"/>
-      </marker>
-    </defs>
+  <style>
+    #ppo-flow .edge{ stroke:#cbd5e1; stroke-width:3; fill:none; marker-end:url(#grpoArrow); }
+    #ppo-flow .back{ stroke:#64748b; stroke-width:3; fill:none; stroke-dasharray:7 5; marker-end:url(#grpoArrow); }
+    #ppo-flow .node{ filter:drop-shadow(0 2px 4px rgba(0,0,0,.08)); }
+    #ppo-flow .rect-node{ fill:#e2e8f0; stroke:#0f172a; stroke-width:2; }
+    #ppo-flow .model-node{ fill:#7dd3fc; stroke:#0f172a; stroke-width:2; }
+    #ppo-flow .value-node{ fill:#fde68a; stroke:#0f172a; stroke-width:2; }
+    #ppo-flow .small{ font-size:12px; fill:#334155; }
+  </style>
+
+  <svg id="ppoSvg">
 
     <rect x="20" y="170" width="50" height="36" rx="6" class="node rect-node"/>
     <text x="45" y="193" text-anchor="middle" font-size="14" font-weight="700">q</text>
@@ -2285,6 +2335,281 @@ mAJoin.addEventListener('endEvent', ()=>{
 
 </script>
 </body>
+
+
+
+
+
+
+
+
+
+<!-- DPO Interactive Visualization -->
+<div id="dpo-visualization" style="width:100%;margin:2.5rem 0;padding:1.5rem 0;">
+  <h2 style="text-align:center;">Direct Preference Optimization (DPO)</h2>
+
+
+  <!-- ================= DPO GRAPH ================= -->
+  <div class="wrap" id="dpo-flow">
+
+    <style>
+      #dpo-flow .edge{ stroke:#cbd5e1; stroke-width:3; fill:none; marker-end:url(#grpoArrow); }
+      #dpo-flow .back{ stroke:#64748b; stroke-width:3; fill:none; stroke-dasharray:7 5; marker-end:url(#grpoArrow); }
+      #dpo-flow .node{ filter:drop-shadow(0 2px 4px rgba(0,0,0,.08)); }
+      #dpo-flow .rect-node{ fill:#e2e8f0; stroke:#0f172a; stroke-width:2; }
+      #dpo-flow .model-node{ fill:#7dd3fc; stroke:#0f172a; stroke-width:2; }
+      #dpo-flow .value-node{ fill:#fde68a; stroke:#0f172a; stroke-width:2; }
+      #dpo-flow .small{ font-size:12px; fill:#334155; }
+    </style>
+
+    <svg id="dpoSvg">
+      <!-- Human Preference -->
+      <rect x="20" y="100" width="140" height="40" rx="6" class="node rect-node"/>
+      <text x="90" y="125" text-anchor="middle" font-size="14" font-weight="700">Human Preference</text>
+
+      <!-- Policy Model -->
+      <ellipse cx="300" cy="120" rx="90" ry="36" class="node value-node"/>
+      <text x="300" y="125" text-anchor="middle" font-size="14" font-weight="700">Policy Model</text>
+
+      <!-- Preferred Response -->
+      <rect x="500" y="70" width="140" height="40" rx="6" class="node rect-node"/>
+      <text x="570" y="95" text-anchor="middle" font-size="14" font-weight="700">Preferred (y⁺)</text>
+
+      <!-- Dispreferred Response -->
+      <rect x="500" y="150" width="140" height="40" rx="6" class="node rect-node"/>
+      <text x="570" y="175" text-anchor="middle" font-size="14" font-weight="700">Dispreferred (y⁻)</text>
+
+      <!-- DPO Loss -->
+      <ellipse cx="750" cy="120" rx="70" ry="36" class="node model-node"/>
+      <text x="750" y="125" text-anchor="middle" font-size="14" font-weight="700">DPO Loss</text>
+
+      <!-- Paths -->
+      <path id="dpo_path1" class="edge" d="M160 120 H 210" marker-end="url(#dpoArrow)"/>
+      <path id="dpo_path2" class="edge" d="M390 120 H 410" marker-end="url(#dpoArrow)"/>
+      <path id="dpo_path3" class="edge" d="M390 120 V 90 H 500" marker-end="url(#dpoArrow)"/>
+      <path id="dpo_path4" class="edge" d="M390 120 V 150 H 500" marker-end="url(#dpoArrow)"/>
+      <path id="dpo_path5" class="edge" d="M640 90 H 680" marker-end="url(#dpoArrow)"/>
+      <path id="dpo_path6" class="edge" d="M640 170 H 680" marker-end="url(#dpoArrow)"/>
+
+      <!-- Moving token -->
+      <circle id="dpo_token" r="6" fill="#2563eb" opacity="0"/>
+    </svg>
+  </div>
+
+  <script>
+  (function(){
+    const token = document.getElementById('dpo_token');
+
+    const paths = [
+      document.getElementById('dpo_path1'),
+      document.getElementById('dpo_path2'),
+      document.getElementById('dpo_path3'),
+      document.getElementById('dpo_path4'),
+      document.getElementById('dpo_path5'),
+      document.getElementById('dpo_path6')
+    ];
+
+    let running = false, visible = false, i=0;
+
+    function animateNext() {
+      if (i >= paths.length) {
+        running = false;
+        i = 0;
+        setTimeout(() => { if(visible) startAnimation(); }, 700);
+        return;
+      }
+
+      const path = paths[i];
+      const length = path.getTotalLength();
+      token.setAttribute('opacity','1');
+      let start = null;
+
+      function step(timestamp) {
+        if (!start) start = timestamp;
+        const progress = (timestamp - start)/700; // 700ms per segment
+        const point = path.getPointAtLength(Math.min(progress*length, length));
+        token.setAttribute('cx', point.x);
+        token.setAttribute('cy', point.y);
+        if(progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          i++;
+          animateNext();
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    function startAnimation(){
+      if(running) return;
+      running = true;
+      i=0;
+      animateNext();
+    }
+
+    const wrap = document.getElementById('dpo-flow');
+    const io = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        visible = e.isIntersecting;
+        if(visible) startAnimation();
+      });
+    }, {threshold:0.25});
+    io.observe(wrap);
+
+    window.addEventListener('load', ()=>{
+      const r = wrap.getBoundingClientRect();
+      if(r.top < innerHeight && r.bottom > 0){
+        visible = true;
+        startAnimation();
+      }
+    });
+  })();
+  </script>
+
+
+
+
+  <p style="font-size:1.07em;">
+    <strong>DPO fine-tunes models directly on human preferences.</strong>
+    Instead of training a separate reward model, DPO learns to choose the preferred answer out of a pair, optimizing the model so that preferred responses become more likely.<br>
+  </p>
+  <div style="display:flex;gap:32px;justify-content:space-between;align-items:center;">
+    <!-- Preferred Response -->
+    <div style="flex:1;text-align:center;">
+      <div style="padding:10px 0 8px 0;">Preferred response<br><span style="font-size:1.1em;color:#15803d;">\(y^+\)</span></div>
+      <input id="dpo-pplus" type="range" min="0.01" max="0.99" step="0.01" value="0.35" style="width:80%;">
+      <div style="margin-top:6px;">Probability: <strong id="dpo-pplusv">0.35</strong></div>
+    </div>
+    <div style="flex:1;text-align:center;">
+      <div style="padding:10px 0 8px 0;">Dispreferred response<br><span style="font-size:1.1em;color:#b91c1c;">\(y^-\)</span></div>
+      <input id="dpo-pminus" type="range" min="0.01" max="0.99" step="0.01" value="0.13" style="width:80%;">
+      <div style="margin-top:6px;">Probability: <strong id="dpo-pminusv">0.13</strong></div>
+    </div>
+  </div>
+  <div style="margin:1.2em 0 0 0;text-align:center;">
+    <label for="dpo-beta">\(\beta\) (preference sharpness): <strong id="dpo-betav">1.0</strong></label>
+    <input id="dpo-beta" type="range" min="0.1" max="4.0" step="0.01" value="1.0" style="width:50%;vertical-align:middle;">
+  </div>
+  <div style="margin:1.2em 0 0 0; font-size:1.08em;background:#fffbe9;border-radius:9px;padding:0.7em 1em;color:#222;">
+    <div style="flex:1;text-align:center;">
+      Log probability difference:<br>
+      \(\Delta = \log \pi_\theta(y^+) - \log \pi_\theta(y^-)\) = <span id="dpo-delta">0.9808</span>
+    </div>
+    <div style="flex:1;text-align:center;">
+      DPO loss:<br>
+      \(-\log \left( \frac{e^{\beta \Delta}}{e^{\beta \Delta} + 1} \right)\) = <span id="dpo-loss">0.3125</span>
+    </div>
+  </div>
+  <p style="margin-top:1em;font-size:1.03em;color:#444;text-align:center">
+    <strong>Goal:</strong> Maximize the difference between preferred and dispreferred log probabilities.<br>
+    The loss shrinks as the model makes the preferred response much more likely than the dispreferred one.
+  </p>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+function fmt(x, d=4) { return Number(x).toFixed(d); }
+function updateDPO() {
+  const pp = +$('dpo-pplus').value, pm = +$('dpo-pminus').value, beta = +$('dpo-beta').value;
+  $('dpo-pplusv').textContent = fmt(pp,2);
+  $('dpo-pminusv').textContent = fmt(pm,2);
+  $('dpo-betav').textContent = fmt(beta,2);
+  // Log probability difference
+  const delta = Math.log(pp) - Math.log(pm);
+  $('dpo-delta').textContent = fmt(delta,4);
+  // DPO Loss
+  const num = Math.exp(beta * delta);
+  const denom = num + 1;
+  const loss = -Math.log(num/denom);
+  $('dpo-loss').textContent = fmt(loss,4);
+}
+['input','change'].forEach(ev=>{
+  ['dpo-pplus','dpo-pminus','dpo-beta'].forEach(id=>$(id).addEventListener(ev,updateDPO));
+});
+updateDPO();
+</script>
+
+
+<!-- ================= Interactive Preference Table ================= -->
+<div class="wrap" style="max-width:1200px;margin:2rem auto;padding:1rem 1.5rem;">
+  <h2 style="text-align:center;margin-bottom:1.5rem;">Recap: Alignment Strategies</h2>
+
+  <table style="width:100%;border-collapse:collapse;font-size:1.03em;">
+    <thead>
+      <tr style="text-align:left;border-bottom:2px solid #cbd5e1;">
+        <th style="padding:0.6rem 1rem;">Method</th>
+        <th style="padding:0.6rem 1rem;">Learn to …</th>
+        <th style="padding:0.6rem 1rem;">Models Involved</th>
+        <th style="padding:0.6rem 1rem;">Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="hover-row">
+        <td>SFT</td>
+        <td>predict high quality response</td>
+        <td class="details">base model</td>
+        <td class="details">fine-tunes on input-output pairs; no preference modeling; efficient but alignment limited</td>
+      </tr>
+      <tr class="hover-row">
+        <td>PPO</td>
+        <td>maximize expected reward under preferences</td>
+        <td class="details">policy model, reward model (scalar), value model</td>
+        <td class="details">classic RLHF setup; uses trained reward model for policy learning with value function</td>
+      </tr>
+      <tr class="hover-row">
+        <td>GRPO</td>
+        <td>rank output group-wise over multiple completions</td>
+        <td class="details">policy model, reward model (ranking-based)</td>
+        <td class="details">compare candidate responses; ranking replaces scalar reward signal and model</td>
+      </tr>
+      <tr class="hover-row">
+        <td>DPO</td>
+        <td>produce preferred responses</td>
+        <td class="details">policy model</td>
+        <td class="details">requires preference data; optimizes policy model directly</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<style>
+.hover-row .details {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.hover-row:hover .details {
+  opacity: 1;
+  max-height: 100px;
+}
+.hover-row td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  transition: background 0.3s;
+}
+.hover-row:hover {
+  background: #f1f5f9;
+}
+</style>
+
+<div style="max-width:1000px;margin:2rem auto;font-size:1.05em;color:#333;text-align:center;line-height:1.5;">
+  <strong>From simple instruction tuning to advanced preference alignment:</strong> these methods show how LLMs are trained not just to compute, but to reason in ways that align with human intent.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
