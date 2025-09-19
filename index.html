@@ -1090,6 +1090,14 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
       }
     });
   </script>
+  
+  <p>
+    The illustration above was inspired by the work <a href="https://doi.org/10.48550/ARXIV.1909.08593">"Fine-tuning language models from human preferences" (2019)</a> and shows the training pipeline of a <b>Reward Model</b>. 
+    The <b>Model</b> in blue is frozen and used to generate possible continuations for the given input, which, together with the annotations of the human labeler, are then used to update the weights of the Reward Model. 
+    In this section, this process will be explained with the help of intuitive examples as well as a description of the mathematical formulas behind the training of this model.
+</p>
+
+
 
 <div class="wrap">
   <h2 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Reward Model Training Data</h2>
@@ -3089,7 +3097,7 @@ updateDPO();
     <p>
       Distillation transfers skills from a larger teacher model to a smaller student model, 
       the idea is to use the strong model to create data, then let a compact model learn from it.
-      In the DeepSeek-R1 paper the authors use a large reasoning model to create a CoT dataset, which is then used to
+      In <a href="https://arxiv.org/pdf/2501.12948">"DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning" (2025)</a> the authors use a large reasoning model to create a CoT dataset, which is then used to
       finetune a smaller model using SFT with the goal of transferring the reasoning abilities to the smaller 
       model and demonstrating the effects of distillation. Although the authors did not use any RL for this distillation task, they speculate that doing so could have improved the 
       model’s performance.
@@ -3102,8 +3110,6 @@ updateDPO();
 
 
   </div>
-
-
 
 
   <section style="margin-top:60px; margin-bottom:40px;">
