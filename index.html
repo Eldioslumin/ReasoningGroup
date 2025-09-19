@@ -1090,7 +1090,7 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
       }
     });
   </script>
-  
+
   <p>
     The illustration above was inspired by the work <a href="https://doi.org/10.48550/ARXIV.1909.08593">"Fine-tuning language models from human preferences" (2019)</a> and shows the training pipeline of a <b>Reward Model</b>. 
     The <b>Model</b> in blue is frozen and used to generate possible continuations for the given input, which, together with the annotations of the human labeler, are then used to update the weights of the Reward Model. 
@@ -3103,9 +3103,158 @@ updateDPO();
       model’s performance.
     </p>
 
+    <style>
+      .distill-sec { --ink:#0f172a; --muted:#64748b; --arrow:#cbd5e1;
+                    --teacher:#93c5fd; --student:#a7f3d0; --dataset:#e5e7eb; --token:#3b82f6; }
+      .distill-sec h2{ margin:1.25rem 0 .75rem; font-size:1.35rem; font-weight:700; text-align:center; }
+      .distill-sec .sub{ color:var(--muted); text-align:center; margin:.1rem 0 1rem; }
+      .distill-sec svg{ display:block; margin:0 auto; width:100%; max-width:1000px; height:auto; }
+      .distill-node{ filter:drop-shadow(0 2px 4px rgba(0,0,0,.08)); stroke:#0f172a; stroke-width:2; }
+      .distill-ellipse.teacher{ fill:var(--teacher); }
+      .distill-ellipse.student{ fill:var(--student); }
+      .distill-rect.dataset{ fill:var(--dataset); rx:10; }
+      .distill-edge{ stroke:var(--arrow); stroke-width:3; fill:none; marker-end:url(#distillArrow); }
+      .distill-label{ fill:var(--ink); font-weight:700; }
+      .distill-badge{ fill:var(--muted); font-size:12px; }
+      .distill-token{ fill:var(--token); r:6; filter:drop-shadow(0 1px 2px rgba(0,0,0,.35)); }
+      /* small grid hint inside dataset */
+      .dataset-grid line{ stroke:#cbd5e1; stroke-width:1; }
+    </style>
+
+    <div class="wrap distill-sec" id="distill-flow">
+      <h2>Distillation Pipeline</h2>
+
+      <svg id="distillSvg" viewBox="0 0 1200 360" aria-label="Distillation animation">
+        <defs>
+          <marker id="distillArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#cbd5e1"/>
+          </marker>
+          <filter id="distillShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.18"/>
+          </filter>
+        </defs>
+
+        <!-- Teacher (left) -->
+        <ellipse cx="210" cy="185" rx="120" ry="55" class="distill-node distill-ellipse teacher"/>
+        <text x="210" y="191" text-anchor="middle" class="distill-label" font-size="16">Teacher model</text>
+
+        <!-- Dataset (center) -->
+        <rect x="500" y="140" width="210" height="92" class="distill-node distill-rect dataset" filter="url(#distillShadow)"/>
+        <text x="605" y="190" text-anchor="middle" class="distill-label" font-size="16">Dataset</text>
+
+        <!-- Student (right) -->
+        <ellipse cx="980" cy="185" rx="95" ry="44" class="distill-node distill-ellipse student"/>
+        <text x="980" y="191" text-anchor="middle" class="distill-label" font-size="16">Student model</text>
+
+        <!-- Edges -->
+        <path id="edge_teacher_ds" class="distill-edge" d="M 330 185 H 500"/>
+        <path id="edge_ds_student" class="distill-edge" d="M 710 185 H 885"/>
+
+        <!-- Tokens -->
+        <g id="tokens">
+          <circle id="dtok1" class="distill-token" opacity="0"/>
+          <circle id="dtok2" class="distill-token" opacity="0"/>
+          <circle id="dtok3" class="distill-token" opacity="0"/>
+          <circle id="dtok4" class="distill-token" opacity="0"/>
+          <circle id="dtok5" class="distill-token" opacity="0"/>
+        </g>
+
+        <!-- Motions: each token has two hops, teacher→dataset, dataset→student -->
+        <animateMotion id="m1a" href="#dtok1" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#edge_teacher_ds"/></animateMotion>
+        <animateMotion id="m1b" href="#dtok1" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#edge_ds_student"/></animateMotion>
+
+        <animateMotion id="m2a" href="#dtok2" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#edge_teacher_ds"/></animateMotion>
+        <animateMotion id="m2b" href="#dtok2" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#edge_ds_student"/></animateMotion>
+
+        <animateMotion id="m3a" href="#dtok3" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#edge_teacher_ds"/></animateMotion>
+        <animateMotion id="m3b" href="#dtok3" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#edge_ds_student"/></animateMotion>
+
+        <animateMotion id="m4a" href="#dtok4" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#edge_teacher_ds"/></animateMotion>
+        <animateMotion id="m4b" href="#dtok4" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#edge_ds_student"/></animateMotion>
+
+        <animateMotion id="m5a" href="#dtok5" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#edge_teacher_ds"/></animateMotion>
+        <animateMotion id="m5b" href="#dtok5" dur="0.9s" begin="indefinite" fill="freeze"><mpath href="#edge_ds_student"/></animateMotion>
+      </svg>
+    </div>
+
+    <script>
+    (function(){
+      const wrap = document.getElementById('distill-flow');
+      const svg  = document.getElementById('distillSvg');
+
+      const tokens = ['dtok1','dtok2','dtok3','dtok4','dtok5'].map(id=>document.getElementById(id));
+      const hopA = ['m1a','m2a','m3a','m4a','m5a'].map(id=>document.getElementById(id));
+      const hopB = ['m1b','m2b','m3b','m4b','m5b'].map(id=>document.getElementById(id));
+
+      let visible=false, running=false, finished=0;
+
+      function resetTokens(){
+        tokens.forEach(t=>{ t.setAttribute('opacity','0'); t.setAttribute('r','6'); });
+        finished = 0;
+      }
+
+      function startCycle(){
+        if(running) return;
+        running = true;
+        resetTokens();
+
+        // Stagger launches from teacher to dataset
+        tokens.forEach((t, i)=>{
+          setTimeout(()=>{
+            t.setAttribute('opacity','1');
+            hopA[i].beginElement();
+          }, i*300);
+        });
+      }
+
+      // Chain A→B per token
+      hopA.forEach((a, i)=>{
+        a.addEventListener('endEvent', ()=>{ hopB[i].beginElement(); });
+      });
+
+      // When a token finishes B, count, then loop
+      hopB.forEach((b, i)=>{
+        b.addEventListener('endEvent', ()=>{
+          tokens[i].setAttribute('opacity','0');
+          finished++;
+          if(finished === tokens.length){
+            running = false;
+            if(visible) setTimeout(startCycle, 600);
+          }
+        });
+      });
+
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{
+          if(e.isIntersecting){
+            visible = true;
+            try{ svg.unpauseAnimations(); }catch(_){}
+            startCycle();
+          }else{
+            visible = false;
+            try{ svg.pauseAnimations(); }catch(_){}
+          }
+        });
+      }, {threshold:0.25});
+      io.observe(wrap);
+
+      // If already on screen at load, kick it off
+      window.addEventListener('load', ()=>{
+        const r = wrap.getBoundingClientRect();
+        if(r.top < innerHeight && r.bottom > 0){
+          visible = true;
+          try{ svg.unpauseAnimations(); }catch(_){}
+          startCycle();
+        }
+      });
+    })();
+    </script>
+
+
     <p>
       As we can see in the animation the output of an explicit reasoning model is used to create 
-      an implicit reasoning model.
+      an implicit reasoning model. The data generated by the large reasoning model is used to create a dataset, that is then used
+      for SFT of the smaller model.
     </p>
 
 
