@@ -701,8 +701,8 @@ function askCoT(){
       and their corresponding preferred answers <m>y</m>, 
       we want our model responses given its current distributions to resamble <m>y</m>.
       This can be achieved by updating our parameters based on a loss formula. 
-        <div id="sft-eq" style="text-align:center; margin:24px 0;"></div>
-        <div id="sft-grad" style="text-align:center; margin:24px 0;"></div>
+      
+        <div id="sft-grad" style="margin:1.2em 0 0 0; font-size:1.08em;background:#fffbe9;border-radius:9px;padding:0.7em 1em;color:#222;"></div>
 
           <script>
           (function ensureKatex(cb){
@@ -1209,7 +1209,6 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 
 
 
-
 <style>
   .loss2-sec{--ink:#0f172a;--muted:#64748b;--line:#e5e7eb}
   .loss2-sec h2{margin:1.25rem 0 .6rem 0; font-size:1.35rem; font-weight:700}
@@ -1235,7 +1234,7 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 <div class="wrap loss2-sec" id="pairwise-loss-v2">
   <h2>Pairwise loss for the reward model</h2>
 
-  <div class="eq"><span id="loss2-eq"></span></div>
+  <div class="eq" style="margin:1.2em 0 0 0; font-size:1.08em;background:#fffbe9;border-radius:9px;padding:0.7em 1em;color:#222;"><span id="loss2-eq"></span></div>
 
   <p>
     This is the pairwise loss we use to train the reward model. Start by taking the reward score for the
@@ -1494,8 +1493,8 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 
 <p>
   As we can see in the graph above, there are four models involved in the PPO algorithm. Two frozen models, the 
-  <u>Reference Model</u> and the <u>Reward Model</u>, were trained beforehand and do not update their weights as part of the PPO algorithm.  
-  In this section we will focus on the <u>Value Model</u> and the <u>Policy Model</u>, both of which are trained simultaneously within PPO.  
+  <b>Reference Model</b> and the <b>Reward Model</b>, were trained beforehand and do not update their weights as part of the PPO algorithm.  
+  In this section we will focus on the <b>Value Model</b> and the <b>Policy Model</b>, both of which are trained simultaneously within PPO.  
   First, we will explain how the Value Model is trained, then the Policy Model, and finally we will bring everything together in an interactive example.
 </p>
 
@@ -1503,7 +1502,7 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 
   <h2>Value model</h2>
 
-  <div class="eq"><span id="v2-eq"></span></div>
+  <div class="eq" style="margin:1.2em 0 0 0; font-size:1.08em;background:#fffbe9;border-radius:9px;padding:0.7em 1em;color:#222;"><span id="v2-eq"></span></div>
 
   <p>
     The value head answers for a state \(s_t\): how good is this situation.
@@ -1561,7 +1560,7 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 <div class="wrap loss2-sec" id="ppo-clip-v2">
   <h2>PPO policy update</h2>
 
-  <div class="eq"><span id="ppo2-eq"></span></div>
+  <div class="eq" style="margin:1.2em 0 0 0; font-size:1.08em;background:#fffbe9;border-radius:9px;padding:0.7em 1em;color:#222;"><span id="ppo2-eq"></span></div>
 
   <p>
     The ratio tells how the new policy changes the action probability
@@ -2164,7 +2163,7 @@ mAJoin.addEventListener('endEvent', ()=>{
 <div class="wrap loss2-sec" id="grpo-sec">
   <h2>GRPO: group-relative policy optimization</h2>
 
-  <div class="eq"><span id="grpo-eq"></span></div>
+  <div class="eq" style="margin:1.2em 0 0 0; font-size:1.08em;background:#fffbe9;border-radius:9px;padding:0.7em 1em;color:#222;"><span id="grpo-eq"></span></div>
 
 
   <p>
@@ -2175,7 +2174,7 @@ mAJoin.addEventListener('endEvent', ()=>{
     removes the need for an explicit baseline \(V(s)\): we only ask “how good is this output compared with its peers?”.
   </p>
 
-  <div class="eq"><span id="grpo-adv-eq"></span></div>
+  <div class="eq" style="margin:1.2em 0 0 0; font-size:1.08em;background:#fffbe9;border-radius:9px;padding:0.7em 1em;color:#222;"><span id="grpo-adv-eq"></span></div>
 
   <p>
     Positive \(A_i\) means “better than the group”, negative \(A_i\) means “worse than the group”.
@@ -2183,7 +2182,7 @@ mAJoin.addEventListener('endEvent', ()=>{
     close to a reference model (typically the base LM) to preserve fluency and avoid reward hacking:
   </p>
 
-  <div class="eq"><span id="grpo-kl-eq"></span></div>
+  <div class="eq" style="margin:1.2em 0 0 0; font-size:1.08em;background:#fffbe9;border-radius:9px;padding:0.7em 1em;color:#222;"><span id="grpo-kl-eq"></span></div>
 
 
   <h3 style="margin:1rem 0 .5rem; font-size:1.1rem; font-weight:700;">Interactive example (same prompt)</h3>
