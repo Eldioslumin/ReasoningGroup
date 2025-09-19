@@ -1303,7 +1303,7 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
     #ppo-flow .small{ font-size:12px; fill:#334155; }
   </style>
 
-  <svg id="ppoSvg">
+  <svg id="ppoSvg" height="100%" width="80%">
 
     <rect x="20" y="170" width="50" height="36" rx="6" class="node rect-node"/>
     <text x="45" y="193" text-anchor="middle" font-size="14" font-weight="700">q</text>
@@ -1337,8 +1337,8 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
     <rect x="800" y="206" width="80" height="40" rx="6" class="node rect-node"/>
     <text x="840" y="231" text-anchor="middle" font-size="14" font-weight="700">GAE</text>
 
-    <rect x="940" y="206" width="64" height="40" rx="6" class="node rect-node"/>
-    <text x="972" y="231" text-anchor="middle" font-size="14" font-weight="700">A</text>
+    <rect x="940" y="206" width="42" height="40" rx="6" class="node rect-node"/>
+    <text x="962" y="231" text-anchor="middle" font-size="14" font-weight="700">A</text>
 
     <path id="ppo_e_q_pol"   class="edge" d="M 70 188 H 120" />
     <path id="ppo_e_pol_o"   class="edge" d="M 270 188 H 330" />
@@ -1490,6 +1490,17 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 
 <!-- ========== VALUE MODEL ========== -->
 <div class="wrap loss2-sec" id="value-loss-v2">
+
+
+<p>
+  As we can see in the graph above, there are four models involved in the PPO algorithm. Two frozen models, the 
+  <u>Reference Model</u> and the <u>Reward Model</u>, were trained beforehand and do not update their weights as part of the PPO algorithm.  
+  In this section we will focus on the <u>Value Model</u> and the <u>Policy Model</u>, both of which are trained simultaneously within PPO.  
+  First, we will explain how the Value Model is trained, then the Policy Model, and finally we will bring everything together in an interactive example.
+</p>
+
+
+
   <h2>Value model</h2>
 
   <div class="eq"><span id="v2-eq"></span></div>
@@ -1608,7 +1619,7 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
   <p>
     Changing the advantage \(\hat A_t\) (either via the value module above or by sliding it here) sets both the
     <em>direction</em> and the <em>magnitude</em> of the update. A positive \(\hat A_t\) asks PPO to make the action more likely;
-    a negative \(\hat A_t\) asks it to make the action less likely. Larger \(|\hat A_t|\) means a stronger push—until clipping caps it.
+    a negative \(\hat A_t\) asks it to make the action less likely. Larger \(|\hat A_t|\) means a stronger push until clipping caps it.
   </p>
   <p>
     Changing \(\varepsilon\) widens or narrows the safe band \([\,1-\varepsilon,\,1+\varepsilon\,]\).
@@ -3073,7 +3084,25 @@ updateDPO();
         </div>
     </div>
 
-    
+  <div class="wrap loss2-sec" id="distillation-text">
+    <h2>Distillation</h2>
+
+    <p>
+      Distillation transfers skills from a larger teacher model to a smaller student model, 
+      the idea is to use the strong model to create data, then let a compact model learn from it.
+      In the DeepSeek-R1 paper the authors use a large reasoning model to create a CoT dataset, which is then used to
+      finetune a smaller model using SFT with the goal of transferring the reasoning abilities to the smaller 
+      model and demonstrating the effects of distillation. Although the authors did not use any RL for this distillation task, they speculate that doing so could have improved the 
+      model’s performance.
+    </p>
+
+    <p>
+      As we can see in the animation the output of an explicit reasoning model is used to create 
+      an implicit reasoning model.
+    </p>
+
+
+  </div>
 
 
 
