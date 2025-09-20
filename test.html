@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+  body {
+    background: #f8fafc;
+    color: #222;
+    font-family: 'Inter', Arial, sans-serif;
+    margin: 0;
+  }
+  header {
+    background: #2563eb;
+    color: #fff;
+    padding: 38px 0 24px 0;
+    text-align: center;
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+    box-shadow: 0 4px 24px #94a3b888;
+  }
+
+  section {
+    font-family: 'Inter', Arial, sans-serif !important;
+    }
+
+
+  header h1 {
+    margin: 0;
+    font-size: 2.5em;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+  header p {
+    margin: 18px 0 0 0;
+    font-size: 1.18em;
+    opacity: 0.8;
+    font-weight: 400;
+  }
+  main {
+    max-width: 900px;
+    margin: 38px auto 0 auto;
+    padding: 0 24px;
+  }
+
+  footer {
+    background:#2563eb;
+    color:#fff  !important;;
+    padding:38px 0 24px;
+    text-align:center;
+    box-shadow:0 4px 24px #94a3b888;
+    display:flex;               
+    justify-content:center;
+
+    width:100vw;
+    margin-left:calc(50% - 50vw);
+    margin-right:calc(50% - 50vw);
+    border-top-left-radius:18px;   
+    border-top-right-radius:18px;
+  }
+  p {
+  text-align: justify;
+  }
+
+footer p{
+  margin:0;
+  max-width:900px;         
+  padding:0 24px;            
+  text-align:center;
+  color:#fff;
+  }
+
+  .highlight-box {
+  background: #fef9c3;      /* light yellow */
+  border-left: 6px solid #facc15; /* accent border */
+  padding: 18px 22px;
+  border-radius: 10px;
+  margin: 28px 0;
+  font-size: 1.05em;
+  line-height: 1.6;
+  color: #374151;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+}
+
+.loss2-sec{--ink:#0f172a;--muted:#64748b;--line:#e5e7eb}
+.loss2-sec h2{margin:1.25rem 0 .6rem 0; font-size:1.35rem; font-weight:700}
+.loss2-sec .sub{color:var(--muted); font-size:15px; margin:.25rem 0 .9rem}
+.loss2-sec .eq{margin:.6rem 0 .35rem}
+.loss2-sec .katex{font-size:95%}
+.loss2-sec .katex.display{margin:.35rem 0}
+.loss2-sec p{font-size:15px; line-height:1.6; color:var(--ink); margin:.4rem 0}
+.loss2-sec .two-col{display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:.6rem 0}
+.loss2-sec .ans{font-size:15px; line-height:1.55}
+.loss2-sec .ans .tag{font-weight:700; margin-right:.25rem}
+.loss2-sec .ctrl{display:grid; grid-template-columns:1fr 1fr; gap:.75rem 1rem; align-items:center; margin:.6rem 0}
+.loss2-sec label{color:var(--muted); font-size:15px}
+.loss2-sec input[type="range"]{width:100%}
+.loss2-sec .stat{margin:.35rem 0; font-size:15px}
+.loss2-sec code.inline{background:#f8fafc; border:1px solid var(--line); padding:.1rem .4rem; border-radius:6px}
+@media (max-width: 820px){
+  .loss2-sec .two-col{grid-template-columns:1fr}
+  .loss2-sec .ctrl{grid-template-columns:1fr}
+}
+
+footer, footer * { color:#fff !important; }
+
+.wrap {
+  font-family: 'Inter', Arial, sans-serif;
+}
+</style>
+</head>
+
+<body> 
+
+<meta charset="UTF-8">
+<!-- KaTeX JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<!-- KaTeX JS -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+
+</section>
+
+<!-- Heitke's part - scaling reasoning -->
+<title>Unlocking Machine Reasoning: The RLM Approach</title>
+
+<section>
+  <header>
+    <h1>Unlocking Machine Reasoning: The RLM Approach</h1>
+    <p style="text-align: center;">How Language Models Move From Memorization to Deliberative Problem-Solving (Allegedly):<br>Unpacking Strategies and Methods Driving Reasoning in LLMs.
+    </p>
+  </header>
+</section>
+
+<section class="wrap" id="blog-intro">
+  <p style="text-align:justify; font-family: 'monospace', Arial, sans-serif;" >
+    In this blog, we’ll explore how to implement different strategies to foster the reasoning capabilities of LLMs, and why some approaches seem to work better than others.
+    Our aim is to explore the field of Reasoning Models and make
+    the topic approachable in an educational format. We move from the general concepts and ideas behind
+    these models to the mathematical formulas that ground them, as well as the different frameworks that
+    implement them and how they perform across benchmarks.
+  </p>
