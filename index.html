@@ -3291,8 +3291,8 @@ updateDPO();
       <p>
         In this setup, an LLM (e.g., a Llama 1B or 8b model) produces multiple candidate answers. A reward model then
         scores these candidates, and a search strategy selects the best answer based on the rewards. This kind of architecture is described 
-        in the Hugging Face cookbook:
-        <a href="https://huggingface.co/learn/cookbook/search_and_learn" target="_blank" rel="noopener">“Search &amp; Learn”</a>.
+        in the Hugging Face
+        <a href="https://huggingface.co/spaces/HuggingFaceH4/blogpost-scaling-test-time-compute" target="_blank" rel="noopener">“Scaling Test Time Compute”</a> blogpost.
           </p>
 
       <p>
@@ -3496,7 +3496,7 @@ function startViz(){
       // start the token along this path slightly after drawing begins
       const delayForBall = 0.65*DRAW_MS; // ms
       setTimeout(()=>{
-        balls[idx].style.animation = `travel ${Math.max(1200, DRAW_MS*2)/1000}s linear 0s infinite`;
+        balls[idx].style.animation = `travel ${2.5}s linear 0s infinite`;
       }, delayForBall);
     }, startAt);
   });
@@ -3511,7 +3511,7 @@ function startViz(){
 
   // first pick after all edges have drawn once
   const totalDrawTime = (N-1)*STAGGER_MS + DRAW_MS + 200;
-  setTimeout(()=>{ pickWinner()}, totalDrawTime);
+  setTimeout(()=>{pickWinner(); setInterval(pickWinner, CYCLE_S*500);}, totalDrawTime);
 }
 
 // ---- Auto-start when the chart scrolls into view ----
@@ -3554,8 +3554,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function startBeam(){
   const NS  = 'http://www.w3.org/2000/svg';
   const svg = document.getElementById('beam');
-  if (!svg || svg.dataset.started === '1') return; // guard: run once
-  svg.dataset.started = '1';
+  if (!svg) return; // guard: run once
   svg.innerHTML = '';
 
   // ---- Tunables ----
@@ -3669,11 +3668,13 @@ function startBeam(){
     // Final: choose one green winner among leaves (others red) — once
     const finalPickAt = winners.length*CHILDREN*STAGGER_MS + DRAW_MS + 200;
     setTimeout(()=>{
-      const winIdx = 0; // deterministic left-most; swap to Math.random() for randomness
+      const winIdx =  Math.floor(Math.random()*leaves.length); // deterministic left-most; swap to Math.random() for randomness
       leaves.forEach((l, i)=>{
         if (i===winIdx){ l.classList.add('good','pulse'); }
         else { l.classList.add('bad'); }
       });
+      const CYCLE_MS = 4000; //
+      setTimeout(()=> startBeam(), CYCLE_MS);
     }, finalPickAt);
 
   }, firstLayerDone);
@@ -3712,8 +3713,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function startDiverse(){
   const NS  = 'http://www.w3.org/2000/svg';
   const svg = document.getElementById('diverse');
-  if (!svg || svg.dataset.started === '1') return;
-  svg.dataset.started = '1';
+  if (!svg) return;
   svg.innerHTML = '';
 
   // ---- Tunables ----
@@ -3796,15 +3796,28 @@ function startDiverse(){
   });
 
   // Final pick: one green leaf per subtree
-  const finalPickAt=DRAW_MS*2+500;
+  const finalPickAt = DRAW_MS*2+500;
   setTimeout(()=>{
-    // deterministically choose left-most of each subtree
-    const leavesPerTree=CHILDREN;
-    allLeaves.forEach((l,i)=>{
-      if(i%leavesPerTree===0){l.classList.add('good','pulse');}
-      else{l.classList.add('bad');}
-    });
-  },finalPickAt);
+    const leavesPerTree = CHILDREN;
+
+    for (let t=0; t<TREES; t++){
+      const start = t*leavesPerTree;
+      const win = start + Math.floor(Math.random()*leavesPerTree);
+
+      allLeaves.forEach((l,i)=>{
+        if (i === win) {
+          l.classList.add('good','pulse');
+        } else if (i >= start && i < start+leavesPerTree) {
+          l.classList.add('bad');
+        }
+      });
+    }
+
+    const CYCLE_MS = 4000; 
+    setTimeout(()=> startDiverse(), CYCLE_MS);
+
+  }, finalPickAt);
+
 }
 
 // Auto-start once on scroll into view
@@ -4151,152 +4164,229 @@ document.addEventListener('DOMContentLoaded',()=>{
     benchmark evaluations. You can search through the table by typing keywords (e.g. <em>"math"</em>, <em>"medical"</em>, <em>"code"</em>) into the
     search bar in the top-right corner of the table.
   </p>
-    <table id="benchmark-table" class="display">
-      <thead>
-        <tr>
-          <th>Category</th>
-          <th>Description</th>
-          <th>Benchmarks</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Math Problems</td>
-          <td>Solves mathematical problems showcasing capabilities of reasoning LLMs.</td>
-          <td>AIME, MATH-500, OlympiadBench</td>
-        </tr>
-        <tr>
-          <td>Code Problems</td>
-          <td>Uses logical thinking and structured problem-solving in programming tasks.</td>
-          <td>Codeforces, LiveCodeBench</td>
-        </tr>
-        <tr>
-          <td>Scientific Problems</td>
-          <td>Involves multi-domain reasoning across physics, chemistry, and biology.</td>
-          <td>GPQA Diamond, MMLU-Pro</td>
-        </tr>
-        <tr>
-          <td>Agent Reasoning</td>
-          <td>Tests planning and decision-making in interactive and tool-using environments.</td>
-          <td>WebShop, WebArena, SciWorld</td>
-        </tr>
-        <tr>
-          <td>Medical Reasoning</td>
-          <td>Mimics diagnostic reasoning and treatment planning in clinical contexts.</td>
-          <td>MedQA, Medbullets</td>
-        </tr>
-        <tr>
-          <td>Multimodal Reasoning</td>
-          <td>Combines text and visual input to test cross-modal reasoning skills.</td>
-          <td>MMMU, MathVista, MM-IQ</td>
-        </tr>
-      </tbody>
-    </table>
+
+    <head>
+      <meta charset="UTF-8">
+      <title>Reasoning Benchmarks</title>
+      <!-- DataTables CSS -->
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+      <style>
+        body {
+          font-family: 'Inter', Arial, sans-serif;
+          background: #f8fafc;
+          color: #111827;
+          margin: 2rem;
+        }
+        h2 {
+          text-align: center;
+          margin-bottom: 1.5rem;
+        }
+        #benchmark-table {
+          width: 100%;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        #benchmark-table thead {
+          background: #2563eb;
+          color: #fff;
+        }
+        #benchmark-table th, #benchmark-table td {
+          padding: 12px 16px;
+          text-align: left;
+        }
+        #benchmark-table tbody tr:nth-child(even) {
+          background: #f1f5f9;
+        }
+        .dataTables_wrapper .dataTables_filter input {
+          border-radius: 8px;
+          border: 1px solid #cbd5e1;
+          padding: 6px 10px;
+        }
+      </style>
+    </head>
+    <body>
+
+      <h2>Reasoning Benchmark Categories</h2>
+
+      <table id="benchmark-table" class="display">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Benchmarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Math Problems</td>
+            <td>Solves mathematical problems showcasing capabilities of reasoning LLMs.</td>
+            <td>AIME, MATH-500, OlympiadBench</td>
+          </tr>
+          <tr>
+            <td>Code Problems</td>
+            <td>Uses logical thinking and structured problem-solving in programming tasks.</td>
+            <td>Codeforces, LiveCodeBench</td>
+          </tr>
+          <tr>
+            <td>Scientific Problems</td>
+            <td>Involves multi-domain reasoning across physics, chemistry, and biology.</td>
+            <td>GPQA Diamond, MMLU-Pro</td>
+          </tr>
+          <tr>
+            <td>Agent Reasoning</td>
+            <td>Tests planning and decision-making in interactive and tool-using environments.</td>
+            <td>WebShop, WebArena, SciWorld</td>
+          </tr>
+          <tr>
+            <td>Medical Reasoning</td>
+            <td>Mimics diagnostic reasoning and treatment planning in clinical contexts.</td>
+            <td>MedQA, Medbullets</td>
+          </tr>
+          <tr>
+            <td>Multimodal Reasoning</td>
+            <td>Combines text and visual input to test cross-modal reasoning skills.</td>
+            <td>MMMU, MathVista, MM-IQ</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- jQuery + DataTables JS -->
+      <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+      <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+      <script>
+        $(document).ready(function () {
+          $('#benchmark-table').DataTable({
+            paging: false,       // disable pagination
+            info: false,         // hide "Showing 1 of N entries"
+            searching: true,     // keep search
+            ordering: true,      // enable column sorting
+            columnDefs: [
+              { targets: [1], width: "55%" }, // wider description column
+            ]
+          });
+        });
+      </script>
+
+    </body>
+
     <br>
       A strong model is expected to perform well across multiple diverse benchmarks, demonstrating not just memorization or task-specific tricks, but real, 
       transferable reasoning. In this way, benchmarks help define what it means for a model to be universal rather than narrowly overfitted.
     <br>
-    <script>
-      $(document).ready(function () {
-        $('#benchmark-table').DataTable({
-          paging: false,
-          info: false,
-          language: {
-            search: "🔍 Search benchmarks:"
-          }
-        });
-      });
-    </script>
 
 <body>
   <h3>State-of-the-Art Model Performance on Benchmarks</h3>
   <p>
     The following table shows Pass@1 or Percentile scores across several benchmark tasks.
   </p>
-  <table id="benchmarkTable" class="display">
-    <thead>
-      <tr>
-        <th>Benchmark</th>
-        <th>Metric</th>
-        <th>DeepSeek-R1</th>
-        <th>OpenAI-o1-1217</th>
-        <th>DeepSeek-R1-32B</th>
-        <th>OpenAI-o1-mini</th>
-        <th>DeepSeek-V3</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>AIME 2024</td>
-        <td>Pass@1</td>
-        <td>79.8%</td>
-        <td>79.2%</td>
-        <td>72.6%</td>
-        <td>63.6%</td>
-        <td>39.2%</td>
-      </tr>
-      <tr>
-        <td>Codeforces</td>
-        <td>Percentile</td>
-        <td>96.3%</td>
-        <td>96.6%</td>
-        <td>90.6%</td>
-        <td>93.4%</td>
-        <td>58.7%</td>
-      </tr>
-      <tr>
-        <td>GPQA Diamond</td>
-        <td>Pass@1</td>
-        <td>71.5%</td>
-        <td>75.7%</td>
-        <td>62.1%</td>
-        <td>60.0%</td>
-        <td>59.1%</td>
-      </tr>
-      <tr>
-        <td>MATH-500</td>
-        <td>Pass@1</td>
-        <td>97.3%</td>
-        <td>96.4%</td>
-        <td>94.3%</td>
-        <td>90.0%</td>
-        <td>90.2%</td>
-      </tr>
-      <tr>
-        <td>MMLU</td>
-        <td>Pass@1</td>
-        <td>90.8%</td>
-        <td>91.8%</td>
-        <td>87.4%</td>
-        <td>85.2%</td>
-        <td>88.5%</td>
-      </tr>
-      <tr>
-        <td>SWE-bench Verified</td>
-        <td>Resolved</td>
-        <td>49.2%</td>
-        <td>48.9%</td>
-        <td>41.6%</td>
-        <td>36.8%</td>
-        <td>42.0%</td>
-      </tr>
-    </tbody>
-  </table>
+      <head>
+        <meta charset="UTF-8">
+        <title>Benchmark Comparison</title>
 
-  <p class="citation">(DeepSeek-AI et al., 2025)</p>
+        <!-- DataTables CSS -->
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
-  <script>
-    $(document).ready(function () {
-      $('#benchmarkTable').DataTable({
-        paging: false,
-        info: false,
-        responsive: true,
-        language: {
-          search: "🔍 Search benchmarks:"
-        }
-      });
-    });
-  </script>
+        <style>
+          body {
+            font-family: 'Inter', Arial, sans-serif;
+            background: #f8fafc;
+            color: #111827;
+            margin: 2rem;
+          }
+          h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+          }
+          #benchmarkTable {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+          }
+          #benchmarkTable thead {
+            background: #2563eb;
+            color: #fff;
+          }
+          #benchmarkTable th, #benchmarkTable td {
+            padding: 12px 16px;
+            text-align: center;
+          }
+          #benchmarkTable td:first-child, #benchmarkTable td:nth-child(2) {
+            text-align: left; /* align Benchmark + Metric left */
+          }
+          #benchmarkTable tbody tr:nth-child(even) {
+            background: #f1f5f9;
+          }
+          #benchmarkTable tbody tr:hover {
+            background: #e2e8f0;
+          }
+          .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 1rem;
+          }
+          .dataTables_wrapper .dataTables_filter input {
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            padding: 6px 10px;
+          }
+          .citation {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #475569;
+            text-align: right;
+          }
+        </style>
+      </head>
+      <body>
+
+        <h2>Model Benchmark Comparison</h2>
+
+        <table id="benchmarkTable" class="display">
+          <thead>
+            <tr>
+              <th>Benchmark</th>
+              <th>Metric</th>
+              <th>DeepSeek-R1</th>
+              <th>OpenAI-o1-1217</th>
+              <th>DeepSeek-R1-32B</th>
+              <th>OpenAI-o1-mini</th>
+              <th>DeepSeek-V3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>AIME 2024</td><td>Pass@1</td><td>79.8%</td><td>79.2%</td><td>72.6%</td><td>63.6%</td><td>39.2%</td></tr>
+            <tr><td>Codeforces</td><td>Percentile</td><td>96.3%</td><td>96.6%</td><td>90.6%</td><td>93.4%</td><td>58.7%</td></tr>
+            <tr><td>GPQA Diamond</td><td>Pass@1</td><td>71.5%</td><td>75.7%</td><td>62.1%</td><td>60.0%</td><td>59.1%</td></tr>
+            <tr><td>MATH-500</td><td>Pass@1</td><td>97.3%</td><td>96.4%</td><td>94.3%</td><td>90.0%</td><td>90.2%</td></tr>
+            <tr><td>MMLU</td><td>Pass@1</td><td>90.8%</td><td>91.8%</td><td>87.4%</td><td>85.2%</td><td>88.5%</td></tr>
+            <tr><td>SWE-bench Verified</td><td>Resolved</td><td>49.2%</td><td>48.9%</td><td>41.6%</td><td>36.8%</td><td>42.0%</td></tr>
+          </tbody>
+        </table>
+
+        <p class="citation">(DeepSeek-AI et al., 2025)</p>
+
+        <!-- jQuery + DataTables JS -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+        <script>
+          $(document).ready(function () {
+            $('#benchmarkTable').DataTable({
+              paging: false,
+              info: false,
+              responsive: true,
+              ordering: true,
+              language: {
+                search: "🔍 Search benchmarks:"
+              },
+              columnDefs: [
+                { targets: [2,3,4,5,6], className: "dt-body-center" }
+              ]
+            });
+          });
+        </script>
+
+      </body>
+
 
 <hr>
 
@@ -4313,9 +4403,9 @@ document.addEventListener('DOMContentLoaded',()=>{
 </p>
 
 <h2>Puzzle-Based Benchmarks</h2>
-<p><em>Shojaee et al., 2025</em></p>
 <p>
-  To address these limitations, researchers are exploring alternative benchmarks. One compelling direction is using puzzle-like problems, such as the 
+  To address these limitations, researchers are exploring alternative benchmarks: <a href="https://arxiv.org/abs/2506.06941">"The Illusion of Thinking: 
+    Understanding the Strengths and Limitations of Reasoning Models via the Lens of Problem Complexity" (2025)</a>. One compelling direction is using puzzle-like problems, such as the 
   Tower of Hanoi, where complexity can be precisely controlled — by simply increasing the number of disks. In this setup, models are evaluated not just 
   on their accuracy, but on how well they scale with increasing task difficulty.
 </p>
@@ -4699,7 +4789,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 <section>
   <footer>
     <p> This blogpost grew out of work done as part of a research seminar at the University of Potsdam by
-    Heitke Grops, Juan Danza Rovira, Lara Neubauer da Costa Schertel and Rodion Zorin under the
+    Heitke Grops, Juan Danza Rovira, Lara Neubauer da Costa Schertel and R. Zorin under the
     supervision of Prof. David Schlangen. Thank you for reading!
     </p>
   </footer>
