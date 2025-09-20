@@ -1500,7 +1500,8 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 
 
 <p>
-  As we can see in the graph above, there are four models involved in the PPO algorithm. Two frozen models, the 
+ The graph above was inspired by the visualisation presented by Shao et&nbsp;al., 2024 in
+    (<a href="https://doi.org/10.48550/arXiv.2402.03300">DeepSeekMath</a>), and as we can see, there are four models involved in the PPO algorithm. Two frozen models, the 
   <b>Reference Model</b> and the <b>Reward Model</b>, were trained beforehand and do not update their weights as part of the PPO algorithm.  
   In this section we will focus on the <b>Value Model</b> and the <b>Policy Model</b>, both of which are trained simultaneously within PPO.  
   First, we will explain how the Value Model is trained, then the Policy Model, and finally we will bring everything together in an interactive example.
