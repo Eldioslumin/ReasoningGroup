@@ -607,10 +607,10 @@ showFlow('direct');
   <h2 style="text-align:center;">Chain of Thought (CoT) Example</h2>
   <p style="text-align:justify; line-height:1.6;">
     One of the first attempts to elicit reasoning in LLMs was related to how to prompt them. 
-    Perhpaps the most well known example of this is Chain of Thought (CoT). 
+    Perhaps the most well known example of this is Chain of Thought (CoT). 
     In CoT, we improve the quality of the LLM's answers by prompting them to think their answer step by step.
     This simple tricked improved accuracy in a variety of problems and proved that the reasoning capabilities of LLMs might be dormant.
-    While the techinique improves accuracy and generalizes well over any area, it still has its issues. 
+    While the technique improves accuracy and generalizes well over any area, it still has its issues. 
     CoT is not a scalable technique, as it still relies on the knowledge already existing in the LM.
 
     Here you can compare how a model answers <em>with</em> and <em>without</em> Chain of Thought prompting, as explained in <a href="https://arxiv.org/abs/2205.11916" 
@@ -689,17 +689,17 @@ function askCoT(){
 
     <p style="font-size:16px; line-height:1.6; text-align:justify;">
       However useful CoT is, only being able retrieve the latent capabilities of the model is a hard limit of the technique.
-      A reasoning model should be able to go beyond its training data, and actually think beyond its preobtained information.
+      A reasoning model should be able to go beyond its training data, and actually reason when faced with an unseen situation or question.
       To remedy this, researchers started testing different techniques and algorithms to enhance the reasoning capabilities of LLMs.
       <strong>Supervised Fine-Tuning (SFT)</strong> is a post-training technique where we update 
-      our model so its answers resamble a specific dataset. 
+      our model so its answers resemble a specific dataset. 
       This is useful for alignment, which means developing models that specialize 
       in a specific topic or must follow certain guidelines. 
       
       
       <br> <br>In more mathematical terms, given a set of prompts <m>x</m>, 
       and their corresponding preferred answers <m>y</m>, 
-      we want our model responses given its current distributions to resamble <m>y</m>.
+      we want our model responses given its current distributions to resemble <m>y</m>.
       This can be achieved by updating our parameters based on a loss formula. 
       
         <div id="sft-grad" style="margin:1.2em 0 0 0; font-size:1.08em;background:#fffbe9;border-radius:9px;padding:0.7em 1em;color:#222;"></div>
@@ -724,7 +724,7 @@ function askCoT(){
           });
           </script>
       <p style="font-size:16px; line-height:1.6; text-align:justify;">
-      We last update our parameters through gradient descent, minimazing the loss. And then our output will resamble more our preferred output.
+      We last update our parameters through gradient descent, minimizing the loss. And then our output will resemble more our preferred output.
       </p>
 
       <div class="highlight-box"> 
@@ -734,8 +734,8 @@ function askCoT(){
       <p style="font-size:16px; line-height:16.; text-align:justify;">
       If you want to see this technique in action, make sure to read the <a href="https://arxiv.org/abs/2501.19393" target="_blank" rel="noopener">S1 model paper</a>, 
       which shows the whole process of creating a RLM from scratch, 
-      inlcuding data collection through CoT prompting, SFT as a post-training technique, 
-      and Budget Forcing during inference (or controlling the lenght of the model's answers).
+      including data collection through CoT prompting, SFT as a post-training technique, 
+      and Budget Forcing during inference (or controlling the length of the model's answers).
       </p>
 
 
@@ -1500,7 +1500,7 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 
 
 <p>
- The graph above was inspired by the visualisation presented by Shao et&nbsp;al., 2024 in
+ The graph above was inspired by the visualization presented by Shao et&nbsp;al., 2024 in
     (<a href="https://doi.org/10.48550/arXiv.2402.03300">DeepSeekMath</a>), and as we can see, there are four models involved in the PPO algorithm. Two frozen models, the 
   <b>Reference Model</b> and the <b>Reward Model</b>, were trained beforehand and do not update their weights as part of the PPO algorithm.  
   In this section we will focus on the <b>Value Model</b> and the <b>Policy Model</b>, both of which are trained simultaneously within PPO.  
@@ -2843,7 +2843,7 @@ updateDPO();
 
     <div class="wrap">
         <div class="intro-section">
-            <h2>The R1 Breakthrough: Emergent Reasoning Through Reinforcement Learning</h2>
+            <h2>The R1 Series: Emergent Reasoning Through Reinforcement Learning</h2>
             
             <p>
                 All the techniques explained above are used and combined nowadays to create state of the art reasoning models.
