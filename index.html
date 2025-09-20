@@ -121,7 +121,7 @@ footer, footer * { color:#fff !important; }
 
 <section class="wrap" id="blog-intro">
   <p>
-    In this blog, we’ll explore how these strategies are implemented, and why some approaches seem to foster genuine reasoning more effectively than others.
+    In this blog, we’ll explore how to implement different strategies to foster the reasoning capabilities of LLMs, and why some approaches seem to work better than others.
     Our aim is to explore the field of Reasoning Models and make
     the topic approachable in an educational format. We move from the general concepts and ideas behind
     these models to the mathematical formulas that ground them, as well as the different frameworks that
@@ -606,7 +606,7 @@ showFlow('direct');
 <section style="margin:60px auto; max-width:1000px;">
   <h2 style="text-align:center;">Chain of Thought (CoT) Example</h2>
   <p style="text-align:justify; line-height:1.6;">
-    One of the first attempts to elicit reasoning in LLMs was related to how to prompt them. 
+    One of the first attempts to elicit reasoning in LLMs was during prompting. 
     Perhaps the most well known example of this is Chain of Thought (CoT). 
     In CoT, we improve the quality of the LLM's answers by prompting them to think their answer step by step.
     This simple tricked improved accuracy in a variety of problems and proved that the reasoning capabilities of LLMs might be dormant.
@@ -676,8 +676,8 @@ function askCoT(){
   setTimeout(()=> addMessage("3 ✅","bot"), 4200);
 }
   </script>
-  <p>The first part is for creating the chain of thought itself, 
-    while the second messages ensures a definitive, concise answer.
+  <p>Prompting with CoT has two parts. In the first, the model produces a series of reasoning steps thanks to our clever prompting. 
+    This chain of thought is then fed to the model, while we also enquire for a definitive, concise answer.
   </p>
 </section>
 
@@ -4146,7 +4146,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   <p>
     As a last note, it important to notice that verifiers in a sense imitate a kind of response from the environment for the LM, 
     allowing it to have a perception on how their action had a response. If this want to see how much can be done with this interaction, 
-    maybe check this <a href="[HYPERLINK]" target="_blank" rel="noopener">link [the idea is to connect our blog to the other team's]</a>.
+    maybe check this <a href="[HYPERLINK]" target="_blank" rel="noopener">link</a>.
   </p>
 </section>
 
@@ -4784,14 +4784,43 @@ document.addEventListener('DOMContentLoaded',()=>{
   reliably under increasing task difficulty — and to prove that their reasoning is more than just a memorized pattern.
 </p>
 
+<!-- ================= TL;DR ================= -->
+<section id="tldr" style="max-width:900px; margin:60px auto;">
+
+  <div style="
+      background:#fefce8; 
+      border-left:6px solid #eab308; 
+      border-radius:8px; 
+      padding:22px 26px; 
+      box-shadow:0 4px 14px rgba(0,0,0,0.05);">
+    
+    <h2 style="font-size:1.4em; font-weight:700; margin-top:0; margin-bottom:14px; color:#0f172a;">
+      TL;DR 
+    </h2>
+
+    <ul style="list-style:disc; padding-left:1.5em; line-height:1.5; color:#374151; margin:0;">
+      <li style="margin-bottom:12px;"><strong>The evolution towards reasoning</strong>: Previous Language Models had to rely on memorization and pattern matching to produce their answers, limiting their capabilities. 
+        RLMs, instead, explore multiple possible answers and can even revisit their own generation to improve their answers, all of which is achieved through various post-training techniques. </li>
+      <li style="margin-bottom:12px;"><strong>Components of RLMs</strong>: Reasoning models tend to be a combination of systems (Reward models, Policy models, and Value models) and techniques (SFT, PPO, GRPO, and DPO) that improve the quality of their answers.</li>
+      <li style="margin-bottom:12px;"><strong>Reasoning Schemes</strong>: But there is more to reasoning than post-training techniques. Reasoning is also enhanced by improved exploratory techniques during inference, giving RLMs the possibility of testing different answers to a question.</li>
+      <li style="margin-bottom:12px;"><strong>Examples of RLMs</strong>: Through the DeepSeek R1 series of models, we got to see how the previously mentioned techniques are put into practice in real research.</li>
+      <li style="margin-bottom:12px;"><strong>Limitations</strong>: Despite their improved performance in various benchmarks, RLMs still struggle to reason in more diverse reasoning problems, putting into question their real capabilities.</li>
+    </ul>
+  </div>
+
+</section>
+<!-- ============== /TL;DR ================= -->
+
+
+<footer>
+  <p> This blogpost grew out of work done as part of a research seminar at the University of Potsdam by
+  Heitke Grops, Juan Danza Rovira, Lara Neubauer da Costa Schertel and R. Zorin under the
+  supervision of Prof. David Schlangen. Thank you for reading!
+  </p>
+</footer>
+
+
 </body>
 
-<section>
-  <footer>
-    <p> This blogpost grew out of work done as part of a research seminar at the University of Potsdam by
-    Heitke Grops, Juan Danza Rovira, Lara Neubauer da Costa Schertel and R. Zorin under the
-    supervision of Prof. David Schlangen. Thank you for reading!
-    </p>
-  </footer>
-</section>
+
 </html>
