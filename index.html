@@ -17,6 +17,12 @@
     border-bottom-right-radius: 18px;
     box-shadow: 0 4px 24px #94a3b888;
   }
+
+  section {
+    font-family: 'Inter', Arial, sans-serif !important;
+    }
+
+
   header h1 {
     margin: 0;
     font-size: 2.5em;
@@ -49,6 +55,9 @@
     margin-right:calc(50% - 50vw);
     border-top-left-radius:18px;   
     border-top-right-radius:18px;
+  }
+  p {
+  text-align: justify;
   }
 
 footer p{
@@ -92,6 +101,10 @@ footer p{
 }
 
 footer, footer * { color:#fff !important; }
+
+.wrap {
+  font-family: 'Inter', Arial, sans-serif;
+}
 </style>
 </head>
 
@@ -113,14 +126,14 @@ footer, footer * { color:#fff !important; }
 <section>
   <header>
     <h1>Unlocking Machine Reasoning: The RLM Approach</h1>
-    <p>How Language Models Move From Memorization to Deliberative Problem-Solving (Allegedly):<br>Unpacking Strategies and Methods Driving Reasoning in LLMs.
+    <p style="text-align: center;">How Language Models Move From Memorization to Deliberative Problem-Solving (Allegedly):<br>Unpacking Strategies and Methods Driving Reasoning in LLMs.
     </p>
   </header>
 </section>
 
 
 <section class="wrap" id="blog-intro">
-  <p>
+  <p style="text-align:justify; font-family: 'Inter', Arial, sans-serif;" >
     In this blog, we’ll explore how to implement different strategies to foster the reasoning capabilities of LLMs, and why some approaches seem to work better than others.
     Our aim is to explore the field of Reasoning Models and make
     the topic approachable in an educational format. We move from the general concepts and ideas behind
@@ -128,14 +141,14 @@ footer, footer * { color:#fff !important; }
     implement them and how they perform across benchmarks.
   </p>
 
-  <p>
+  <p style="text-align:justify">
     Along the way, readers will gain a good overview of reasoning models, the different methods and
     structures they use, their practical applications, and how they perform across benchmarks. By the
     end, you should have a clearer picture of both the technical underpinnings and the open questions
     that drive ongoing research.
   </p>
 
-  <p>
+  <p style="text-align:justify">
     <em>So, are these models really thinking, or are we just thinking that they are? Let’s find out!</em>
   </p>
 
@@ -249,7 +262,7 @@ footer, footer * { color:#fff !important; }
   </div>
     <!-- Below: left bubble + summary -->
     <div class="flexrow-below" style="margin-top:18px;">
-      <div class="summary">
+      <div class="summary"; style="text-align:justify">
         <strong>Large Language Models (LLMs)</strong> are built to tackle general-purpose tasks—answering questions, solving problems, generating ideas, and following instructions. But many standard LLMs often fall short when it comes to true reasoning. Instead of logical analysis or planning, they tend to memorize and interpolate, skipping the deeper steps that lead to genuine understanding.
         <br><br>
         <strong>Reasoning Language Models (RLMs)</strong> represent a new direction: they introduce deliberate problem-solving strategies like step-by-step thinking, exploration, and self-verification. Unlike conventional LLMs, RLMs use search-based inference, generating multiple candidate solutions and choosing the best, rather than relying on a single one-pass answer.
@@ -470,7 +483,7 @@ new Chart(document.getElementById('aimeChart').getContext('2d'), {
 
 </section>
 
-<div style="max-width:900px; margin:2rem auto; font-size:1.05em; color:#333; text-align:left; line-height:1.5;">
+<div style="max-width:900px; margin:2rem auto; font-size:1.05em; color:#333; text-align:justify; line-height:1.5;">
     Scaling alone drove major gains over the past decade, but its limits are becoming clear. 
     Test-time compute offers a complementary approach: models can "think harder" when needed, 
     improving reasoning and robustness without retraining. This shift intends moving from 
@@ -577,7 +590,7 @@ showFlow('direct');
 </script>
 </section>
 
-<div style="max-width:900px; margin:2rem auto; font-size:1.05em; color:#333; text-align:left; line-height:1.5;">
+<div style="max-width:900px; margin:2rem auto; font-size:1.05em; color:#333; text-align:justify; line-height:1.5;">
   Instead of mapping inputs directly to outputs, reasoning models break the task into intermediate steps. 
   These reasoning tokens are intended to make the model’s internal process visible, helping it structure and refine 
   its reasoning. This approach seemingly improves accuracy on complex problems while keeping the model’s 
@@ -623,7 +636,7 @@ showFlow('direct');
   </p>
 
   <!-- Chat Window -->
-  <div id="cot-chat" style="border:1px solid #e5e7eb; border-radius:12px; background:#f9fafb; padding:15px; height:340px; overflow-y:auto; font-family:sans-serif;">
+  <div id="cot-chat" style="border:1px solid #e5e7eb; border-radius:12px; background:#f9fafb; padding:15px; height:340px; overflow-y:auto; font-family: 'Inter', Arial, sans-serif; ">
     <p style="color:#6b7280; text-align:center; margin:0;">Start the conversation below 👇</p>
   </div>
 
@@ -875,18 +888,18 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 </style>
 
   <h2>Reinforcement Learning</h2>
-<p>
+<p style="text-align:justify">
   <strong>Reinforcement learning</strong> is a way to train a system by trial and reward.
   An agent tries actions, receives a numeric reward, and gradually learns a rule for choosing actions that
   lead to higher reward. That rule is called the <em>policy</em>.
 </p>
 
-<p>
+<p style="text-align:justify">
   In fine tuning for language models, we apply this idea to align outputs with human preferences.
   A separate <strong>reward model</strong> turns human judgments into scores, so we train the reward model first.
 </p>
 
-<p>
+<p style="text-align:justify">
   In the classic setup known as <strong>Reinforcement Learning from Human Feedback</strong>,
   people compare two answers to the same prompt, the reward model learns to score those answers,
   and the policy learns to pick the ones that score higher.
@@ -1091,7 +1104,7 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
     });
   </script>
 
-  <p>
+  <p style="text-align:justify">
     The illustration above was inspired by the work <a href="https://doi.org/10.48550/ARXIV.1909.08593">"Fine-tuning language models from human preferences" (2019)</a> and shows the training pipeline of a <b>Reward Model</b>. 
     The <b>Model</b> in blue is frozen and used to generate possible continuations for the given input, which, together with the annotations of the human labeler, are then used to update the weights of the Reward Model. 
     In this section, this process will be explained with the help of intuitive examples as well as a description of the mathematical formulas behind the training of this model.
@@ -1102,7 +1115,7 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 <div class="wrap">
   <h2 style="margin:1.25rem 0 0.5rem 0; font-size:1.25rem; font-weight:700;">Reward Model Training Data</h2>
 
-  <p>
+  <p style="text-align:justify">
     Training a reward model requires pairs of answers that can be compared. Given the same prompt, annotators decide which answer
     is better. The chosen answer becomes the <strong>preferred output</strong>, while the less helpful one is marked as not preferred.
   </p>
@@ -1208,7 +1221,7 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
     the annotators preferred answer <strong>y1</strong>.
   </p>
 
-  <p>
+  <p style="text-align:justify">
   In this example, the prompt <em>"How do I reset my phone password?"</em> produces two candidate answers. Annotators judged that
   <strong>y1</strong> was a better response. When analysing both answers we can see that in answer <strong>y1</strong>, underlined in green, there are a series of steps on how to reset a phone password.
   The generated answer <strong>y2</strong> lists items that might be required but does not explain how to do the task, as we can see underlined in red.
@@ -4165,9 +4178,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     search bar in the top-right corner of the table.
   </p>
 
-    <head>
-      <meta charset="UTF-8">
-      <title>Reasoning Benchmarks</title>
       <!-- DataTables CSS -->
       <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
       <style>
@@ -4204,8 +4214,7 @@ document.addEventListener('DOMContentLoaded',()=>{
           padding: 6px 10px;
         }
       </style>
-    </head>
-    <body>
+
 
       <h2>Reasoning Benchmark Categories</h2>
 
@@ -4268,32 +4277,21 @@ document.addEventListener('DOMContentLoaded',()=>{
         });
       </script>
 
-    </body>
 
     <br>
       A strong model is expected to perform well across multiple diverse benchmarks, demonstrating not just memorization or task-specific tricks, but real, 
       transferable reasoning. In this way, benchmarks help define what it means for a model to be universal rather than narrowly overfitted.
     <br>
 
-<body>
   <h3>State-of-the-Art Model Performance on Benchmarks</h3>
   <p>
     The following table shows Pass@1 or Percentile scores across several benchmark tasks.
   </p>
-      <head>
-        <meta charset="UTF-8">
-        <title>Benchmark Comparison</title>
 
         <!-- DataTables CSS -->
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
         <style>
-          body {
-            font-family: 'Inter', Arial, sans-serif;
-            background: #f8fafc;
-            color: #111827;
-            margin: 2rem;
-          }
           h2 {
             text-align: center;
             margin-bottom: 1.5rem;
@@ -4336,8 +4334,6 @@ document.addEventListener('DOMContentLoaded',()=>{
             text-align: right;
           }
         </style>
-      </head>
-      <body>
 
         <h2>Model Benchmark Comparison</h2>
 
@@ -4384,8 +4380,6 @@ document.addEventListener('DOMContentLoaded',()=>{
             });
           });
         </script>
-
-      </body>
 
 
 <hr>
