@@ -15,7 +15,6 @@
     text-align: center;
     border-bottom-left-radius: 18px;
     border-bottom-right-radius: 18px;
-    box-shadow: 0 4px 24px #94a3b888;
   }
 
   section {
@@ -212,7 +211,7 @@ footer, footer * { color:#fff !important; }
     font-weight:700;
     letter-spacing:0.01em;
     margin-bottom:6px;
-    background:linear-gradient(90deg, #010610 70%, #eab308 100%);
+    background:#010610;
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
     background-clip:text;
@@ -438,11 +437,6 @@ footer, footer * { color:#fff !important; }
 
 
 
-
-
-
-
-
 <section>
 <style>
   .main-row { display: flex; flex-wrap: nowrap; gap: 36px; }
@@ -588,19 +582,39 @@ new Chart(document.getElementById('aimeChart').getContext('2d'), {
     .label { text-align:center; font-weight:600; font-size:1.1em; margin-top:10px }
   </style>
 
+  <title>Direct vs Reasoning Model Flow</title>
+<style>
+  section { background:#f8fafc; font-family:sans-serif; color:#111827; }
+  .switcher { text-align:center; margin:35px 0 8px 0; }
+  button {
+    font-size:1em; padding:10px 20px; margin:0 8px; border-radius:8px; border:none;
+    background:#e0e7ef; cursor:pointer;
+    box-shadow: 0 6px 14px rgba(17,24,39,.12), 0 2px 4px rgba(17,24,39,.08);
+    transition: transform .06s ease, box-shadow .12s ease, background .12s ease;
+  }
+  button:hover { transform: translateY(-1px); box-shadow: 0 10px 20px rgba(17,24,39,.16), 0 3px 6px rgba(17,24,39,.10); }
+  button:active { transform: translateY(0); box-shadow: 0 4px 10px rgba(17,24,39,.10), 0 1px 3px rgba(17,24,39,.08); }
+  button:focus-visible { outline: 2px solid #6366f1; outline-offset: 2px; }
+  .hint { text-align:center; font-size:.9em; color:#4b5563; margin-bottom:14px; }
+  .flow-wrap { display:flex; justify-content:center; align-items:center; gap:60px; }
+  .label { text-align:center; font-weight:600; font-size:1.1em; margin-top:10px }
+</style>
+
+
 <section>
-  <h2 style="text-align:center;">Direct vs Reasoning Model</h2>
   <div class="switcher">
-    <button onclick="showFlow('direct')">Direct Model</button>
-    <button onclick="showFlow('reasoning')">Reasoning Model</button>
+    <button title="Show the direct model flow" aria-label="Show the direct model flow" onclick="showFlow('direct')">Direct Model</button>
+    <button title="Show the reasoning model flow" aria-label="Show the reasoning model flow" onclick="showFlow('reasoning')">Reasoning Model</button>
   </div>
+  <div class="hint">Click a button to visualise the different models.</div>
   <div class="flow-wrap">
     <svg id="flowSVG" viewBox="0 0 750 180" width="750" height="180">
       <!-- Will be filled dynamically -->
     </svg>
   </div>
-  <div id="flowLabel" class="label"></div>
-<script>
+  <div id="flowLabel" class="label" aria-live="polite"></div>
+
+  <script>
 function showFlow(mode) {
   const svg = document.getElementById('flowSVG');
   svg.innerHTML = ""; // Clear SVG
@@ -3050,6 +3064,7 @@ updateDPO();
             <button onclick="showR1('zero')">R1-Zero</button>
             <button onclick="showR1('r1')">R1</button>
         </div>
+         <div class="hint">Click a button to visualise the different models.</div>
 
         <div class="flow-wrap">
             <svg id="r1SVG" viewBox="0 0 950 140" width="850" height="140">
