@@ -131,7 +131,7 @@ footer, footer * { color:#fff !important; }
 
 <section class="wrap" id="blog-intro">
   <p style="text-align:justify; font-family: 'Inter', Arial, sans-serif;" >
-    In this blog, we’ll explore how to implement different strategies to foster the reasoning capabilities of LLMs, and why some approaches seem to work better than others.
+    In this blog, we’ll explore how to implement different strategies to foster reasoning capabilities of LLMs, and why some approaches may seem to represent genuine reasoning more than others.
     Our aim is to explore the field of Reasoning Models and make
     the topic approachable in an educational format. We move from the general concepts and ideas behind
     these models to the mathematical formulas that ground them, as well as the different frameworks that
@@ -260,7 +260,7 @@ footer, footer * { color:#fff !important; }
     <!-- Below: left bubble + summary -->
     <div class="flexrow-below" style="margin-top:18px;">
       <div class="summary"; style="text-align:justify">
-        <strong>Large Language Models (LLMs)</strong> are built to tackle general-purpose tasks—answering questions, solving problems, generating ideas, and following instructions. But many standard LLMs often fall short when it comes to true reasoning. Instead of logical analysis or planning, they tend to memorize and interpolate, skipping the deeper steps that lead to genuine understanding.
+        <strong>Large Language Models (LLMs)</strong> are built to tackle general-purpose tasks; answering questions, solving problems, generating ideas, and following instructions. But many standard LLMs often fall short when it comes to true reasoning. Instead of logical analysis or planning, they tend to memorize and interpolate, skipping the deeper steps that lead to genuine understanding.
         <br><br>
         <strong>Reasoning Language Models (RLMs)</strong> represent a new direction: they introduce deliberate problem-solving strategies like step-by-step thinking, exploration, and self-verification. Unlike conventional LLMs, RLMs use search-based inference, generating multiple candidate solutions and choosing the best, rather than relying on a single one-pass answer.
       </div>
@@ -361,7 +361,35 @@ footer, footer * { color:#fff !important; }
   }
 </style>
 
+
+
+
+
+<section style="margin:60px auto; max-width:1000px;">
+  <h2 style="text-align:center;">From Scaling Laws to Test-Time Compute</h2>
+  <p style="text-align:justify; line-height:1.6;">
+    Over the past decade, a dominant approach to improving LLMs has been simple: scale everything, meaning more parameters, more data, more compute. 
+    This scaling paradigm shaped the field for years and delivered impressive gains. 
+    Yet, it also revealed clear limitations: data is finite, compute is costly, and beyond a point, accuracy plateaus. 
+    More importantly, scaling alone does not resolve persistent weaknesses in reasoning and generalization. 
+    These challenges motivated a shift toward <strong>test-time compute</strong>; allocating more resources at inference time, so that models can 
+    engage in step-by-step reasoning without retraining.
+  </p>
+</section>
+
+
+
+
+
+
+
+
+
+
 <section>
+<style>
+  .main-row { display: flex; flex-wrap: nowrap; gap: 36px; }
+</style>
 <div class="main-row">
 <!-- Left: Scaling Laws Flow -->
 <div class="visual-box">
@@ -404,14 +432,13 @@ footer, footer * { color:#fff !important; }
 </div>
 <script>
 
-// For accessibility: toggle tooltip on click (not just hover)
 function toggleActive(el) {
   document.querySelectorAll('.section-title').forEach(s => {
     if (s !== el) s.classList.remove('active');
   });
   el.classList.toggle('active');
 }
-// Optional: close tooltip when clicking elsewhere
+// close tooltip when clicking elsewhere
 document.body.addEventListener('click', function(e){
   if (!e.target.classList.contains('section-title')) {
     document.querySelectorAll('.section-title').forEach(s => s.classList.remove('active'));
@@ -480,14 +507,16 @@ new Chart(document.getElementById('aimeChart').getContext('2d'), {
 
 </section>
 
-<div style="max-width:900px; margin:2rem auto; font-size:1.05em; color:#333; text-align:justify; line-height:1.5;">
-    Scaling alone drove major gains over the past decade, but its limits are becoming clear. 
-    Test-time compute offers a complementary approach: models can "think harder" when needed, 
-    improving reasoning and robustness without retraining. This shift intends moving from 
-    brute-force scaling toward more adaptable AI.
-</div>
 
 
+<section style="margin:60px auto; max-width:1000px;">
+  <h2 style="text-align:center;">From Compute to Reasoning</h2>
+  <p style="text-align:justify; line-height:1.6;">
+    If scaling alone cannot solve the problem, the next step is to rethink how models use their compute. Instead of directly mapping input to output, they can generate <strong>intermediate steps</strong> or tokens that are intended and claimed to represent fragments of their reasoning. 
+    These tokens are not provided in the original prompt but produced by the model itself or encouraged through prompting. Their role is to structure and refine the solution process, making the 
+    model’s internal reasoning visible. This approach has been linked to notable accuracy gains on complex tasks.
+  </p>
+</section>
 
 
 
@@ -579,32 +608,25 @@ function showFlow(mode) {
       frame(start);
     }
     setTimeout(animateTokens,150); // wait for DOM
-    document.getElementById('flowLabel').textContent = "Reasoning model: Intermediate reasoning steps represented by reasoning tokens.";
+    document.getElementById('flowLabel').innerHTML = 
+  'Reasoning process: Intermediate reasoning steps represented by reasoning tokens ' +
+  '(<a href="https://dennyzhou.github.io/LLM-Reasoning-Stanford-CS-25.pdf" target="_blank">Denny Zhou, 2025</a>).';
   }
 }
-// Show direct by default
+// direct default
 showFlow('direct');
 </script>
 </section>
 
-<div style="max-width:900px; margin:2rem auto; font-size:1.05em; color:#333; text-align:justify; line-height:1.5;">
-  Instead of mapping inputs directly to outputs, reasoning models break the task into intermediate steps. 
-  These reasoning tokens are intended to make the model’s internal process visible, helping it structure and refine 
-  its reasoning. This approach seemingly improves accuracy on complex problems while keeping the model’s 
-  outputs interpretable.
-</div>
-
 
 <div style="max-width:720px; margin:60px auto; text-align:center;">
-  <details style="background:#f1f5f9; border-radius:12px; padding:20px; cursor:pointer; box-shadow:0 3px 12px rgba(0,0,0,0.05);">
+  <details style="background:#f1f5f9; border-radius:12px; padding:20px; cursor:pointer; box-shadow:0 3px 12px rgba(0,0,0,0.05); text-align:center;">
     <summary style="font-size:1.4em; font-weight:600; color:#2563eb;">
       🤔 But what are these intermediate steps?
     </summary>
-    <p style="margin-top:15px; font-size:1.1em; color:#374151;">
-      And how are RLMs actually achieved?
-      <br>
-      To answer that, we’ll look at reasoning architectures such as<br> 
-      <b>search-based methods,<br>reward models,<br></b> and <b>decision-tree style reasoning</b>.
+    <p style="text-align:center; margin-top:15px; font-size:1.1em; color:#374151;">
+      And how are RLMs eventually achieved? To answer that, we will explore reasoning architectures with you such as:<br> 
+      <b>search-based methods over candidate solutions<br>reward models to align outputs with preferences,<br></b> and <b>decision-tree style reasoning or reasoning over candidate paths</b>.
     </p>
   </details>
 </div>
@@ -2414,141 +2436,154 @@ mAJoin.addEventListener('endEvent', ()=>{
 </body>
 
 
+<!-- DPO Vis -->
+<div class="wrap" id="dpo-flow" style="margin-bottom:0em;padding-bottom:0;">
+  <h2 style="text-align:center;margin-bottom:0em;">Direct Preference Optimization (DPO)</h2>
+  <style>
+    #dpo-flow .edge{ stroke:#cbd5e1; stroke-width:3; fill:none; marker-end:url(#dpoArrow); }
+    #dpo-flow .node{ filter:drop-shadow(0 2px 4px rgba(0,0,0,.08)); }
+    #dpo-flow .rect-node{ fill:#e2e8f0; stroke:#0f172a; stroke-width:2; }
+    #dpo-flow .model-node{ fill:#7dd3fc; stroke:#0f172a; stroke-width:2; }
+    #dpo-flow .value-node{ fill:#fde68a; stroke:#0f172a; stroke-width:2; }
+    #dpo-flow .small{ font-size:12px; fill:#334155; }
+  </style>
+  <svg id="dpoSvg" height="100%" width="950">
+    <defs>
+      <marker id="dpoArrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+        <polygon points="0 0, 12 6, 0 12" fill="#cbd5e1"/>
+      </marker>
+    </defs>
+    <!-- Human Preference -->
+    <rect x="20" y="100" width="140" height="40" rx="6" class="node rect-node"/>
+    <text x="90" y="125" text-anchor="middle" font-size="14" font-weight="700">Human Preference</text>
+    <!-- Policy Model -->
+    <ellipse cx="300" cy="120" rx="90" ry="36" class="node value-node"/>
+    <text x="300" y="125" text-anchor="middle" font-size="14" font-weight="700">Policy Model</text>
+    <!-- Preferred Response -->
+    <rect x="500" y="70" width="140" height="40" rx="6" class="node rect-node"/>
+    <text x="570" y="95" text-anchor="middle" font-size="14" font-weight="700">Preferred (y⁺)</text>
+    <!-- Dispreferred Response -->
+    <rect x="500" y="150" width="140" height="40" rx="6" class="node rect-node"/>
+    <text x="570" y="175" text-anchor="middle" font-size="14" font-weight="700">Dispreferred (y⁻)</text>
+    <!-- DPO Loss -->
+    <ellipse cx="800" cy="120" rx="70" ry="36" class="node model-node"/>
+    <text x="800" y="125" text-anchor="middle" font-size="14" font-weight="700">DPO Loss</text>
+    <!-- Forward Edges -->
+    <path id="dpo_e_pref_pol" class="edge" d="M160 120 H 210" />
+    <path id="dpo_e_pol_split" class="edge" d="M390 120 H 440" />
+    <path id="dpo_e_pol_pref" class="edge" d="M440 120 V 90 H 500" />
+    <path id="dpo_e_pol_dispref" class="edge" d="M440 120 V 150 H 500" />
+    <path id="dpo_e_pref_loss" class="edge" d="M640 90 H 730" />
+    <path id="dpo_e_dispref_loss" class="edge" d="M640 170 H 730" />
+    <!-- Feedback Arrow: DPO Loss to Policy Model  -->
+    <path id="dpo_e_loss_pol" class="edge" d="M870 120 V 32 H 300 V 84" />
+    <!-- Tokens for preferred and dispreferred branches -->
+    <circle id="dpo_token_pref" r="6" fill="#2563eb" opacity="0"/>
+    <circle id="dpo_token_dispref" r="6" fill="#b91c1c" opacity="0"/>
+    <!-- AnimateMotion for preferred branch -->
+    <animateMotion id="dpo_m1_pref" href="#dpo_token_pref" dur="0.7s" begin="indefinite" fill="freeze"><mpath href="#dpo_e_pref_pol"/></animateMotion>
+    <animateMotion id="dpo_m2_pref" href="#dpo_token_pref" dur="0.7s" begin="indefinite" fill="freeze"><mpath href="#dpo_e_pol_split"/></animateMotion>
+    <animateMotion id="dpo_m3_pref" href="#dpo_token_pref" dur="0.7s" begin="indefinite" fill="freeze"><mpath href="#dpo_e_pol_pref"/></animateMotion>
+    <animateMotion id="dpo_m4_pref" href="#dpo_token_pref" dur="0.7s" begin="indefinite" fill="freeze"><mpath href="#dpo_e_pref_loss"/></animateMotion>
+    <animateMotion id="dpo_m5_pref" href="#dpo_token_pref" dur="0.7s" begin="indefinite" fill="freeze"><mpath href="#dpo_e_loss_pol"/></animateMotion>
+    <!-- AnimateMotion for dispreferred branch -->
+    <animateMotion id="dpo_m1_dispref" href="#dpo_token_dispref" dur="0.7s" begin="indefinite" fill="freeze"><mpath href="#dpo_e_pref_pol"/></animateMotion>
+    <animateMotion id="dpo_m2_dispref" href="#dpo_token_dispref" dur="0.7s" begin="indefinite" fill="freeze"><mpath href="#dpo_e_pol_split"/></animateMotion>
+    <animateMotion id="dpo_m3_dispref" href="#dpo_token_dispref" dur="0.7s" begin="indefinite" fill="freeze"><mpath href="#dpo_e_pol_dispref"/></animateMotion>
+    <animateMotion id="dpo_m4_dispref" href="#dpo_token_dispref" dur="0.7s" begin="indefinite" fill="freeze"><mpath href="#dpo_e_dispref_loss"/></animateMotion>
+    <animateMotion id="dpo_m5_dispref" href="#dpo_token_dispref" dur="0.7s" begin="indefinite" fill="freeze"><mpath href="#dpo_e_loss_pol"/></animateMotion>
+  </svg>
+</div>
+<script>
+(function(){
+  const svg  = document.getElementById('dpoSvg');
+  const wrap = document.getElementById('dpo-flow');
 
+  // Preferred branch
+  const tp = document.getElementById('dpo_token_pref');
+  const m1p = document.getElementById('dpo_m1_pref');
+  const m2p = document.getElementById('dpo_m2_pref');
+  const m3p = document.getElementById('dpo_m3_pref');
+  const m4p = document.getElementById('dpo_m4_pref');
+  const m5p = document.getElementById('dpo_m5_pref');
 
+  // Dispreferred branch
+  const td = document.getElementById('dpo_token_dispref');
+  const m1d = document.getElementById('dpo_m1_dispref');
+  const m2d = document.getElementById('dpo_m2_dispref');
+  const m3d = document.getElementById('dpo_m3_dispref');
+  const m4d = document.getElementById('dpo_m4_dispref');
+  const m5d = document.getElementById('dpo_m5_dispref');
 
+  let running=false, visible=false;
 
+  function reset(){
+    tp.setAttribute('opacity','0');
+    td.setAttribute('opacity','0');
+  }
+  function keepVisible(token, firstAnim, lastAnim){
+    firstAnim.addEventListener('beginEvent', ()=> token.setAttribute('opacity','1'));
+    lastAnim .addEventListener('endEvent',   ()=> token.setAttribute('opacity','0'));
+  }
+  keepVisible(tp, m1p, m5p);
+  keepVisible(td, m1d, m5d);
 
+  function start(){
+    if(running) return;
+    running=true;
+    reset();
+    m1p.beginElement();
+    setTimeout(()=>m1d.beginElement(), 200); 
+  }
+  // Preferred branch animation chaining
+  m1p.addEventListener('endEvent', ()=> m2p.beginElement());
+  m2p.addEventListener('endEvent', ()=> m3p.beginElement());
+  m3p.addEventListener('endEvent', ()=> m4p.beginElement());
+  m4p.addEventListener('endEvent', ()=> m5p.beginElement());
+  m5p.addEventListener('endEvent', ()=>{
+    running=false;
+    if(visible) setTimeout(start, 900);
+  });
+  // Dispreferred branch animation chaining
+  m1d.addEventListener('endEvent', ()=> m2d.beginElement());
+  m2d.addEventListener('endEvent', ()=> m3d.beginElement());
+  m3d.addEventListener('endEvent', ()=> m4d.beginElement());
+  m4d.addEventListener('endEvent', ()=> m5d.beginElement());
+  m5d.addEventListener('endEvent', ()=>{
+    // don't restart: the preferred branch controls loop
+    td.setAttribute('opacity','0');
+  });
 
-
-<!-- DPO Interactive Visualization -->
-<div id="dpo-visualization" style="width:100%;margin:2.5rem 0;padding:1.5rem 0;">
-  <h2 style="text-align:center;">Direct Preference Optimization (DPO)</h2>
-
-
-  <!-- ================= DPO GRAPH ================= -->
-  <div class="wrap" id="dpo-flow">
-
-    <style>
-      #dpo-flow .edge{ stroke:#cbd5e1; stroke-width:3; fill:none; marker-end:url(#grpoArrow); }
-      #dpo-flow .back{ stroke:#64748b; stroke-width:3; fill:none; stroke-dasharray:7 5; marker-end:url(#grpoArrow); }
-      #dpo-flow .node{ filter:drop-shadow(0 2px 4px rgba(0,0,0,.08)); }
-      #dpo-flow .rect-node{ fill:#e2e8f0; stroke:#0f172a; stroke-width:2; }
-      #dpo-flow .model-node{ fill:#7dd3fc; stroke:#0f172a; stroke-width:2; }
-      #dpo-flow .value-node{ fill:#fde68a; stroke:#0f172a; stroke-width:2; }
-      #dpo-flow .small{ font-size:12px; fill:#334155; }
-    </style>
-
-    <svg id="dpoSvg">
-      <!-- Human Preference -->
-      <rect x="20" y="100" width="140" height="40" rx="6" class="node rect-node"/>
-      <text x="90" y="125" text-anchor="middle" font-size="14" font-weight="700">Human Preference</text>
-
-      <!-- Policy Model -->
-      <ellipse cx="300" cy="120" rx="90" ry="36" class="node value-node"/>
-      <text x="300" y="125" text-anchor="middle" font-size="14" font-weight="700">Policy Model</text>
-
-      <!-- Preferred Response -->
-      <rect x="500" y="70" width="140" height="40" rx="6" class="node rect-node"/>
-      <text x="570" y="95" text-anchor="middle" font-size="14" font-weight="700">Preferred (y⁺)</text>
-
-      <!-- Dispreferred Response -->
-      <rect x="500" y="150" width="140" height="40" rx="6" class="node rect-node"/>
-      <text x="570" y="175" text-anchor="middle" font-size="14" font-weight="700">Dispreferred (y⁻)</text>
-
-      <!-- DPO Loss -->
-      <ellipse cx="750" cy="120" rx="70" ry="36" class="node model-node"/>
-      <text x="750" y="125" text-anchor="middle" font-size="14" font-weight="700">DPO Loss</text>
-
-      <!-- Paths -->
-      <path id="dpo_path1" class="edge" d="M160 120 H 210" marker-end="url(#dpoArrow)"/>
-      <path id="dpo_path2" class="edge" d="M390 120 H 410" marker-end="url(#dpoArrow)"/>
-      <path id="dpo_path3" class="edge" d="M390 120 V 90 H 500" marker-end="url(#dpoArrow)"/>
-      <path id="dpo_path4" class="edge" d="M390 120 V 150 H 500" marker-end="url(#dpoArrow)"/>
-      <path id="dpo_path5" class="edge" d="M640 90 H 680" marker-end="url(#dpoArrow)"/>
-      <path id="dpo_path6" class="edge" d="M640 170 H 680" marker-end="url(#dpoArrow)"/>
-
-      <!-- Moving token -->
-      <circle id="dpo_token" r="6" fill="#2563eb" opacity="0"/>
-    </svg>
-  </div>
-
-  <script>
-  (function(){
-    const token = document.getElementById('dpo_token');
-
-    const paths = [
-      document.getElementById('dpo_path1'),
-      document.getElementById('dpo_path2'),
-      document.getElementById('dpo_path3'),
-      document.getElementById('dpo_path4'),
-      document.getElementById('dpo_path5'),
-      document.getElementById('dpo_path6')
-    ];
-
-    let running = false, visible = false, i=0;
-
-    function animateNext() {
-      if (i >= paths.length) {
-        running = false;
-        i = 0;
-        setTimeout(() => { if(visible) startAnimation(); }, 700);
-        return;
-      }
-
-      const path = paths[i];
-      const length = path.getTotalLength();
-      token.setAttribute('opacity','1');
-      let start = null;
-
-      function step(timestamp) {
-        if (!start) start = timestamp;
-        const progress = (timestamp - start)/700; // 700ms per segment
-        const point = path.getPointAtLength(Math.min(progress*length, length));
-        token.setAttribute('cx', point.x);
-        token.setAttribute('cy', point.y);
-        if(progress < 1) {
-          requestAnimationFrame(step);
-        } else {
-          i++;
-          animateNext();
-        }
-      }
-      requestAnimationFrame(step);
-    }
-
-    function startAnimation(){
-      if(running) return;
-      running = true;
-      i=0;
-      animateNext();
-    }
-
-    const wrap = document.getElementById('dpo-flow');
-    const io = new IntersectionObserver(entries=>{
-      entries.forEach(e=>{
-        visible = e.isIntersecting;
-        if(visible) startAnimation();
-      });
-    }, {threshold:0.25});
-    io.observe(wrap);
-
-    window.addEventListener('load', ()=>{
-      const r = wrap.getBoundingClientRect();
-      if(r.top < innerHeight && r.bottom > 0){
-        visible = true;
-        startAnimation();
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        visible=true;
+        try{ svg.unpauseAnimations(); }catch(_){}
+        start();
+      }else{
+        visible=false;
+        try{ svg.pauseAnimations(); }catch(_){}
       }
     });
-  })();
-  </script>
+  }, {threshold:0.25});
+  io.observe(wrap);
+
+  window.addEventListener('load', ()=>{
+    const r = wrap.getBoundingClientRect();
+    if (r.top < innerHeight && r.bottom > 0){
+      visible=true;
+      try{ svg.unpauseAnimations(); }catch(_){}
+      start();
+    }
+  });
+})();
+</script>
 
 
-
-
-  <p style="font-size:1.07em;">
+  <p style="font-size:1.07em;margin-top:0em;">
     <strong>DPO fine-tunes models directly on human preferences.</strong>
-    Instead of training a separate reward model, DPO learns to choose the preferred answer out of a pair, optimizing the model so that preferred responses become more likely.<br>
+    Instead of training a separate reward model, DPO learns to choose the preferred answer out of a pair, optimizing the model so that preferred responses become more likely (<a href="https://arxiv.org/abs/2305.18290" target="_blank">Rafailov et al., 2024</a>; 
+   <a href="https://arxiv.org/abs/2402.03300" target="_blank">Shao et al., 2024</a>).<br>
   </p>
   <div style="display:flex;gap:32px;justify-content:space-between;align-items:center;">
     <!-- Preferred Response -->
@@ -2577,9 +2612,9 @@ mAJoin.addEventListener('endEvent', ()=>{
       \(-\log \left( \frac{e^{\beta \Delta}}{e^{\beta \Delta} + 1} \right)\) = <span id="dpo-loss">0.3125</span>
     </div>
   </div>
-  <p style="margin-top:1em;font-size:1.03em;color:#444;text-align:center">
-    <strong>Goal:</strong> Maximize the difference between preferred and dispreferred log probabilities.<br>
-    The loss shrinks as the model makes the preferred response much more likely than the dispreferred one.
+
+  <p style="margin-top:1em;font-size:1.03em;color:#444;text-align:left">
+    <strong>Goal:</strong> Maximize the difference between preferred and dispreferred log probabilities. The loss shrinks as the model makes the preferred response much more likely than the dispreferred one.
   </p>
 </div>
 
@@ -2671,7 +2706,7 @@ updateDPO();
 </style>
 
 <div style="max-width:1000px;margin:2rem auto;font-size:1.05em;color:#333;text-align:center;line-height:1.5;">
-  <strong>From simple instruction tuning to advanced preference alignment:</strong> these methods show how LLMs are trained not just to compute, but to reason in ways that align with human intent.
+  <strong>From instruction tuning to preference alignment:</strong> these methods show how LLMs are trained not just to compute, but to reason in ways that align with human intent.
 </div>
 
 
