@@ -105,14 +105,75 @@ footer, footer * { color:#fff !important; }
 .wrap {
   font-family: 'Inter', Arial, sans-serif;
 }
+
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 200px;
+      background: #f3f4f6;
+      padding-top: 20px;
+      border-right: 1px solid #ccc;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 12px 16px;
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .sidebar a:hover {
+      background: #e5e7eb;
+    }
+
+    /* Main content area */
+    .content {
+      margin-left: 220px; /* push content away from sidebar */
+      padding: 20px;
+    }
+
+    section {
+      margin-bottom: 100px; /* space between sections */
+      padding: 40px;
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    section h2 {
+      margin-top: 0;
+    }
 </style>
 </head>
 
+<body>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <!-- KaTeX JS -->
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  
+  <nav class="sidebar">
+    <a href="#Unlocking_Reasoning">Unlocking Reasoning</a>
+    <a href="#CoT">Chain-of-Thought</a>
+    <a href="#SFT">Supervised-Fine-Tuning</a>
+    <a href="#RL">Reinforcement Learning</a>
+    <a href="#PPO">PPO</a>
+    <a href="#GRPO">GRPO</a>
+    <a href="#DPO">DPO</a>
+    <a href="#R1Series">R1 Series</a>
+    <a href="#Reasoning_architectures">Reasoning architectures</a>
+    <a href="#Verifiers">Verifiers</a>
+    <a href="#Benchmarks">Benchmarks</a>
+    <a href="#tldr">TL;DR</a>
+
+
+  </nav>
 
 
 </section>
@@ -150,7 +211,8 @@ footer, footer * { color:#fff !important; }
   </p>
 
 <section style="margin-top:60px; margin-bottom:40px;">
-  <h2 style="
+  <h2 id=Unlocking_Reasoning
+  style="
     font-size:2em;
     font-weight:700;
     letter-spacing:0.01em;
@@ -636,7 +698,7 @@ showFlow('direct');
 <!--CoT Explanation-->
 
 <section style="margin:60px auto; max-width:1000px;">
-  <h2 style="text-align:center;">Chain of Thought (CoT) Example</h2>
+  <h2 id="CoT" style="text-align:center;">Chain of Thought (CoT) Example</h2>
   <p style="text-align:justify; line-height:1.6;">
     One of the first attempts to elicit reasoning in LLMs was through prompting. 
     Perhaps the most well known example of this is Chain of Thought (CoT). 
@@ -717,7 +779,7 @@ function askCoT(){
 
   <!-- SFT Explanation Section -->
   <div style="max-width:1000px; margin:60px auto; text-align:center;"> 
-      <h2 style="text-align:center;">Supervised Fine-Tuning</h2>
+      <h2 id="SFT" style="text-align:center;">Supervised Fine-Tuning</h2>
 
     <p style="font-size:16px; line-height:1.6; text-align:justify;">
       However useful CoT is, only being able retrieve the latent capabilities of the model is a hard limit of the technique.
@@ -906,7 +968,7 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
   .katex.display{margin-block:var(--s2)}
 </style>
 
-  <h2>Reinforcement Learning</h2>
+  <h2 id="RL">Reinforcement Learning</h2>
 <p style="text-align:justify">
   <strong>Reinforcement learning</strong> is a way to train a system by trial and reward.
   An agent tries actions, receives a numeric reward, and gradually learns a rule for choosing actions that
@@ -1330,7 +1392,7 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 
 <!-- ================= PPO GRAPH ================= -->
 <div class="wrap" id="ppo-flow">
-  <h1>Proximal Policy Optimization (PPO)</h1>
+  <h1 id="PPO">Proximal Policy Optimization (PPO)</h1>
 
   <style>
     #ppo-flow .edge{ stroke:#cbd5e1; stroke-width:3; fill:none; marker-end:url(#grpoArrow); }
@@ -1843,7 +1905,7 @@ document.getElementById("loss-slider").addEventListener("input", function(e){
 
 <!-- ================= GRPO (from scratch, with split + converge arrows) (Juan)================= -->
 <div class="wrap" id="grpo-flow">
-  <h1>Group Relative Policy Optimization (GRPO)</h1>
+  <h1 id="GRPO">Group Relative Policy Optimization (GRPO)</h1>
 
   <style>
     /* minimal edge styles to match PPO look */
@@ -2438,7 +2500,7 @@ mAJoin.addEventListener('endEvent', ()=>{
 
 <!-- DPO Vis -->
 <div class="wrap" id="dpo-flow" style="margin-bottom:0em;padding-bottom:0;">
-  <h2 style="text-align:center;margin-bottom:0em;">Direct Preference Optimization (DPO)</h2>
+  <h2 id="DPO" style="text-align:center;margin-bottom:0em;">Direct Preference Optimization (DPO)</h2>
   <style>
     #dpo-flow .edge{ stroke:#cbd5e1; stroke-width:3; fill:none; marker-end:url(#dpoArrow); }
     #dpo-flow .node{ filter:drop-shadow(0 2px 4px rgba(0,0,0,.08)); }
@@ -2599,19 +2661,26 @@ mAJoin.addEventListener('endEvent', ()=>{
     </div>
   </div>
   <div style="margin:1.2em 0 0 0;text-align:center;">
-    <label for="dpo-beta">\(\beta\) (preference sharpness): <strong id="dpo-betav">1.0</strong></label>
-    <input id="dpo-beta" type="range" min="0.1" max="4.0" step="0.01" value="1.0" style="width:50%;vertical-align:middle;">
+  <label for="dpo-beta">
+    <span class="math">\( \beta \)</span> (preference sharpness): 
+    <strong id="dpo-betav">1.0</strong>
+  </label>
+  <input id="dpo-beta" type="range" min="0.1" max="4.0" step="0.01" value="1.0" style="width:50%;vertical-align:middle;">
+</div>
+
+<div style="margin:1.2em 0 0 0; font-size:1.08em;background:#fffbe9;border-radius:9px;padding:0.7em 1em;color:#222; display:flex; gap:20px; justify-content:center;">
+  <div style="flex:1;text-align:center;">
+    Log probability difference:<br>
+    <span class="math">\( \Delta = \log \pi_\theta(y^+) - \log \pi_\theta(y^-) \)</span> = 
+    <span id="dpo-delta">0.9808</span>
   </div>
-  <div style="margin:1.2em 0 0 0; font-size:1.08em;background:#fffbe9;border-radius:9px;padding:0.7em 1em;color:#222;">
-    <div style="flex:1;text-align:center;">
-      Log probability difference:<br>
-      \(\Delta = \log \pi_\theta(y^+) - \log \pi_\theta(y^-)\) = <span id="dpo-delta">0.9808</span>
-    </div>
-    <div style="flex:1;text-align:center;">
-      DPO loss:<br>
-      \(-\log \left( \frac{e^{\beta \Delta}}{e^{\beta \Delta} + 1} \right)\) = <span id="dpo-loss">0.3125</span>
-    </div>
+  <div style="flex:1;text-align:center;">
+    DPO loss:<br>
+    <span class="math">\( -\log \left( \frac{e^{\beta \Delta}}{e^{\beta \Delta} + 1} \right) \)</span> = 
+    <span id="dpo-loss">0.3125</span>
   </div>
+</div>
+
 
   <p style="margin-top:1em;font-size:1.03em;color:#444;text-align:left">
     <strong>Goal:</strong> Maximize the difference between preferred and dispreferred log probabilities. The loss shrinks as the model makes the preferred response much more likely than the dispreferred one.
@@ -2888,7 +2957,7 @@ updateDPO();
 
     <div class="wrap">
         <div class="intro-section">
-            <h2>The R1 Series: Emergent Reasoning Through Reinforcement Learning</h2>
+            <h2 id="R1Series">The R1 Series: Emergent Reasoning Through Reinforcement Learning</h2>
             
             <p>
                 All the techniques explained above are used and combined nowadays to create state of the art reasoning models.
@@ -3305,7 +3374,7 @@ updateDPO();
 
 
   <section style="margin-top:60px; margin-bottom:40px;">
-    <h2 style="
+    <h2 id="Reasoning_architectures"style="
       font-size:2em;
       font-weight:700;
       letter-spacing:0.01em;
@@ -4035,7 +4104,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 
 <section style="margin-top:60px; margin-bottom:40px; max-width:900px; margin-left:auto; margin-right:auto;">
-  <h2 style="
+  <h2 id="Verifiers" style="
     font-size:2em;
     font-weight:700;
     letter-spacing:0.01em;
@@ -4046,7 +4115,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     background-clip:text;
     text-align:center;
   ">
-    Verifiers in Reasoning Models
+    Verifiers
   </h2>
 
   <p>
@@ -4194,7 +4263,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
   <h1 style="text-align:left">How Good Are Models at Reasoning?</h1>
-  <h2>Benchmarks</h2>
+  <h2 id="Benchmarks">Benchmarks</h2>
   <p>
     Benchmarks are widely used to evaluate the capabilities of large language models (LLMs).
     They consist of curated problem sets focused on specific skills - such as mathematics, programming, scientific understanding, or medical diagnostics.
@@ -4844,6 +4913,16 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 
 </body>
-
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+      // delimiters for inline and display math
+      delimiters: [
+        {left: "\\(", right: "\\)", display: false},
+        {left: "\\[", right: "\\]", display: true}
+      ]
+    });
+  });
+</script>
 
 </html>
