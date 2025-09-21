@@ -638,7 +638,7 @@ showFlow('direct');
 <section style="margin:60px auto; max-width:1000px;">
   <h2 style="text-align:center;">Chain of Thought (CoT) Example</h2>
   <p style="text-align:justify; line-height:1.6;">
-    One of the first attempts to elicit reasoning in LLMs was during prompting. 
+    One of the first attempts to elicit reasoning in LLMs was through prompting. 
     Perhaps the most well known example of this is Chain of Thought (CoT). 
     In CoT, we improve the quality of the LLM's answers by prompting them to think their answer step by step.
     This simple tricked improved accuracy in a variety of problems and proved that the reasoning capabilities of LLMs might be dormant.
@@ -723,7 +723,7 @@ function askCoT(){
       However useful CoT is, only being able retrieve the latent capabilities of the model is a hard limit of the technique.
       A reasoning model should be able to go beyond its training data, and actually reason when faced with an unseen situation or question.
       To remedy this, researchers started testing different techniques and algorithms to enhance the reasoning capabilities of LLMs.
-      <strong>Supervised Fine-Tuning (SFT)</strong> is a post-training technique where we update 
+      <strong>Supervised Fine-Tuning (SFT)</strong>, as explained in <a href="https://arxiv.org/pdf/2401.01335"> Chen et al. (2024)</a>, is a post-training technique where we update 
       our model so its answers resemble a specific dataset. 
       This is useful for alignment, which means developing models that specialize 
       in a specific topic or must follow certain guidelines. 
