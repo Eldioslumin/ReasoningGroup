@@ -4275,15 +4275,17 @@ document.addEventListener('DOMContentLoaded',()=>{
   <h1 style="text-align:left">How Good Are Models at Reasoning?</h1>
   <h2 id="Benchmarks">Benchmarks</h2>
   <p>
-    Benchmarks are widely used to evaluate the capabilities of large language models (LLMs).
-    They consist of curated problem sets focused on specific skills - such as mathematics, programming, scientific understanding, or medical diagnostics.
-    By testing models on these tasks, we get a snapshot of their reasoning power and generalization abilities.
+      Benchmarks are widely used to evaluate the capabilities of large language models (LLMs).  
+      They consist of curated problem sets focused on specific skills such as mathematics, programming, scientific understanding, or medical diagnostics.  
+      By testing models on these tasks, we obtain a snapshot of their reasoning power and generalization abilities.  
   </p>
+
   <h3>Benchmark Reasoning Categories</h3>
+
   <p>
-    Please see the description of possible problem sets in the table below. Each category represents a distinct type of reasoning  challenge used in 
-    benchmark evaluations. You can search through the table by typing keywords (e.g. <em>"math"</em>, <em>"medical"</em>, <em>"code"</em>) into the
-    search bar in the top-right corner of the table.
+      Benchmarks can be categorized by the type of reasoning they aim to assess,  
+      this classification helps clarify which cognitive processes are being evaluated and ensures diversity in benchmarking pipelines.  
+      The most common benchmark categories identified by <a href="https://doi.org/10.48550/ARXIV.2502.17419">Li et al. (2025)</a> can be seen in the table below.  
   </p>
 
       <!-- DataTables CSS -->
@@ -4493,23 +4495,26 @@ document.addEventListener('DOMContentLoaded',()=>{
 <hr>
 
 <h3>The Problem With Benchmarks</h3>
-<p>Despite their usefulness, traditional benchmarks are facing growing criticism.</p>
 
 <p>
-  Task difficulty is often hard to define. What makes a problem "difficult" is often subjective. This makes it tricky to scale problem sets meaningfully 
-  or test a model's performance on progressively harder tasks.
-</p>
-<p>
-  Another concern is data leakage from training corpora. Many benchmark problems have ended up in the training data of large models, whether intentionally or not. 
-  This makes it unclear whether the model is reasoning through a solution — or simply memorizing and regurgitating it.
+  Despite their usefulness, traditional benchmarks are facing growing criticism.  
+  Task difficulty is often subjective, which makes it hard to scale problem sets or design progressively harder tasks.  
+  Another major issue is data leakage, since many benchmark problems appear in training data, making it unclear whether models are reasoning or simply recalling memorized answers.  
 </p>
 
-<h2>Puzzle-Based Benchmarks</h2>
 <p>
-  To address these limitations, researchers are exploring alternative benchmarks: <a href="https://arxiv.org/abs/2506.06941">"The Illusion of Thinking: 
-    Understanding the Strengths and Limitations of Reasoning Models via the Lens of Problem Complexity" (2025)</a>. One compelling direction is using puzzle-like problems, such as the 
-  Tower of Hanoi, where complexity can be precisely controlled — by simply increasing the number of disks. In this setup, models are evaluated not just 
-  on their accuracy, but on how well they scale with increasing task difficulty.
+  While benchmarks remain necessary for comparing model outputs, they have serious limitations.  
+  Recent work by <a href="https://arxiv.org/abs/2503.04550">Yu et al. (2025)</a> shows that benchmark-driven evaluation struggles with robustness, since models often fail when small input details change,
+   suffers from overreliance on memorization, and performs poorly on tasks that require genuine generalization.  
+</p>
+
+
+<h2>Puzzle Based Benchmarks</h2>
+<p>
+  To address these limitations, researchers are exploring alternative benchmarks, as discussed in 
+  <a href="https://arxiv.org/abs/2506.06941">"The Illusion of Thinking: Understanding the Strengths and Limitations of Reasoning Models via the Lens of Problem Complexity" (2025)</a>.  
+  One interesting direction is using puzzle like problems, such as the Tower of Hanoi, where complexity can be precisely controlled by simply increasing the number of disks.  
+  In this setup, models are evaluated not only on their accuracy, but also on how well they scale with increasing task difficulty.  
 </p>
 
 <div class="hanoi-section">
@@ -4686,9 +4691,10 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 <h3>Even With Help, They Struggle</h3>
 <p>
-  Interestingly, even when the model is given the solution in the prompt, performance doesn’t improve significantly.
-  This suggests that the model doesn't simply fail to find a solution — it struggles to use or interpret one when given.
+  Interestingly, even when the model is given the solution in the prompt, performance does not improve significantly.  
+  This suggests that the model does not simply fail to find a solution, it struggles to use or interpret one when given.  
 </p>
+
 
 <h4 style="text-align: center;">Claude-3.7-Sonnet Performance</h4>
 <canvas id="claudeChart" class="chart-on-scroll" width="700" height="400"></canvas>
@@ -4779,9 +4785,10 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 <h3>A Curious Token Length Effect</h3>
 <p>
-  Another surprising effect: as task complexity grows, models tend to produce shorter outputs - even though longer answers 
-  would likely lead to better performance. This indicates a possible failure in internal planning or token budgeting, challenging the assumption that more capable models
-  will naturally expand their answers as needed.</p>
+  Another interesting effect is that as task complexity grows, models tend to produce shorter outputs, even though longer answers 
+  would likely lead to better performance. This suggests a possible failure in internal planning or token budgeting, challenging the assumption that more capable models 
+  will naturally expand their answers when needed.  
+</p>
 
 <h4 style="text-align: center;">o3-mini (high): Output Token Count vs Complexity</h4>
 <canvas id="tokenChart" class="chart-on-scroll" width="700" height="400"></canvas>
@@ -4878,13 +4885,13 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
 </script>
 
-
 <h2>Open Questions Remain</h2>
 <p>
   To what extent can current models really reason? While benchmarks remain a useful tool, these findings highlight the fragility of current 
-  approaches and the limitations of today's so-called “reasoning models.” There is still a long road ahead to build systems that reason 
-  reliably under increasing task difficulty — and to prove that their reasoning is more than just a memorized pattern.
+  approaches and the limitations of today's so called “reasoning models.” There is still a long road ahead to build systems that reason 
+  reliably under increasing task difficulty, and to prove that their reasoning is more than just a memorized pattern.  
 </p>
+
 
 <!-- ================= TL;DR ================= -->
 <section id="tldr" style="max-width:900px; margin:60px auto;">
